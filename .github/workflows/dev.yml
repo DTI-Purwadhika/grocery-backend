@@ -20,6 +20,7 @@ jobs:
           java-version: '22'
           distribution: 'temurin'
           cache: maven
+          
       - name: Set up environment variables
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL_DEV }}" >> $GITHUB_ENV
