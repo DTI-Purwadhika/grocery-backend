@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "products", schema = "_test_finpro")
+@Table(name = "products")
 @Entity
 public class Product {
   @Id
@@ -41,7 +41,7 @@ public class Product {
 
   @NotBlank(message = "Product name is required")
   @Size(max = 100, message = "Product name must not exceed 100 characters")
-  @Column(name = "name", nullable = false)
+  @Column(name = "name", nullable = false, unique = true)
   private String name;
 
   @NotBlank(message = "Product code is required")

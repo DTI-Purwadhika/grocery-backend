@@ -6,6 +6,7 @@ import com.finpro.grocery.product.dto.SaveProductDTO;
 import com.finpro.grocery.product.entity.Product;
 import com.finpro.grocery.product.entity.ProductImage;
 import com.finpro.grocery.product.repository.ProductRepository;
+import com.finpro.grocery.share.exception.BadRequestException;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
 import com.finpro.grocery.share.sequence.service.SequenceService;
 
@@ -31,6 +32,9 @@ public class CreateProduct {
 
   @Transactional
   public Product saveProduct(SaveProductDTO productDTO) {
+    if(productRepository.existsByName(productDTO.getName()))
+      throw new BadRequestException("Product with name " + productDTO.getName() + " already exists");
+    
     Product product = dtoToProduct(productDTO, new Product());
     product.setCode(sequenceService.generateUniqueCode("product_code_sequence", "PRD%05d"));	
     

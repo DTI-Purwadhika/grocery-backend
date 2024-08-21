@@ -17,6 +17,8 @@ import java.util.Optional;
 public interface  ProductRepository extends JpaRepository<Product, Long> {
   boolean existsByCode(String code);
 
+  boolean existsByName(String name);
+
   @EntityGraph(attributePaths = "images")
   Optional<Product> findByCode(String code);
   

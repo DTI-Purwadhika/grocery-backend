@@ -23,7 +23,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "categories", schema = "_test_finpro")
+@Table(name = "categories")
 @Entity
 public class Category {
   @Id

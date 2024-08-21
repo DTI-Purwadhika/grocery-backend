@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "product_images", schema = "_test_finpro")
+@Table(name = "product_images")
 @Entity
 public class ProductImage {
   @Id
