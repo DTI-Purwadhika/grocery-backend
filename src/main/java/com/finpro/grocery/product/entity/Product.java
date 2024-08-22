@@ -3,6 +3,7 @@ package com.finpro.grocery.product.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.finpro.grocery.category.entity.Category;
+import com.finpro.grocery.inventory.entity.Inventory;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -61,6 +62,10 @@ public class Product {
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   @JsonManagedReference
   private List<ProductImage> images = new ArrayList<>();
+
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @JsonManagedReference
+  private List<Inventory> inventory = new ArrayList<>();
 
   @NotNull(message = "Category is required")
   @ManyToOne(fetch = FetchType.LAZY)

@@ -15,6 +15,7 @@ import com.finpro.grocery.share.pagination.Pagination;
 
 @Service
 public class ReadCategory {
+
   @Autowired
   private CategoryRepository categoryRepository;
 
@@ -54,4 +55,5 @@ public class ReadCategory {
     getDto.setTotalProduct(category.getProducts().size());
     return getDto;
   }
+  
 }

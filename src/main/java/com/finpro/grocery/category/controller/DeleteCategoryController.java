@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/categories")
 public class DeleteCategoryController {
+
   @Autowired
   private DeleteCategory categoryService;
 
@@ -27,4 +28,5 @@ public class DeleteCategoryController {
     Category restoredCategory = categoryService.restoreCategory(name);
     return new ApiResponse<>("OK", "200", restoredCategory);
   }
+  
 }
