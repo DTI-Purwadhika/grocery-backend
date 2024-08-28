@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "code_sequences", schema = "_test_finpro")
+@Table(name = "code_sequences")
 public class Sequence {
   @Id
   @Column(name = "sequence_name", nullable = false, unique = true)
