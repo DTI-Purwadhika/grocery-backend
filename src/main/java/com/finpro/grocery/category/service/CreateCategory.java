@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CreateCategory {
+
   @Autowired
   private CategoryRepository categoryRepository;
 
@@ -19,4 +20,5 @@ public class CreateCategory {
     if(categoryRepository.isExist(category.getName())) throw new BadRequestException("Category already exist");
     return categoryRepository.save(category);
   }
+  
 }

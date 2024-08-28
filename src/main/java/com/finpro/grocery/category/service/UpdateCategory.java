@@ -1,7 +1,5 @@
 package com.finpro.grocery.category.service;
 
-import java.time.Instant;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +8,11 @@ import com.finpro.grocery.category.entity.Category;
 import com.finpro.grocery.category.repository.CategoryRepository;
 
 import jakarta.transaction.Transactional;
+import java.time.Instant;
 
 @Service
 public class UpdateCategory {
+
   @Autowired
   private CategoryRepository categoryRepository;
 
@@ -43,4 +43,5 @@ public class UpdateCategory {
     getDto.setTotalProduct(category.getProducts().size());
     return getDto;
   }
+  
 }

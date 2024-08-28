@@ -1,7 +1,5 @@
 package com.finpro.grocery.category.service;
 
-import java.time.Instant;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +8,7 @@ import com.finpro.grocery.category.repository.CategoryRepository;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
+import java.time.Instant;
 
 @Service
 public class DeleteCategory {
@@ -43,4 +42,5 @@ public class DeleteCategory {
 
     return categoryRepository.save(category);
   }
+  
 }
