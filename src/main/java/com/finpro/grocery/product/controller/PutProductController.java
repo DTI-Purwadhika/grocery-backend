@@ -1,7 +1,7 @@
 package com.finpro.grocery.product.controller;
 
-import com.finpro.grocery.product.dto.SaveProductDTO;
-import com.finpro.grocery.product.entity.Product;
+import com.finpro.grocery.product.dto.request.RequestProductDTO;
+import com.finpro.grocery.product.dto.response.ResponseProductDetailDTO;
 import com.finpro.grocery.product.service.UpdateProduct;
 import com.finpro.grocery.share.response.ApiResponse;
 
@@ -24,11 +24,11 @@ public class PutProductController {
   private UpdateProduct productService;
 
   @PutMapping("/{id}")
-  public ApiResponse<Product> updateProduct(
+  public ApiResponse<ResponseProductDetailDTO> updateProduct(
     @PathVariable Long id, 
-    @Valid @RequestBody SaveProductDTO product
+    @Valid @RequestBody RequestProductDTO product
   ) {
-    Product updatedProduct = productService.updateProduct(id, product);
+    ResponseProductDetailDTO updatedProduct = productService.updateProduct(id, product);
     return new ApiResponse<>("OK", "200", updatedProduct);
   }
 

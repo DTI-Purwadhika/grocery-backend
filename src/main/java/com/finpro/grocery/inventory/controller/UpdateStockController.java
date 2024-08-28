@@ -1,7 +1,7 @@
 package com.finpro.grocery.inventory.controller;
 
-import com.finpro.grocery.inventory.dto.GetInventoryDTO;
-import com.finpro.grocery.inventory.dto.SaveInventoryDTO;
+import com.finpro.grocery.inventory.dto.request.RequestInventoryDTO;
+import com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO;
 import com.finpro.grocery.inventory.service.UpdateStock;
 import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ public class UpdateStockController {
   private UpdateStock inventoryService;
 
   @PutMapping("/{id}")
-  public ApiResponse<GetInventoryDTO> updateInventory(@PathVariable Long id, @RequestBody SaveInventoryDTO inventory) {
-    GetInventoryDTO updatedInventory = inventoryService.updateInventory(id, inventory);
+  public ApiResponse<ResponseInventoryDTO> updateInventory(@PathVariable Long id, @RequestBody RequestInventoryDTO inventory) {
+    ResponseInventoryDTO updatedInventory = inventoryService.updateInventory(id, inventory);
     return new ApiResponse<>("OK", "200", updatedInventory);
   }
   

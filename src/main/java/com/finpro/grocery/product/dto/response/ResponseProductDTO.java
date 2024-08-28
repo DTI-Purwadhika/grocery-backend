@@ -1,4 +1,4 @@
-package com.finpro.grocery.product.dto;
+package com.finpro.grocery.product.dto.response;
 
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetProductDTO {
+public class ResponseProductDTO {
 
   private Long id;
   private String name;

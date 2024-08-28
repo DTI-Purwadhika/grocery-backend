@@ -1,6 +1,6 @@
 package com.finpro.grocery.product.controller;
 
-import com.finpro.grocery.product.entity.Product;
+import com.finpro.grocery.product.dto.response.ResponseProductDetailDTO;
 import com.finpro.grocery.product.service.DeleteProduct;
 import com.finpro.grocery.share.response.ApiResponse;
 
@@ -21,32 +21,32 @@ public class DeleteProductController {
   private DeleteProduct productService;
 
   @DeleteMapping("/{id}")
-  public ApiResponse<Product> removeProduct(@PathVariable Long id) {
-    Product removedProduct = productService.removeProduct(id);
+  public ApiResponse<ResponseProductDetailDTO> removeProduct(@PathVariable Long id) {
+    ResponseProductDetailDTO removedProduct = productService.removeProduct(id);
     return new ApiResponse<>("DELETED", "200", removedProduct);
   }
 
   @PutMapping("/{id}/restore")
-  public ApiResponse<Product> restoreProduct(@PathVariable Long id) {
-    Product restoredProduct = productService.restoreProduct(id);
+  public ApiResponse<ResponseProductDetailDTO> restoreProduct(@PathVariable Long id) {
+    ResponseProductDetailDTO restoredProduct = productService.restoreProduct(id);
     return new ApiResponse<>("OK", "200", restoredProduct);
   }
 
   @DeleteMapping("/{id}/images/{imageId}")
-  public ApiResponse<Product> removeImageFromProduct(
+  public ApiResponse<ResponseProductDetailDTO> removeImageFromProduct(
     @PathVariable Long id, 
     @PathVariable Long imageId
   ) {
-    Product removedImage = productService.removeImageFromProduct(id, imageId);
+    ResponseProductDetailDTO removedImage = productService.removeImageFromProduct(id, imageId);
     return new ApiResponse<>("OK", "200", removedImage);
   }
   
   @DeleteMapping("/{id}/images/{imageId}/restore")
-  public ApiResponse<Product> restoreImageFromProduct(
+  public ApiResponse<ResponseProductDetailDTO> restoreImageFromProduct(
     @PathVariable Long id, 
     @PathVariable Long imageId
   ) {
-    Product removedImage = productService.restoreImageToProduct(id, imageId);
+    ResponseProductDetailDTO removedImage = productService.restoreImageToProduct(id, imageId);
     return new ApiResponse<>("OK", "200", removedImage);
   }
   

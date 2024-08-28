@@ -1,4 +1,4 @@
-package com.finpro.grocery.inventory.dto;
+package com.finpro.grocery.inventory.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveInventoryDTO {
+public class RequestInventoryDTO {
 
   @NotNull(message = "Product is required")
   private Long productId;

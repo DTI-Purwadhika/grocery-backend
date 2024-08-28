@@ -3,6 +3,7 @@ package com.finpro.grocery.product.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.finpro.grocery.category.entity.Category;
+import com.finpro.grocery.discount.entity.Discount;
 import com.finpro.grocery.inventory.entity.Inventory;
 
 import jakarta.persistence.CascadeType;
@@ -36,6 +37,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "products")
 @Entity
 public class Product {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -67,6 +69,10 @@ public class Product {
   @JsonManagedReference
   private List<Inventory> inventory = new ArrayList<>();
 
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)	
+  @JsonManagedReference
+  private List<Discount> discounts = new ArrayList<>();
+
   @NotNull(message = "Category is required")
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id", nullable = false)
@@ -91,4 +97,5 @@ public class Product {
     images.remove(image);
     image.setProduct(null);
   }
+  
 }

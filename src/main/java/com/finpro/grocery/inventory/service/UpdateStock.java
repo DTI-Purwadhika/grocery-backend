@@ -3,8 +3,8 @@ package com.finpro.grocery.inventory.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.finpro.grocery.inventory.dto.GetInventoryDTO;
-import com.finpro.grocery.inventory.dto.SaveInventoryDTO;
+import com.finpro.grocery.inventory.dto.request.RequestInventoryDTO;
+import com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO;
 import com.finpro.grocery.inventory.entity.Inventory;
 import com.finpro.grocery.inventory.repository.InventoryRepository;
 import com.finpro.grocery.product.service.ReadProduct;
@@ -29,7 +29,7 @@ public class UpdateStock {
   private StoreService storeService;
 
   @Transactional
-  public GetInventoryDTO updateInventory(Long id, SaveInventoryDTO inventory) {
+  public ResponseInventoryDTO updateInventory(Long id, RequestInventoryDTO inventory) {
     Inventory updatedInventory = read.getInventory(id);
 
     if(inventory.getProductId() != null)
@@ -43,13 +43,13 @@ public class UpdateStock {
 
     updatedInventory.setUpdatedAt(Instant.now());
     inventoryInventory.save(updatedInventory);
-    GetInventoryDTO inventoryDto = convertToDto(updatedInventory);
+    ResponseInventoryDTO inventoryDto = convertToDto(updatedInventory);
 
     return inventoryDto;
   }
 
-  private GetInventoryDTO convertToDto(Inventory inventory) {
-    GetInventoryDTO getDto = new GetInventoryDTO();
+  private ResponseInventoryDTO convertToDto(Inventory inventory) {
+    ResponseInventoryDTO getDto = new ResponseInventoryDTO();
     getDto.setId(inventory.getId());
     getDto.setProductName(inventory.getProduct().getName());
     getDto.setStoreName(inventory.getStore().getName());

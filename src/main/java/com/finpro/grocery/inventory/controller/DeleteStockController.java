@@ -1,6 +1,6 @@
 package com.finpro.grocery.inventory.controller;
 
-import com.finpro.grocery.inventory.entity.Inventory;
+import com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO;
 import com.finpro.grocery.inventory.service.DeleteStock;
 import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ public class DeleteStockController {
   private DeleteStock inventoryService;
 
   @DeleteMapping("/{id}")
-  public ApiResponse<Inventory> removeInventory(@PathVariable Long id) {
-    Inventory deletedStock = inventoryService.removeInventory(id);
+  public ApiResponse<ResponseInventoryDTO> removeInventory(@PathVariable Long id) {
+    ResponseInventoryDTO deletedStock = inventoryService.removeInventory(id);
     return new ApiResponse<>("DELETED", "200", deletedStock);
   }
 
   @PutMapping("/{id}/restore")
-  public ApiResponse<Inventory> restoreInventory(@PathVariable Long id) {
-    Inventory restoredStock = inventoryService.restoreInventory(id);
+  public ApiResponse<ResponseInventoryDTO> restoreInventory(@PathVariable Long id) {
+    ResponseInventoryDTO restoredStock = inventoryService.restoreInventory(id);
     return new ApiResponse<>("OK", "200", restoredStock);
   }
   

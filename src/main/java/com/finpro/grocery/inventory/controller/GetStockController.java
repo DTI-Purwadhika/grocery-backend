@@ -1,7 +1,6 @@
 package com.finpro.grocery.inventory.controller;
 
-import com.finpro.grocery.inventory.dto.GetInventoryDTO;
-import com.finpro.grocery.inventory.entity.Inventory;
+import com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO;
 import com.finpro.grocery.inventory.service.ReadStock;
 import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.share.response.ApiResponse;
@@ -20,7 +19,7 @@ public class GetStockController {
   private ReadStock inventoryService;
 
   @GetMapping
-  public ApiResponse<Pagination<GetInventoryDTO>> getAll(
+  public ApiResponse<Pagination<ResponseInventoryDTO>> getAll(
     @RequestParam(required = false) String productName,
     @RequestParam(required = false) String storeName,
     @RequestParam(required = false) Long productId,
@@ -35,8 +34,8 @@ public class GetStockController {
   }
 
   @GetMapping("/{id}")
-  public ApiResponse<Inventory> getInventory(@PathVariable Long id) {
-    Inventory inventory = inventoryService.getInventory(id);
+  public ApiResponse<ResponseInventoryDTO> getInventoryDetail(@PathVariable Long id) {
+    ResponseInventoryDTO inventory = inventoryService.getInventoryDetail(id);
     return new ApiResponse<>("OK", "200", inventory);
   }
 

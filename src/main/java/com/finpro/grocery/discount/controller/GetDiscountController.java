@@ -1,8 +1,8 @@
-package com.finpro.grocery.category.controller;
+package com.finpro.grocery.discount.controller;
 
-import com.finpro.grocery.category.dto.response.ResponseCategoryDTO;
-import com.finpro.grocery.category.dto.response.ResponseCategoryListDTO;
-import com.finpro.grocery.category.service.ReadCategory;
+import com.finpro.grocery.discount.dto.response.ResponseDiscountDTO;
+import com.finpro.grocery.discount.entity.Discount;
+import com.finpro.grocery.discount.service.ReadDiscount;
 import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,27 +13,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/categories")
-public class GetCategoryController {
+@RequestMapping("/api/v1/discounts")
+public class GetDiscountController {
 
   @Autowired
-  private ReadCategory categoryService;
+  private ReadDiscount discountService;
 
   @GetMapping
-  public ApiResponse<Pagination<ResponseCategoryDTO>> getAll(
+  public ApiResponse<Pagination<ResponseDiscountDTO>> getAll(
+    @RequestParam(required = false) Boolean nameOnly,
     @RequestParam(required = false) String keyword,
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size,
     @RequestParam(defaultValue = "name") String sortBy,
     @RequestParam(defaultValue = "asc") String sortDir
   ) {
-    return new ApiResponse<>("OK", "200", categoryService.getAll(keyword, page, size, sortBy, sortDir));
+    return new ApiResponse<>("OK", "200", discountService.getAll(keyword, page, size, sortBy, sortDir));
   }
 
-  @GetMapping("/{name}")
-  public ApiResponse<ResponseCategoryListDTO> getCategoryList(@PathVariable String name) {
-    ResponseCategoryListDTO category = categoryService.getCategoryList(name);
-    return new ApiResponse<>("OK", "200", category);
+  @GetMapping("/{id}")
+  public ApiResponse<Discount> getDiscount(@PathVariable Long id) {
+    Discount discount = discountService.getDiscount(id);
+    return new ApiResponse<>("OK", "200", discount);
   }
 
 }

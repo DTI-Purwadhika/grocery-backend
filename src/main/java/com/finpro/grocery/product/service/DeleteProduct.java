@@ -1,5 +1,6 @@
 package com.finpro.grocery.product.service;
 
+import com.finpro.grocery.product.dto.response.ResponseProductDetailDTO;
 import com.finpro.grocery.product.entity.Product;
 import com.finpro.grocery.product.entity.ProductImage;
 import com.finpro.grocery.product.repository.ProductImageRepository;
@@ -26,31 +27,33 @@ public class DeleteProduct {
   private ReadProduct read;
 
   @Transactional
-  public Product removeProduct(Long id) {
+  public ResponseProductDetailDTO removeProduct(Long id) {
     Product product = read.getProductById(id);
 
     if(product.getDeletedAt() != null) throw new ResourceNotFoundException("Product with Code " + product.getCode() + " already deleted");
 
     product.setDeletedAt(Instant.now());
     product.setUpdatedAt(Instant.now());
+    productRepository.save(product);
 
-    return productRepository.save(product);
+    return convertToDTO(product);
   }
 
   @Transactional
-  public Product restoreProduct(Long id) {
+  public ResponseProductDetailDTO restoreProduct(Long id) {
     Product product = read.getProductById(id);
 
     if(product.getDeletedAt() == null) throw new BadRequestException("Product with Code " + product.getCode() + " not yet deleted");
 
     product.setDeletedAt(null);
     product.setUpdatedAt(Instant.now());
+    productRepository.save(product);
 
-    return productRepository.save(product);
+    return convertToDTO(product);
   }
 
   @Transactional
-  public Product removeImageFromProduct(Long id, Long imageId) {
+  public ResponseProductDetailDTO removeImageFromProduct(Long id, Long imageId) {
     Product product = read.getProductById(id);
 
     ProductImage imageToRemove = imageRepository.findById(imageId)
@@ -62,12 +65,13 @@ public class DeleteProduct {
     imageToRemove.setDeletedAt(Instant.now());
     
     imageRepository.save(imageToRemove);
+    productRepository.save(product);
 
-    return productRepository.save(product);
+    return convertToDTO(product);
   }
 
   @Transactional
-  public Product restoreImageToProduct(Long id, Long imageId) {
+  public ResponseProductDetailDTO restoreImageToProduct(Long id, Long imageId) {
     Product product = read.getProductById(id);
 
     ProductImage imageToRestore = imageRepository.findById(imageId)
@@ -79,7 +83,21 @@ public class DeleteProduct {
     imageToRestore.setDeletedAt(null);
     
     imageRepository.save(imageToRestore);
+    productRepository.save(product);
 
-    return productRepository.save(product);
+    return convertToDTO(product);
   }
+
+  private ResponseProductDetailDTO convertToDTO(Product product) {
+    ResponseProductDetailDTO response = new ResponseProductDetailDTO();
+    response.setId(product.getId());
+    response.setName(product.getName());
+    response.setCategory(product.getCategory().getName());
+    response.setPrice(product.getPrice());
+    response.setImages(product.getImages());
+    response.setDescription(product.getDescription());
+
+    return response;
+  }
+
 }

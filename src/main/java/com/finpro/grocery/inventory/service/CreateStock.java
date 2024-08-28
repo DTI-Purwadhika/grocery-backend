@@ -3,8 +3,8 @@ package com.finpro.grocery.inventory.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.finpro.grocery.inventory.dto.GetInventoryDTO;
-import com.finpro.grocery.inventory.dto.SaveInventoryDTO;
+import com.finpro.grocery.inventory.dto.request.RequestInventoryDTO;
+import com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO;
 import com.finpro.grocery.inventory.entity.Inventory;
 import com.finpro.grocery.inventory.repository.InventoryRepository;
 import com.finpro.grocery.product.entity.Product;
@@ -32,7 +32,7 @@ public class CreateStock {
   private SequenceService sequenceService;
 
   @Transactional
-  public GetInventoryDTO saveInventory(SaveInventoryDTO inventoryDTO) {
+  public ResponseInventoryDTO saveInventory(RequestInventoryDTO inventoryDTO) {
     if (inventoryRepository.isExist(inventoryDTO.getProductId(), inventoryDTO.getStoreId()))
       throw new BadRequestException("Inventory already exists for this product and store");	
 
@@ -49,7 +49,7 @@ public class CreateStock {
     inventory.setCode(sequenceService.generateUniqueCode("inventory_code_sequence", "IVT%05d"));	
     inventoryRepository.save(inventory);
 
-    GetInventoryDTO createdInventory = new GetInventoryDTO();
+    ResponseInventoryDTO createdInventory = new ResponseInventoryDTO();
     createdInventory.setId(inventory.getId());
     createdInventory.setCode(inventory.getCode());
     createdInventory.setProductName(product.getName());

@@ -1,6 +1,6 @@
 package com.finpro.grocery.category.controller;
 
-import com.finpro.grocery.category.entity.Category;
+import com.finpro.grocery.category.dto.response.ResponseCategoryDTO;
 import com.finpro.grocery.category.service.DeleteCategory;
 import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ public class DeleteCategoryController {
   private DeleteCategory categoryService;
 
   @DeleteMapping("/{name}")
-  public ApiResponse<Category> removeCategory(@PathVariable String name) {
-    Category deletedCategory = categoryService.removeCategory(name);
+  public ApiResponse<ResponseCategoryDTO> removeCategory(@PathVariable String name) {
+    ResponseCategoryDTO deletedCategory = categoryService.removeCategory(name);
     return new ApiResponse<>("DELETED", "200", deletedCategory);
   }
 
   @PutMapping("/{name}/restore")
-  public ApiResponse<Category> restoreCategory(@PathVariable String name) {
-    Category restoredCategory = categoryService.restoreCategory(name);
+  public ApiResponse<ResponseCategoryDTO> restoreCategory(@PathVariable String name) {
+    ResponseCategoryDTO restoredCategory = categoryService.restoreCategory(name);
     return new ApiResponse<>("OK", "200", restoredCategory);
   }
   
