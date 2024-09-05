@@ -25,16 +25,15 @@ public class ReadProduct {
   private ReadCategory categoryService;
   
   public Pagination<ResponseProductDTO> getAll(String keywordName, String keywordCode, String category, int page, int size, String sortBy, String sortDir) {
-    if(category != null && categoryService.getCategory(category) == null) throw new ResourceNotFoundException("Category with name " + category + " not found");
+    if(category != null && category != "" && categoryService.getCategoryByName(category) == null) throw new ResourceNotFoundException("Category with name " + category + " not found");
     
     String name = keywordName == null ? "" : keywordName;
     String code = keywordCode == null ? "" : keywordCode;
-    Long categoryId = category == null ? null : categoryService.getCategory(category).getId();
-    
+    Long categoryId = category == null ? null : categoryService.getCategoryByName(category).getId();
+    System.out.println(categoryId);
     Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
     Pageable pageable = PageRequest.of(page, size, sort);
     Page<Product> products =  productRepository.getAll(name, code, categoryId, pageable);
-
     Page<ResponseProductDTO> productDTOs = products.map(this::convertToDto);
 
     return new Pagination<>(

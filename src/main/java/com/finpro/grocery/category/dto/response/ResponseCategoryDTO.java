@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponseCategoryDTO {
 
+  private Long id;
   private String name;
   private String description;
   private Integer totalProduct;

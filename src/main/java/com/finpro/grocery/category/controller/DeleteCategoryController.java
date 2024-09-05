@@ -17,15 +17,15 @@ public class DeleteCategoryController {
   @Autowired
   private DeleteCategory categoryService;
 
-  @DeleteMapping("/{name}")
-  public ApiResponse<ResponseCategoryDTO> removeCategory(@PathVariable String name) {
-    ResponseCategoryDTO deletedCategory = categoryService.removeCategory(name);
+  @DeleteMapping("/{id}")
+  public ApiResponse<ResponseCategoryDTO> removeCategory(@PathVariable Long id) {
+    ResponseCategoryDTO deletedCategory = categoryService.removeCategory(id);
     return new ApiResponse<>("DELETED", "200", deletedCategory);
   }
 
-  @PutMapping("/{name}/restore")
-  public ApiResponse<ResponseCategoryDTO> restoreCategory(@PathVariable String name) {
-    ResponseCategoryDTO restoredCategory = categoryService.restoreCategory(name);
+  @PutMapping("/{id}/restore")
+  public ApiResponse<ResponseCategoryDTO> restoreCategory(@PathVariable Long id) {
+    ResponseCategoryDTO restoredCategory = categoryService.restoreCategory(id);
     return new ApiResponse<>("OK", "200", restoredCategory);
   }
   

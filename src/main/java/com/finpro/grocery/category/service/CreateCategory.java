@@ -33,6 +33,7 @@ public class CreateCategory {
 
   private ResponseCategoryDTO convertToDto(Category category) {
     ResponseCategoryDTO response = new ResponseCategoryDTO();
+    response.setId(category.getId());
     response.setName(category.getName());
     response.setDescription(category.getDescription());
     return response;

@@ -39,7 +39,7 @@ public class UpdateProduct {
   
   private Product dtoToProduct(RequestProductDTO productDTO, Product product) {
     if(!productDTO.getCategory().isBlank()) {
-      Category category = categoryService.getCategory(productDTO.getCategory());
+      Category category = categoryService.getCategoryByName(productDTO.getCategory());
       if(category == null) throw new ResourceNotFoundException("Category with name " + productDTO.getCategory() + " not found");
       product.setCategory(category);
     }

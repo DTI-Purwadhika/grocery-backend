@@ -32,8 +32,15 @@ public class GetCategoryController {
 
   @GetMapping("/{name}")
   public ApiResponse<ResponseCategoryListDTO> getCategoryList(@PathVariable String name) {
+    if (name.matches("\\d+")) return getCategory(Long.parseLong(name));
     ResponseCategoryListDTO category = categoryService.getCategoryList(name);
     return new ApiResponse<>("OK", "200", category);
   }
+
+  private ApiResponse<ResponseCategoryListDTO> getCategory(Long id) {
+    ResponseCategoryListDTO category = categoryService.getCategoryById(id);
+    return new ApiResponse<>("OK", "200", category);
+  }
+
 
 }

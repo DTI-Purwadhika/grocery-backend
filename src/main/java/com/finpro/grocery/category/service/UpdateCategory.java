@@ -21,8 +21,8 @@ public class UpdateCategory {
   private ReadCategory read;
 
   @Transactional
-  public ResponseCategoryDTO updateCategory(String name, RequestCategoryDTO category) {
-    Category updatedCategory = read.getCategory(name);
+  public ResponseCategoryDTO updateCategory(Long id, RequestCategoryDTO category) {
+    Category updatedCategory = read.getCategory(id);
 
     if(!category.getName().isBlank())
     updatedCategory.setName(category.getName());
@@ -39,6 +39,7 @@ public class UpdateCategory {
 
   private ResponseCategoryDTO convertToDto(Category category) {
     ResponseCategoryDTO getDto = new ResponseCategoryDTO();
+    getDto.setId(category.getId());
     getDto.setName(category.getName());
     getDto.setDescription(category.getDescription());
     getDto.setTotalProduct(category.getProducts().size());

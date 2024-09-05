@@ -18,9 +18,9 @@ public class UpdateCategoryController {
   @Autowired
   private UpdateCategory categoryService;
 
-  @PutMapping("/{name}")
-    public ApiResponse<ResponseCategoryDTO> updateCategory(@PathVariable String name, @RequestBody RequestCategoryDTO category) {
-    ResponseCategoryDTO updatedCategory = categoryService.updateCategory(name, category);
+  @PutMapping("/{id}")
+    public ApiResponse<ResponseCategoryDTO> updateCategory(@PathVariable Long id, @RequestBody RequestCategoryDTO category) {
+    ResponseCategoryDTO updatedCategory = categoryService.updateCategory(id, category);
     return new ApiResponse<>("OK", "200", updatedCategory);
   }
 

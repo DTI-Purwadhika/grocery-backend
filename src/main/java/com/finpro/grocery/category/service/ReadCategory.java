@@ -38,17 +38,27 @@ public class ReadCategory {
     );
   }
 
-  public Category getCategory(String name) {
+  public ResponseCategoryListDTO getCategoryById(Long id) {
+    return convertToDtoList(getCategory(id));
+  }
+
+  public Category getCategory(Long id) {
+    return categoryRepository.findById(id)
+    .orElseThrow(() -> new ResourceNotFoundException("There's no Category with id: " + id));
+  }
+
+  public Category getCategoryByName(String name) {
     return categoryRepository.getByName(name)
     .orElseThrow(() -> new ResourceNotFoundException("There's no Category with name: " + name));
   }
 
   public ResponseCategoryListDTO getCategoryList(String name) {
-    return convertToDtoList(getCategory(name));
+    return convertToDtoList(getCategoryByName(name));
   }
 
   private ResponseCategoryDTO convertToDto(Category category) {
     ResponseCategoryDTO getDto = new ResponseCategoryDTO();
+    getDto.setId(category.getId());
     getDto.setName(category.getName());
     getDto.setDescription(category.getDescription());
     getDto.setTotalProduct(category.getProducts().size());
@@ -57,6 +67,7 @@ public class ReadCategory {
 
   private ResponseCategoryListDTO convertToDtoList(Category category) {
     ResponseCategoryListDTO getDto = new ResponseCategoryListDTO();
+    getDto.setId(category.getId());
     getDto.setName(category.getName());
     getDto.setDescription(category.getDescription());
     getDto.setProducts(category.getProducts());
