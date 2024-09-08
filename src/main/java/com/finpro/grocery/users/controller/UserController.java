@@ -1,8 +1,8 @@
 package com.finpro.grocery.users.controller;
 
-import com.finpro.grocery.auth.entity.VerificationToken;
-import com.finpro.grocery.auth.service.VerificationService;
 import com.finpro.grocery.share.response.ApiResponse;
+import com.finpro.grocery.users.dto.CheckResetPasswordLinkDTO;
+import com.finpro.grocery.users.dto.CheckVerificationLinkDTO;
 import com.finpro.grocery.users.dto.RegisterUserDTO;
 import com.finpro.grocery.users.dto.SetPasswordDTO;
 import com.finpro.grocery.users.service.UserService;
@@ -10,20 +10,20 @@ import lombok.extern.java.Log;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/users")
 @Validated
 @Log
 public class UserController {
     private final UserService userService;
-    private final VerificationService verificationService;
 
-    public UserController(UserService userService, VerificationService verificationService){
+    public UserController(UserService userService){
         this.userService = userService;
-        this.verificationService = verificationService;
+    }
+
+    @PostMapping("/set-password")
+    public ApiResponse<?> setPassword(@RequestBody SetPasswordDTO setPasswordDTO){
+        return new ApiResponse<>("OK", "200", userService.setPassword(setPasswordDTO));
     }
 
     @PostMapping("/register")
@@ -31,20 +31,30 @@ public class UserController {
         return new ApiResponse<>("OK", "200", userService.register(registerUserDTO));
     }
 
-    @PostMapping("/verify")
-    public ApiResponse<?> verifyEmail(@RequestBody SetPasswordDTO setPasswordDTO, @RequestParam String email, @RequestParam String token){
-        Optional<VerificationToken> verificationToken = Optional.ofNullable(verificationService.getTokenByValue(token));
+    @PostMapping("/check-verification-link")
+    public ApiResponse<?> checkVerificationLink(@RequestBody CheckVerificationLinkDTO checkVerificationLinkDTO){
+        return new ApiResponse<>("OK", "200", userService.checkVerificationLink(checkVerificationLinkDTO));
+    }
 
-        if(verificationToken.isEmpty()){
-            return new ApiResponse<>("Bad Request", "400", "Invalid token");
-        }
+    @PostMapping("/new-verification-link")
+    public ApiResponse<?> newVerificationLink(@RequestParam String email){
+        userService.newVerificationLink(email);
+        return new ApiResponse<>("OK", "200", "Verification link sent successfully");
+    }
 
-        VerificationToken userToken = verificationToken.get();
+    @PostMapping("/reset-password")
+    public ApiResponse<?> resetPassword(@RequestParam String email){
+        return new ApiResponse<>("OK", "200", userService.resetPassword(email));
+    }
 
-        if(userToken.getExpiryDate().isBefore(LocalDateTime.now())){
-            return new ApiResponse<>("Bad Request", "400", "Token expired");
-        }
+    @PostMapping("/check-reset-password-link")
+    public ApiResponse<?> checkResetPasswordLink(@RequestBody CheckResetPasswordLinkDTO checkResetPasswordLinkDTO){
+        return new ApiResponse<>("OK","200", userService.checkResetPasswordLink(checkResetPasswordLinkDTO));
+    }
 
-        return new ApiResponse<>("OK", "200", userService.verifyAccount(setPasswordDTO, email));
+    @PostMapping("/new-reset-password-link")
+    public ApiResponse<?> newResetPasswordLink(@RequestParam String email){
+        userService.newResetPasswordLink(email);
+        return new ApiResponse<>("OK", "200", "Reset password link sent successfully");
     }
 }
