@@ -3,7 +3,8 @@ package com.finpro.grocery.category.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.finpro.grocery.category.dto.GetCategoryDTO;
+import com.finpro.grocery.category.dto.request.RequestCategoryDTO;
+import com.finpro.grocery.category.dto.response.ResponseCategoryDTO;
 import com.finpro.grocery.category.entity.Category;
 import com.finpro.grocery.category.repository.CategoryRepository;
 
@@ -20,8 +21,8 @@ public class UpdateCategory {
   private ReadCategory read;
 
   @Transactional
-  public GetCategoryDTO updateCategory(String name, Category category) {
-    Category updatedCategory = read.getCategory(name);
+  public ResponseCategoryDTO updateCategory(Long id, RequestCategoryDTO category) {
+    Category updatedCategory = read.getCategory(id);
 
     if(!category.getName().isBlank())
     updatedCategory.setName(category.getName());
@@ -31,13 +32,14 @@ public class UpdateCategory {
     
     updatedCategory.setUpdatedAt(Instant.now());
     categoryRepository.save(updatedCategory);
-    GetCategoryDTO categoryDto = convertToDto(updatedCategory);
+    ResponseCategoryDTO categoryDto = convertToDto(updatedCategory);
 
     return categoryDto;
   }
 
-  private GetCategoryDTO convertToDto(Category category) {
-    GetCategoryDTO getDto = new GetCategoryDTO();
+  private ResponseCategoryDTO convertToDto(Category category) {
+    ResponseCategoryDTO getDto = new ResponseCategoryDTO();
+    getDto.setId(category.getId());
     getDto.setName(category.getName());
     getDto.setDescription(category.getDescription());
     getDto.setTotalProduct(category.getProducts().size());

@@ -1,7 +1,7 @@
 package com.finpro.grocery.category.controller;
 
-import com.finpro.grocery.category.dto.GetCategoryDTO;
-import com.finpro.grocery.category.entity.Category;
+import com.finpro.grocery.category.dto.response.ResponseCategoryDTO;
+import com.finpro.grocery.category.dto.response.ResponseCategoryListDTO;
 import com.finpro.grocery.category.service.ReadCategory;
 import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.share.response.ApiResponse;
@@ -20,21 +20,27 @@ public class GetCategoryController {
   private ReadCategory categoryService;
 
   @GetMapping
-  public ApiResponse<Pagination<GetCategoryDTO>> getAll(
-    @RequestParam(required = false) Boolean nameOnly,
+  public ApiResponse<Pagination<ResponseCategoryDTO>> getAll(
     @RequestParam(required = false) String keyword,
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size,
     @RequestParam(defaultValue = "name") String sortBy,
     @RequestParam(defaultValue = "asc") String sortDir
   ) {
-    return new ApiResponse<>("OK", "200", categoryService.getAll(keyword, page, size, sortBy, sortDir, nameOnly));
+    return new ApiResponse<>("OK", "200", categoryService.getAll(keyword, page, size, sortBy, sortDir));
   }
 
   @GetMapping("/{name}")
-  public ApiResponse<Category> getCategory(@PathVariable String name) {
-    Category category = categoryService.getCategory(name);
+  public ApiResponse<ResponseCategoryListDTO> getCategoryList(@PathVariable String name) {
+    if (name.matches("\\d+")) return getCategory(Long.parseLong(name));
+    ResponseCategoryListDTO category = categoryService.getCategoryList(name);
     return new ApiResponse<>("OK", "200", category);
   }
+
+  private ApiResponse<ResponseCategoryListDTO> getCategory(Long id) {
+    ResponseCategoryListDTO category = categoryService.getCategoryById(id);
+    return new ApiResponse<>("OK", "200", category);
+  }
+
 
 }

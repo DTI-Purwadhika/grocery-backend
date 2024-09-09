@@ -1,4 +1,4 @@
-package com.finpro.grocery.inventory.dto;
+package com.finpro.grocery.inventory.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetInventoryDTO {
+public class ResponseInventoryDTO {
 
   private Long id;
   private String code;
-  private String productName;
+  private String name;
   private String storeName;
   private Long totalStock;
 

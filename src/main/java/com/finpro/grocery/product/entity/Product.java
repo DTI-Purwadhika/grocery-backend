@@ -36,6 +36,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "products")
 @Entity
 public class Product {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -67,6 +68,10 @@ public class Product {
   @JsonManagedReference
   private List<Inventory> inventory = new ArrayList<>();
 
+  // @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)	
+  // @JsonManagedReference
+  // private List<Discount> discounts = new ArrayList<>();
+
   @NotNull(message = "Category is required")
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id", nullable = false)
@@ -91,4 +96,5 @@ public class Product {
     images.remove(image);
     image.setProduct(null);
   }
+  
 }

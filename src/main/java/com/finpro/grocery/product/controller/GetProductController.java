@@ -1,7 +1,7 @@
 package com.finpro.grocery.product.controller;
 
-import com.finpro.grocery.product.dto.GetProductDTO;
-import com.finpro.grocery.product.entity.Product;
+import com.finpro.grocery.product.dto.response.ResponseProductDTO;
+import com.finpro.grocery.product.dto.response.ResponseProductDetailDTO;
 import com.finpro.grocery.product.service.ReadProduct;
 import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.share.response.ApiResponse;
@@ -24,7 +24,7 @@ public class GetProductController {
   private ReadProduct productService;
 
   @GetMapping
-  public ApiResponse<Pagination<GetProductDTO>> getAll(
+  public ApiResponse<Pagination<ResponseProductDTO>> getAll(
     @RequestParam(required = false) String keyword,
     @RequestParam(required = false) String code,
     @RequestParam(required = false) String category,
@@ -33,13 +33,13 @@ public class GetProductController {
     @RequestParam(defaultValue = "name") String sortBy,
     @RequestParam(defaultValue = "asc") String sortDir
   ) {
-    Pagination<GetProductDTO> products = productService.getAll(keyword, code, category, page, size, sortBy, sortDir);
+    Pagination<ResponseProductDTO> products = productService.getAll(keyword, code, category, page, size, sortBy, sortDir);
     return new ApiResponse<>("OK", "200", products);
   }
 
   @GetMapping("/{id}")
-  public ApiResponse<Product> getProductById(@PathVariable Long id) {
-    Product product = productService.getProductById(id);
+  public ApiResponse<ResponseProductDetailDTO> getProduct(@PathVariable Long id) {
+    ResponseProductDetailDTO product = productService.getProduct(id);
     return new ApiResponse<>("OK", "200", product);
   }
 

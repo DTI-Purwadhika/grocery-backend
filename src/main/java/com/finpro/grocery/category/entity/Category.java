@@ -12,13 +12,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-
+import java.time.Instant;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.Instant;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +25,7 @@ import java.time.Instant;
 @Table(name = "categories")
 @Entity
 public class Category {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -49,4 +49,5 @@ public class Category {
   
   @Column(name = "deleted_at")
   private Instant deletedAt;
+
 }

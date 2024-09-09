@@ -1,6 +1,7 @@
 package com.finpro.grocery.category.controller;
 
-import com.finpro.grocery.category.entity.Category;
+import com.finpro.grocery.category.dto.request.RequestCategoryDTO;
+import com.finpro.grocery.category.dto.response.ResponseCategoryDTO;
 import com.finpro.grocery.category.service.CreateCategory;
 import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,9 @@ public class PostCategoryController {
   private CreateCategory categoryService;
 
   @PostMapping
-  public ApiResponse<Category> saveCategory(@RequestBody Category category) {
-    return new ApiResponse<>("OK", "200", categoryService.saveCategory(category));
+  public ApiResponse<ResponseCategoryDTO> saveCategory(@RequestBody RequestCategoryDTO category) {
+    ResponseCategoryDTO savedCategory = categoryService.saveCategory(category);
+    return new ApiResponse<>("OK", "200", savedCategory);
   }
 
 }

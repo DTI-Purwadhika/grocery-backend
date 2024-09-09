@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.finpro.grocery.category.dto.GetCategoryDTO;
+import com.finpro.grocery.category.dto.response.ResponseCategoryDTO;
+import com.finpro.grocery.category.dto.response.ResponseCategoryListDTO;
 import com.finpro.grocery.category.entity.Category;
 import com.finpro.grocery.category.repository.CategoryRepository;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
@@ -19,20 +20,14 @@ public class ReadCategory {
   @Autowired
   private CategoryRepository categoryRepository;
 
-  public Pagination<GetCategoryDTO> getAll(String keyword, int page, int size, String sortBy, String sortDir, Boolean nameOnly) {
+  public Pagination<ResponseCategoryDTO> getAll(String keyword, int page, int size, String sortBy, String sortDir) {
     String name = keyword == null ? "" : keyword;
 
     Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
     Pageable pageable = PageRequest.of(page, size, sort);
 
-    Page<Category> categories;
-
-    if(nameOnly != null && nameOnly)
-      categories =  categoryRepository.getCategoriesName(name, pageable);
-    else
-      categories =  categoryRepository.getAll(name, pageable);
-
-    Page<GetCategoryDTO> categoryDto = categories.map(this::convertToDto);
+    Page<Category> categories = categoryRepository.getAll(name, pageable);
+    Page<ResponseCategoryDTO> categoryDto = categories.map(this::convertToDto);
     
     return new Pagination<>(
       categoryDto.getTotalPages(),
@@ -43,16 +38,39 @@ public class ReadCategory {
     );
   }
 
-  public Category getCategory(String name) {
-    return categoryRepository.getByName(name)
-      .orElseThrow(() -> new ResourceNotFoundException("There's no Category with name: " + name));
+  public ResponseCategoryListDTO getCategoryById(Long id) {
+    return convertToDtoList(getCategory(id));
   }
 
-  private GetCategoryDTO convertToDto(Category category) {
-    GetCategoryDTO getDto = new GetCategoryDTO();
+  public Category getCategory(Long id) {
+    return categoryRepository.findById(id)
+    .orElseThrow(() -> new ResourceNotFoundException("There's no Category with id: " + id));
+  }
+
+  public Category getCategoryByName(String name) {
+    return categoryRepository.getByName(name)
+    .orElseThrow(() -> new ResourceNotFoundException("There's no Category with name: " + name));
+  }
+
+  public ResponseCategoryListDTO getCategoryList(String name) {
+    return convertToDtoList(getCategoryByName(name));
+  }
+
+  private ResponseCategoryDTO convertToDto(Category category) {
+    ResponseCategoryDTO getDto = new ResponseCategoryDTO();
+    getDto.setId(category.getId());
     getDto.setName(category.getName());
     getDto.setDescription(category.getDescription());
     getDto.setTotalProduct(category.getProducts().size());
+    return getDto;
+  }
+
+  private ResponseCategoryListDTO convertToDtoList(Category category) {
+    ResponseCategoryListDTO getDto = new ResponseCategoryListDTO();
+    getDto.setId(category.getId());
+    getDto.setName(category.getName());
+    getDto.setDescription(category.getDescription());
+    getDto.setProducts(category.getProducts());
     return getDto;
   }
   

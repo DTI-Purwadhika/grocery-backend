@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.finpro.grocery.inventory.dto.GetInventoryDTO;
+import com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO;
 import com.finpro.grocery.inventory.entity.Inventory;
 
 @Repository
@@ -21,10 +21,10 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
   
   Optional<Inventory> findByCode(String code);
 
-  @Query("SELECT new com.finpro.grocery.inventory.dto.GetInventoryDTO(i.id, i.code, i.product.name, i.store.name, i.stock) FROM Inventory i WHERE (:productId IS NULL OR i.product.id = :productId) AND LOWER(i.store.name) LIKE CONCAT('%', LOWER(:storeName), '%')")
-  Page<GetInventoryDTO> getStockByProduct(@Param("productId") Long productId, @Param("storeName") String storeName, Pageable pageable);
+  @Query("SELECT new com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO(i.id, i.code, i.product.name, i.store.name, i.stock) FROM Inventory i WHERE (:productId IS NULL OR i.product.id = :productId) AND LOWER(i.store.name) LIKE CONCAT('%', LOWER(:storeName), '%')")
+  Page<ResponseInventoryDTO> getStockByProduct(@Param("productId") Long productId, @Param("storeName") String storeName, Pageable pageable);
   
-  @Query("SELECT new com.finpro.grocery.inventory.dto.GetInventoryDTO(i.product.id, null, i.product.name, null, SUM(i.stock)) FROM Inventory i WHERE LOWER(i.product.name) LIKE LOWER(CONCAT('%', :productName, '%')) GROUP BY i.product.id, i.product.name ORDER BY i.product.name ASC")
-  Page<GetInventoryDTO> getAll(@Param("productName") String productName, Pageable pageable);
+  @Query("SELECT new com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO(i.product.id, null, i.product.name, null, SUM(i.stock)) FROM Inventory i WHERE LOWER(i.product.name) LIKE LOWER(CONCAT('%', :productName, '%')) GROUP BY i.product.id, i.product.name ORDER BY i.product.name ASC")
+  Page<ResponseInventoryDTO> getAll(@Param("productName") String productName, Pageable pageable);
   
 }

@@ -1,6 +1,4 @@
-package com.finpro.grocery.product.dto;
-
-import com.finpro.grocery.product.entity.ProductImage;
+package com.finpro.grocery.product.dto.request;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Size;
@@ -13,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveProductDTO {
+public class RequestProductDTO {
 
   @Size(max = 100, message = "Product name cannot exceed 100 characters")
   private String name;
@@ -21,6 +19,6 @@ public class SaveProductDTO {
   private String category;
   @Digits(integer = 12, fraction = 2, message = "Invalid price format")
   private BigDecimal price;
-  private List<ProductImage> images;
+  private List<RequestProductImage> images;
 
 }

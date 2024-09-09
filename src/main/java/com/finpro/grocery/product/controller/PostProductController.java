@@ -1,7 +1,7 @@
 package com.finpro.grocery.product.controller;
 
-import com.finpro.grocery.product.dto.SaveProductDTO;
-import com.finpro.grocery.product.entity.Product;
+import com.finpro.grocery.product.dto.request.RequestProductDTO;
+import com.finpro.grocery.product.dto.response.ResponseProductDetailDTO;
 import com.finpro.grocery.product.entity.ProductImage;
 import com.finpro.grocery.product.service.CreateProduct;
 import com.finpro.grocery.share.response.ApiResponse;
@@ -25,17 +25,18 @@ public class PostProductController {
   private CreateProduct productService;
 
   @PostMapping
-  public ApiResponse<Product> saveProduct(@Valid @RequestBody SaveProductDTO product) {
-    Product savedProduct = productService.saveProduct(product);
+  public ApiResponse<ResponseProductDetailDTO> saveProduct(@Valid @RequestBody RequestProductDTO product) {
+    System.out.println("product jancok");
+    ResponseProductDetailDTO savedProduct = productService.saveProduct(product);
     return new ApiResponse<>("CREATED", "201", savedProduct);
   }
 
   @PostMapping("/{id}/images")
-  public ApiResponse<Product> addImageToProduct(
+  public ApiResponse<ResponseProductDetailDTO> addImageToProduct(
     @PathVariable Long id, 
     @Valid @RequestBody ProductImage image
   ) {
-    Product addedImage = productService.addImageToProduct(id, image);
+    ResponseProductDetailDTO addedImage = productService.addImageToProduct(id, image);
     return new ApiResponse<>("OK", "200", addedImage);
   }
 

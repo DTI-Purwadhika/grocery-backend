@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+
   @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Category c WHERE lower(c.name) = lower(:name) AND c.deletedAt IS NULL")
   boolean isExist(@Param("name") String name);
   
@@ -23,4 +24,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
   @Query("SELECT c FROM Category c WHERE LOWER(c.name) = LOWER(:name)")
   Optional<Category> getByName(@Param("name") String name);
+  
 }

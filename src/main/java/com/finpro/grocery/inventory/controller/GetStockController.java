@@ -1,7 +1,6 @@
 package com.finpro.grocery.inventory.controller;
 
-import com.finpro.grocery.inventory.dto.GetInventoryDTO;
-import com.finpro.grocery.inventory.entity.Inventory;
+import com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO;
 import com.finpro.grocery.inventory.service.ReadStock;
 import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.share.response.ApiResponse;
@@ -20,23 +19,23 @@ public class GetStockController {
   private ReadStock inventoryService;
 
   @GetMapping
-  public ApiResponse<Pagination<GetInventoryDTO>> getAll(
-    @RequestParam(required = false) String productName,
+  public ApiResponse<Pagination<ResponseInventoryDTO>> getAll(
+    @RequestParam(required = false) String keyword,
     @RequestParam(required = false) String storeName,
     @RequestParam(required = false) Long productId,
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size,
-    @RequestParam(defaultValue = "product.name") String sortBy,
+    @RequestParam(defaultValue = "id") String sortBy,
     @RequestParam(defaultValue = "asc") String sortDir,
     @RequestParam(defaultValue = "true") boolean isGroup
   ) {
     System.out.println("GetStockController.getAll");
-    return new ApiResponse<>("OK", "200", inventoryService.getAll(productName, storeName, productId, page, size, sortBy, sortDir, isGroup));
+    return new ApiResponse<>("OK", "200", inventoryService.getAll(keyword, storeName, productId, page, size, sortBy, sortDir, isGroup));
   }
 
   @GetMapping("/{id}")
-  public ApiResponse<Inventory> getInventory(@PathVariable Long id) {
-    Inventory inventory = inventoryService.getInventory(id);
+  public ApiResponse<ResponseInventoryDTO> getInventoryDetail(@PathVariable Long id) {
+    ResponseInventoryDTO inventory = inventoryService.getInventoryDetail(id);
     return new ApiResponse<>("OK", "200", inventory);
   }
 
