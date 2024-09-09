@@ -11,7 +11,7 @@ public class ResponseInventoryDTO {
 
   private Long id;
   private String code;
-  private String productName;
+  private String name;
   private String storeName;
   private Long totalStock;
 

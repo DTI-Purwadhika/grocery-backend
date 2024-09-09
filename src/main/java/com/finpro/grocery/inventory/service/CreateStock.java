@@ -52,7 +52,7 @@ public class CreateStock {
     ResponseInventoryDTO createdInventory = new ResponseInventoryDTO();
     createdInventory.setId(inventory.getId());
     createdInventory.setCode(inventory.getCode());
-    createdInventory.setProductName(product.getName());
+    createdInventory.setName(product.getName());
     createdInventory.setStoreName(store.getName());
     createdInventory.setTotalStock(inventory.getStock());
 

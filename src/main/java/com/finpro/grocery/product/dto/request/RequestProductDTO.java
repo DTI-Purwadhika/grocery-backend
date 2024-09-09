@@ -1,7 +1,5 @@
 package com.finpro.grocery.product.dto.request;
 
-import com.finpro.grocery.product.entity.ProductImage;
-
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -21,6 +19,6 @@ public class RequestProductDTO {
   private String category;
   @Digits(integer = 12, fraction = 2, message = "Invalid price format")
   private BigDecimal price;
-  private List<ProductImage> images;
+  private List<RequestProductImage> images;
 
 }

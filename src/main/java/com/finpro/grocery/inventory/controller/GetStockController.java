@@ -20,17 +20,17 @@ public class GetStockController {
 
   @GetMapping
   public ApiResponse<Pagination<ResponseInventoryDTO>> getAll(
-    @RequestParam(required = false) String productName,
+    @RequestParam(required = false) String keyword,
     @RequestParam(required = false) String storeName,
     @RequestParam(required = false) Long productId,
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size,
-    @RequestParam(defaultValue = "product.name") String sortBy,
+    @RequestParam(defaultValue = "id") String sortBy,
     @RequestParam(defaultValue = "asc") String sortDir,
     @RequestParam(defaultValue = "true") boolean isGroup
   ) {
     System.out.println("GetStockController.getAll");
-    return new ApiResponse<>("OK", "200", inventoryService.getAll(productName, storeName, productId, page, size, sortBy, sortDir, isGroup));
+    return new ApiResponse<>("OK", "200", inventoryService.getAll(keyword, storeName, productId, page, size, sortBy, sortDir, isGroup));
   }
 
   @GetMapping("/{id}")

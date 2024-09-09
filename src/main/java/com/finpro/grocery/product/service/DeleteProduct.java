@@ -36,7 +36,7 @@ public class DeleteProduct {
     product.setUpdatedAt(Instant.now());
     productRepository.save(product);
 
-    return convertToDTO(product);
+    return DTOConverter.convertToDTO(product);
   }
 
   @Transactional
@@ -49,7 +49,7 @@ public class DeleteProduct {
     product.setUpdatedAt(Instant.now());
     productRepository.save(product);
 
-    return convertToDTO(product);
+    return DTOConverter.convertToDTO(product);
   }
 
   @Transactional
@@ -67,7 +67,7 @@ public class DeleteProduct {
     imageRepository.save(imageToRemove);
     productRepository.save(product);
 
-    return convertToDTO(product);
+    return DTOConverter.convertToDTO(product);
   }
 
   @Transactional
@@ -85,19 +85,7 @@ public class DeleteProduct {
     imageRepository.save(imageToRestore);
     productRepository.save(product);
 
-    return convertToDTO(product);
-  }
-
-  private ResponseProductDetailDTO convertToDTO(Product product) {
-    ResponseProductDetailDTO response = new ResponseProductDetailDTO();
-    response.setId(product.getId());
-    response.setName(product.getName());
-    response.setCategory(product.getCategory().getName());
-    response.setPrice(product.getPrice());
-    response.setImages(product.getImages());
-    response.setDescription(product.getDescription());
-
-    return response;
+    return DTOConverter.convertToDTO(product);
   }
 
 }

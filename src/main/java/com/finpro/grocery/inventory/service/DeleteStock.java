@@ -54,7 +54,7 @@ public class DeleteStock {
     responseInventoryDTO.setCode(inventory.getCode());
     responseInventoryDTO.setTotalStock(inventory.getStock());
     responseInventoryDTO.setStoreName(inventory.getStore().getName());
-    responseInventoryDTO.setProductName(inventory.getProduct().getName());
+    responseInventoryDTO.setName(inventory.getProduct().getName());
 
     return responseInventoryDTO;
   }

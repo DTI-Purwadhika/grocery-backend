@@ -51,7 +51,7 @@ public class UpdateStock {
   private ResponseInventoryDTO convertToDto(Inventory inventory) {
     ResponseInventoryDTO getDto = new ResponseInventoryDTO();
     getDto.setId(inventory.getId());
-    getDto.setProductName(inventory.getProduct().getName());
+    getDto.setName(inventory.getProduct().getName());
     getDto.setStoreName(inventory.getStore().getName());
     getDto.setTotalStock(inventory.getStock());
     getDto.setCode(inventory.getCode());

@@ -1,6 +1,6 @@
 package com.finpro.grocery.product.dto.response;
 
-import com.finpro.grocery.product.entity.ProductImage;
+import com.finpro.grocery.product.dto.request.RequestProductImage;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +19,6 @@ public class ResponseProductDetailDTO {
   private String category;
   private String description;
   private BigDecimal price;
-  private List<ProductImage> images;
+  private List<RequestProductImage> images;
 
 }

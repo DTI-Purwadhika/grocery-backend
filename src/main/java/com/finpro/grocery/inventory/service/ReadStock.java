@@ -30,13 +30,13 @@ public class ReadStock {
     Pageable pageable = PageRequest.of(page, size, sort);
     Page<ResponseInventoryDTO> inventories;
 
-    if(isGroup) 
-      inventories = inventoryRepository.getAll(productName, pageable);
-    else {
+    // if(isGroup) 
+    //   inventories = inventoryRepository.getAll(productName, pageable);
+    // else {
       if(productId != null && productService.getProductById(productId) == null) 
         throw new ResourceNotFoundException("Product not found");
       inventories = inventoryRepository.getStockByProduct(productId, storeName, pageable);
-    }
+    // }
 
     return new Pagination<>(
       inventories.getTotalPages(),
@@ -56,7 +56,7 @@ public class ReadStock {
     ResponseInventoryDTO response = new ResponseInventoryDTO();
     response.setId(inventory.getId());
     response.setCode(inventory.getCode());
-    response.setProductName(inventory.getProduct().getName());
+    response.setName(inventory.getProduct().getName());
     response.setStoreName(inventory.getStore().getName());
 
     return response;

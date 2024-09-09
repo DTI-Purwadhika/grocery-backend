@@ -55,7 +55,7 @@ public class ReadDiscount {
     getDto.setMinPurchaseAmount(discount.getMinPurchaseAmount()); 
     getDto.setMaxDiscountAmount(discount.getMaxDiscountAmount()); 
     getDto.setStoreName(discount.getStore().getName()); 
-    getDto.setProductName(discount.getProduct().getName());
+    // getDto.setProductName(discount.getProduct().getName());
 
     return getDto;
   }
