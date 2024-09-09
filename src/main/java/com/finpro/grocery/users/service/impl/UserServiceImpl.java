@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
                 "<div style='text-align: center; padding: 40px 20px;'>" +
                 "<h1 style='color: #E85C0D;'>Thanks for Signing Up!</h1>" +
                 "<h2 style='color: #E85C0D;'>Verify Your Email</h2>" +
-                "<p style='color: #333;'>Hi,<br>You're almost ready to get started. Please click on the button below to verify your email address</p>" +
+                "<p style='color: #333;'>Hi,<br>Your registration is almost complete. Please click on the button below to verify your email address</p>" +
                 "<a href='http://localhost:3000/set-password?token=" + token +"&email=" + email + "' style='text-decoration: none;'>" +
                 "<button style='background-color: #C7253E; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;'>VERIFY YOUR EMAIL</button>" +
                 "</a>" +

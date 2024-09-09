@@ -1,11 +1,13 @@
 package com.finpro.grocery.users.controller;
 
+import com.finpro.grocery.email.service.EmailService;
 import com.finpro.grocery.share.response.ApiResponse;
 import com.finpro.grocery.users.dto.CheckResetPasswordLinkDTO;
 import com.finpro.grocery.users.dto.CheckVerificationLinkDTO;
 import com.finpro.grocery.users.dto.RegisterUserDTO;
 import com.finpro.grocery.users.dto.SetPasswordDTO;
 import com.finpro.grocery.users.service.UserService;
+import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 @Log
 public class UserController {
     private final UserService userService;
+    private final EmailService emailService;
 
-    public UserController(UserService userService){
+    public UserController(UserService userService, EmailService emailService){
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/set-password")
