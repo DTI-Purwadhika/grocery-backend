@@ -11,6 +11,10 @@ public class StoreService {
   @Autowired
   private StoreRepository storeRepository;
 
+  public Iterable<Store> getAll() {
+    return storeRepository.findAll();
+  }
+
   public Store getStoreById(Long id) {
     return storeRepository.findById(id).orElse(null);
   }

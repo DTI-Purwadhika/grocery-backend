@@ -26,7 +26,6 @@ public class PostProductController {
 
   @PostMapping
   public ApiResponse<ResponseProductDetailDTO> saveProduct(@Valid @RequestBody RequestProductDTO product) {
-    System.out.println("product jancok");
     ResponseProductDetailDTO savedProduct = productService.saveProduct(product);
     return new ApiResponse<>("CREATED", "201", savedProduct);
   }

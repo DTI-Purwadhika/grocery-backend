@@ -29,7 +29,6 @@ public class GetStockController {
     @RequestParam(defaultValue = "asc") String sortDir,
     @RequestParam(defaultValue = "true") boolean isGroup
   ) {
-    System.out.println("GetStockController.getAll");
     return new ApiResponse<>("OK", "200", inventoryService.getAll(keyword, storeName, productId, page, size, sortBy, sortDir, isGroup));
   }
 
