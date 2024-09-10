@@ -6,7 +6,6 @@ import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,12 +20,6 @@ public class DeleteStockController {
   public ApiResponse<ResponseInventoryDTO> removeInventory(@PathVariable Long id) {
     ResponseInventoryDTO deletedStock = inventoryService.removeInventory(id);
     return new ApiResponse<>("DELETED", "200", deletedStock);
-  }
-
-  @PutMapping("/{id}/restore")
-  public ApiResponse<ResponseInventoryDTO> restoreInventory(@PathVariable Long id) {
-    ResponseInventoryDTO restoredStock = inventoryService.restoreInventory(id);
-    return new ApiResponse<>("OK", "200", restoredStock);
   }
   
 }

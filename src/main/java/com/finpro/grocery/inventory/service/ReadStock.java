@@ -22,9 +22,8 @@ public class ReadStock {
   @Autowired
   private ReadProduct productService;
 
-  public Pagination<ResponseInventoryDTO> getAll(String keywordProduct, String keywordStore, Long productId, int page, int size, String sortBy, String sortDir, boolean isGroup) {
+  public Pagination<ResponseInventoryDTO> getAll(String keywordProduct, Long storeId, Long productId, int page, int size, String sortBy, String sortDir, boolean isGroup) {
     String productName = keywordProduct == null ? "" : keywordProduct;
-    String storeName = keywordStore == null ? "" : keywordStore;
 
     Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
     Pageable pageable = PageRequest.of(page, size, sort);
@@ -33,10 +32,10 @@ public class ReadStock {
     // if(isGroup) 
     //   inventories = inventoryRepository.getAll(productName, pageable);
     // else {
-      if(productId != null && productService.getProductById(productId) == null) 
-        throw new ResourceNotFoundException("Product not found");
-      inventories = inventoryRepository.getStockByProduct(productId, storeName, pageable);
+    if(productId != null && productService.getProductById(productId) == null) 
+      throw new ResourceNotFoundException("Product not found");
     // }
+      inventories = inventoryRepository.getAll(storeId, productName, pageable);
 
     return new Pagination<>(
       inventories.getTotalPages(),
