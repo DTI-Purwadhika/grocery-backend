@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,17 +42,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<?> login(@RequestBody LoginRequestDTO userLogin){
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO userLogin){
         log.info("User login request received for user: " + userLogin.getEmail());
 
         Optional<User> user = userService.getUserByEmail(userLogin.getEmail());
 
         if(user.isEmpty()){
-            return new ApiResponse<>("NOT FOUND", "404", Map.of("error", "User with this email not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User with this email not found"));
         }
 
         if(!user.get().getIsVerified()){
-            return new ApiResponse<>("UNAUTHORIZED", "401", Map.of("error", "Email has not been verified"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Email has not been verified"));
         }
 
 
@@ -74,7 +76,7 @@ public class AuthController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Set-cookie", cookie.getName() + "=" + cookie.getValue() + "; Path=/; HttpOnly");
 
-        return new ApiResponse<>("OK", "200", response);
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(response);
     }
 
     @PostMapping("/logout")

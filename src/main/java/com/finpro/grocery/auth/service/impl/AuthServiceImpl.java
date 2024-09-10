@@ -47,12 +47,11 @@ public class AuthServiceImpl implements AuthService {
                 .collect(Collectors.joining(" "));
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("self")
+                .issuer("grocery")
                 .issuedAt(now)
                 .expiresAt(now.plus(5, ChronoUnit.HOURS))
                 .subject(authentication.getName())
                 .claim("scope", scope)
-                .claim("userId", userRepository.findByEmail(authentication.getName()).get().getId())
                 .build();
 
         String tokenResult = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

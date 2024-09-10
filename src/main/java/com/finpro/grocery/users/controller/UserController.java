@@ -1,5 +1,6 @@
 package com.finpro.grocery.users.controller;
 
+import com.finpro.grocery.auth.helper.Claims;
 import com.finpro.grocery.email.service.EmailService;
 import com.finpro.grocery.share.response.ApiResponse;
 import com.finpro.grocery.users.dto.CheckResetPasswordLinkDTO;
@@ -18,11 +19,19 @@ import org.springframework.web.bind.annotation.*;
 @Log
 public class UserController {
     private final UserService userService;
-    private final EmailService emailService;
 
-    public UserController(UserService userService, EmailService emailService){
+    public UserController(UserService userService){
         this.userService = userService;
-        this.emailService = emailService;
+    }
+
+    @GetMapping("/profile")
+    public ApiResponse<?> getProfileData(){
+        var claims = Claims.getClaimsFromJwt();
+        String currentUserEmail = (String) claims.get("sub");
+
+        log.info("Claims are: " + claims.toString());
+        log.info("Profile data requested for user: " + currentUserEmail);
+        return new ApiResponse<>("OK", "200", userService.getProfileData(currentUserEmail));
     }
 
     @PostMapping("/set-password")

@@ -1,18 +1,17 @@
 package com.finpro.grocery.users.service.impl;
 
+import com.finpro.grocery.auth.helper.Claims;
 import com.finpro.grocery.auth.service.impl.AuthRedisService;
 import com.finpro.grocery.email.service.EmailService;
 import com.finpro.grocery.referral.ReferralCodeGenerator;
 import com.finpro.grocery.share.exception.ResourceAlreadyExistsException;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
-import com.finpro.grocery.users.dto.CheckResetPasswordLinkDTO;
-import com.finpro.grocery.users.dto.CheckVerificationLinkDTO;
-import com.finpro.grocery.users.dto.RegisterUserDTO;
-import com.finpro.grocery.users.dto.SetPasswordDTO;
+import com.finpro.grocery.users.dto.*;
 import com.finpro.grocery.users.entity.User;
 import com.finpro.grocery.users.repository.UserRepository;
 import com.finpro.grocery.users.service.UserService;
 import jakarta.mail.MessagingException;
+import lombok.extern.java.Log;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +20,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Service
+@Log
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final EmailService emailService;
@@ -37,6 +37,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public ProfileDataDTO getProfileData(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("Email not found"));
+
+        return ProfileDataDTO.toDto(user);
     }
 
     @Transactional
