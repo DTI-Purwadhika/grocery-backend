@@ -39,7 +39,7 @@ public class ReadCategory {
   }
 
   public ResponseCategoryListDTO getCategoryById(Long id) {
-    return convertToDtoList(getCategory(id));
+    return DTOConverter.convertToDtoList(getCategory(id));
   }
 
   public Category getCategory(Long id) {
@@ -53,7 +53,7 @@ public class ReadCategory {
   }
 
   public ResponseCategoryListDTO getCategoryList(String name) {
-    return convertToDtoList(getCategoryByName(name));
+    return DTOConverter.convertToDtoList(getCategoryByName(name));
   }
 
   private ResponseCategoryDTO convertToDto(Category category) {
@@ -65,13 +65,4 @@ public class ReadCategory {
     return getDto;
   }
 
-  private ResponseCategoryListDTO convertToDtoList(Category category) {
-    ResponseCategoryListDTO getDto = new ResponseCategoryListDTO();
-    getDto.setId(category.getId());
-    getDto.setName(category.getName());
-    getDto.setDescription(category.getDescription());
-    getDto.setProducts(category.getProducts());
-    return getDto;
-  }
-  
 }

@@ -32,18 +32,9 @@ public class UpdateCategory {
     
     updatedCategory.setUpdatedAt(Instant.now());
     categoryRepository.save(updatedCategory);
-    ResponseCategoryDTO categoryDto = convertToDto(updatedCategory);
+    ResponseCategoryDTO categoryDto = DTOConverter.convertToDto(updatedCategory);
 
     return categoryDto;
   }
 
-  private ResponseCategoryDTO convertToDto(Category category) {
-    ResponseCategoryDTO getDto = new ResponseCategoryDTO();
-    getDto.setId(category.getId());
-    getDto.setName(category.getName());
-    getDto.setDescription(category.getDescription());
-    getDto.setTotalProduct(category.getProducts().size());
-    return getDto;
-  }
-  
 }

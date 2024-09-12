@@ -22,4 +22,10 @@ public class PostStockController {
     return new ApiResponse<>("OK", "200", stockService.saveInventory(inventory));
   }
 
+  @PostMapping("/generate-stock")
+  public ApiResponse<String> generateStock() {
+    stockService.generateStock();
+    return new ApiResponse<>("OK", "200", "Done");
+  }
+  
 }

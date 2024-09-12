@@ -12,7 +12,6 @@ public class SequenceService {
   private SequenceRepository sequenceRepository;
 
   public String generateUniqueCode(String name, String format) {
-    System.out.println("tehe he he");
     Sequence sequence = sequenceRepository.findById(name)
       .orElseGet(() -> initializeSequence(name));
     int nextValue = sequence.getCurrentValue() + 1;
@@ -23,7 +22,6 @@ public class SequenceService {
   }
 
   private Sequence initializeSequence(String name) {
-    System.out.println("yahoo");
     Sequence sequence = new Sequence();
     sequence.setSequenceName(name);
     sequence.setCurrentValue(0);

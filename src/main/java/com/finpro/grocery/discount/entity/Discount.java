@@ -39,7 +39,7 @@ public class Discount {
   @Column(name = "name", nullable = false, unique = false)
   private String name;
 
-  @NotBlank(message = "Inventory Code is required")
+  @NotBlank(message = "Discount Code is required")
   @Column(name = "code", nullable = false, unique = true)
   private String code;
 

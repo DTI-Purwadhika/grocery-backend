@@ -26,16 +26,8 @@ public class CreateCategory {
     newCategory.setDescription(category.getDescription());
     categoryRepository.save(newCategory);
 
-    ResponseCategoryDTO response = convertToDto(newCategory);
+    ResponseCategoryDTO response = DTOConverter.convertToDto(newCategory);
 
-    return response;
-  }
-
-  private ResponseCategoryDTO convertToDto(Category category) {
-    ResponseCategoryDTO response = new ResponseCategoryDTO();
-    response.setId(category.getId());
-    response.setName(category.getName());
-    response.setDescription(category.getDescription());
     return response;
   }
   
