@@ -3,12 +3,16 @@ package com.finpro.grocery.discount.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.finpro.grocery.discount.dto.request.RequestDiscountDTO;
 import com.finpro.grocery.discount.dto.response.ResponseDiscountDTO;
 import com.finpro.grocery.discount.entity.Discount;
 import com.finpro.grocery.discount.repository.DiscountRepository;
+import com.finpro.grocery.product.entity.Product;
+import com.finpro.grocery.product.service.ReadProduct;
+import com.finpro.grocery.store.entity.Store;
+import com.finpro.grocery.store.service.StoreService;
 
 import jakarta.transaction.Transactional;
-import java.time.Instant;
 
 @Service
 public class UpdateDiscount {
@@ -19,29 +23,22 @@ public class UpdateDiscount {
   @Autowired
   private ReadDiscount read;
 
+  @Autowired
+  private ReadProduct productService;
+
+  @Autowired
+  private StoreService storeService;
+
   @Transactional
-  public ResponseDiscountDTO updateDiscount(Long id, Discount discount) {
-    Discount updatedDiscount = read.getDiscount(id);
+  public ResponseDiscountDTO updateDiscount(Long id, RequestDiscountDTO discount) {
 
-    if(!discount.getName().isBlank())
-    updatedDiscount.setName(discount.getName());
-    
-    if(!discount.getDescription().isBlank())
-    updatedDiscount.setDescription(discount.getDescription());
-    
-    updatedDiscount.setUpdatedAt(Instant.now());
-    discountRepository.save(updatedDiscount);
-    ResponseDiscountDTO discountDto = convertToDto(updatedDiscount);
+    Product product = productService.getProductById(discount.getProductId());
+    Store store = storeService.getStoreById(discount.getStoreId());
 
-    return discountDto;
-  }
+    Discount newDiscount = DTOConverter.convertToEntity(discount, read.getDiscount(id), store, product);
+    discountRepository.save(newDiscount);
 
-  private ResponseDiscountDTO convertToDto(Discount discount) {
-    ResponseDiscountDTO getDto = new ResponseDiscountDTO();
-    getDto.setName(discount.getName());
-    getDto.setDescription(discount.getDescription());
-    
-    return getDto;
+    return DTOConverter.convertToDto(newDiscount);
   }
   
 }

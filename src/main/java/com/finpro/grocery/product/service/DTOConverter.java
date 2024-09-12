@@ -59,7 +59,7 @@ class DTOConverter {
     }
 
     request.setUpdatedAt(Instant.now());
-
     return request;
   }
+
 }

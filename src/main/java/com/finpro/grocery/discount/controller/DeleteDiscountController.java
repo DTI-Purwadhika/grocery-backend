@@ -1,6 +1,6 @@
 package com.finpro.grocery.discount.controller;
 
-import com.finpro.grocery.discount.entity.Discount;
+import com.finpro.grocery.discount.dto.response.ResponseDiscountDTO;
 import com.finpro.grocery.discount.service.DeleteDiscount;
 import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ public class DeleteDiscountController {
   private DeleteDiscount discountService;
 
   @DeleteMapping("/{id}")
-  public ApiResponse<Discount> removeDiscount(@PathVariable Long name) {
-    Discount deletedDiscount = discountService.removeDiscount(name);
+  public ApiResponse<ResponseDiscountDTO> removeDiscount(@PathVariable Long name) {
+    ResponseDiscountDTO deletedDiscount = discountService.removeDiscount(name);
     return new ApiResponse<>("DELETED", "200", deletedDiscount);
   }
 
   @PutMapping("/{id}/restore")
-  public ApiResponse<Discount> restoreDiscount(@PathVariable Long name) {
-    Discount restoredDiscount = discountService.restoreDiscount(name);
+  public ApiResponse<ResponseDiscountDTO> restoreDiscount(@PathVariable Long name) {
+    ResponseDiscountDTO restoredDiscount = discountService.restoreDiscount(name);
     return new ApiResponse<>("OK", "200", restoredDiscount);
   }
   

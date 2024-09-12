@@ -3,6 +3,7 @@ package com.finpro.grocery.discount.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.finpro.grocery.discount.dto.response.ResponseDiscountDTO;
 import com.finpro.grocery.discount.entity.Discount;
 import com.finpro.grocery.discount.repository.DiscountRepository;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
@@ -20,27 +21,29 @@ public class DeleteDiscount {
   private ReadDiscount read;
 
   @Transactional
-  public Discount removeDiscount(Long id) {
+  public ResponseDiscountDTO removeDiscount(Long id) {
     Discount discount = read.getDiscount(id);
 
     if(discount.getDeletedAt() != null) throw new ResourceNotFoundException("Discount with name " + discount.getName() + " already deleted");
 
     discount.setUpdatedAt(Instant.now());
     discount.setDeletedAt(Instant.now());
+    discountRepository.save(discount);
 
-    return discountRepository.save(discount);
+    return DTOConverter.convertToDto(discount);
   }
 
   @Transactional
-  public Discount restoreDiscount(Long id) {
+  public ResponseDiscountDTO restoreDiscount(Long id) {
     Discount discount = read.getDiscount(id);
 
     if(discount.getDeletedAt() == null) throw new ResourceNotFoundException("Discount with name " + discount.getName() + " not yet deleted");
 
     discount.setUpdatedAt(Instant.now());
     discount.setDeletedAt(null);
+    discountRepository.save(discount);
 
-    return discountRepository.save(discount);
+    return DTOConverter.convertToDto(discount);
   }
   
 }

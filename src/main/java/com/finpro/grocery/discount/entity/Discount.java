@@ -60,10 +60,10 @@ public class Discount {
   @Column(name = "maxDiscountAmount")
   private Double maxDiscountAmount;
 
-  // @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  // @JoinColumn(name = "product_id")
-  // @JsonBackReference
-  // private Product product;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "product_id")
+  @JsonBackReference
+  private Product product;
   
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "store_id")

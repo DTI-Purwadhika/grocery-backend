@@ -1,7 +1,7 @@
 package com.finpro.grocery.discount.controller;
 
+import com.finpro.grocery.discount.dto.request.RequestDiscountDTO;
 import com.finpro.grocery.discount.dto.response.ResponseDiscountDTO;
-import com.finpro.grocery.discount.entity.Discount;
 import com.finpro.grocery.discount.service.UpdateDiscount;
 import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class UpdateDiscountController {
   private UpdateDiscount discountService;
 
   @PutMapping("/{id}")
-    public ApiResponse<ResponseDiscountDTO> updateDiscount(@PathVariable Long id, @RequestBody Discount discount) {
+    public ApiResponse<ResponseDiscountDTO> updateDiscount(@PathVariable Long id, @RequestBody RequestDiscountDTO discount) {
     ResponseDiscountDTO updatedDiscount = discountService.updateDiscount(id, discount);
     return new ApiResponse<>("OK", "200", updatedDiscount);
   }

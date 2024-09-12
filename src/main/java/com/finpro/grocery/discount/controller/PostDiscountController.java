@@ -1,6 +1,7 @@
 package com.finpro.grocery.discount.controller;
 
-import com.finpro.grocery.discount.entity.Discount;
+import com.finpro.grocery.discount.dto.request.RequestDiscountDTO;
+import com.finpro.grocery.discount.dto.response.ResponseDiscountDTO;
 import com.finpro.grocery.discount.service.CreateDiscount;
 import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,9 @@ public class PostDiscountController {
   private CreateDiscount discountService;
 
   @PostMapping
-  public ApiResponse<Discount> saveDiscount(@RequestBody Discount discount) {
-    return new ApiResponse<>("OK", "200", discountService.saveDiscount(discount));
+  public ApiResponse<ResponseDiscountDTO> saveDiscount(@RequestBody RequestDiscountDTO discount) {
+    ResponseDiscountDTO savedDiscount = discountService.saveDiscount(discount);
+    return new ApiResponse<>("OK", "200", savedDiscount);
   }
 
 }
