@@ -7,6 +7,7 @@ import com.finpro.grocery.discount.dto.response.ResponseDiscountDTO;
 import com.finpro.grocery.discount.entity.Discount;
 import com.finpro.grocery.discount.entity.DiscountType;
 import com.finpro.grocery.product.entity.Product;
+import com.finpro.grocery.share.exception.BadRequestException;
 import com.finpro.grocery.store.entity.Store;
 
 class DTOConverter {
@@ -34,8 +35,11 @@ class DTOConverter {
     if(!discount.getDescription().isBlank()) 
       request.setDescription(discount.getDescription());
     
-    if(discount.getValue() != null)
+    if(discount.getValue() != null) {
+      if (discount.getType().toUpperCase() == "PERCENTAGE" && discount.getValue() > 100)
+        throw new BadRequestException( "Discount value must be same or less than 100%");
       request.setValue(discount.getValue());
+    }
     
     if(discount.getMinPurchaseAmount() != null)
       request.setMinPurchaseAmount(discount.getMinPurchaseAmount());
@@ -58,4 +62,5 @@ class DTOConverter {
 
     return request;
   }
+  
 }
