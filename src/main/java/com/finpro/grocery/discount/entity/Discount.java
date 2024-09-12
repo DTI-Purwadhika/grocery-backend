@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -52,18 +53,21 @@ public class Discount {
 
   @NotNull(message = "Discount Value is required")
   @Column(name = "value", nullable = false)
-  private double value;
+  @Min(value = 0, message = "Discount value must be greater than 0")
+  private double value = 0;
 
   @Column(name = "minPurchaseAmount")
-  private double minPurchaseAmount;
+  @Min(value = 0, message = "Minimum purchase amount must be greater than 0")
+  private double minPurchaseAmount = 0;
 
   @Column(name = "maxDiscountAmount")
-  private Double maxDiscountAmount;
+  @Min(value = 0, message = "Maximum discount amount must be greater than 0")
+  private Double maxDiscountAmount = 0D;
 
-  // @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  // @JoinColumn(name = "product_id")
-  // @JsonBackReference
-  // private Product product;
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "product_id")
+  @JsonBackReference
+  private Product product;
   
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "store_id")

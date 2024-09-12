@@ -1,7 +1,6 @@
 package com.finpro.grocery.discount.controller;
 
 import com.finpro.grocery.discount.dto.response.ResponseDiscountDTO;
-import com.finpro.grocery.discount.entity.Discount;
 import com.finpro.grocery.discount.service.ReadDiscount;
 import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.share.response.ApiResponse;
@@ -32,8 +31,8 @@ public class GetDiscountController {
   }
 
   @GetMapping("/{id}")
-  public ApiResponse<Discount> getDiscount(@PathVariable Long id) {
-    Discount discount = discountService.getDiscount(id);
+  public ApiResponse<ResponseDiscountDTO> getDiscount(@PathVariable Long id) {
+    ResponseDiscountDTO discount = discountService.getDiscountDetail(id);
     return new ApiResponse<>("OK", "200", discount);
   }
 

@@ -44,6 +44,10 @@ public class ReadDiscount {
       .orElseThrow(() -> new ResourceNotFoundException("There's no Discount with id: " + id));
   }
 
+  public ResponseDiscountDTO getDiscountDetail(Long id) {
+    return DTOConverter.convertToDto(getDiscount(id));
+  }
+
   private ResponseDiscountDTO convertToDto(Discount discount) {
     ResponseDiscountDTO getDto = new ResponseDiscountDTO();
 
@@ -55,7 +59,7 @@ public class ReadDiscount {
     getDto.setMinPurchaseAmount(discount.getMinPurchaseAmount()); 
     getDto.setMaxDiscountAmount(discount.getMaxDiscountAmount()); 
     getDto.setStoreName(discount.getStore().getName()); 
-    // getDto.setProductName(discount.getProduct().getName());
+    getDto.setProductName(discount.getProduct().getName());
 
     return getDto;
   }
