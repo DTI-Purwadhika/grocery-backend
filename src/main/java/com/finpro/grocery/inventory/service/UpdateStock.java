@@ -43,19 +43,9 @@ public class UpdateStock {
 
     updatedInventory.setUpdatedAt(Instant.now());
     inventoryInventory.save(updatedInventory);
-    ResponseInventoryDTO inventoryDto = convertToDto(updatedInventory);
+    ResponseInventoryDTO inventoryDto = DTOConverter.convertToDto(updatedInventory);
 
     return inventoryDto;
-  }
-
-  private ResponseInventoryDTO convertToDto(Inventory inventory) {
-    ResponseInventoryDTO getDto = new ResponseInventoryDTO();
-    getDto.setId(inventory.getId());
-    getDto.setName(inventory.getProduct().getName());
-    getDto.setStoreName(inventory.getStore().getName());
-    getDto.setTotalStock(inventory.getStock());
-    getDto.setCode(inventory.getCode());
-    return getDto;
   }
 
 }

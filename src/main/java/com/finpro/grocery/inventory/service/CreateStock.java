@@ -52,21 +52,10 @@ public class CreateStock {
     Store store = storeService.getStoreById(inventoryDTO.getStoreId());
     if (store == null) throw new ResourceNotFoundException("Store not found");
 
-    Inventory inventory = new Inventory();
-    inventory.setProduct(product);
-    inventory.setStore(store);
-    inventory.setStock(inventoryDTO.getStock());
-    inventory.setCode(sequenceService.generateUniqueCode("inventory_code_sequence", "IVT%05d"));	
+    Inventory inventory = DTOConverter.convertToEntity(inventoryDTO, product, store, sequenceService);
     inventoryRepository.save(inventory);
 
-    ResponseInventoryDTO createdInventory = new ResponseInventoryDTO();
-    createdInventory.setId(inventory.getId());
-    createdInventory.setCode(inventory.getCode());
-    createdInventory.setName(product.getName());
-    createdInventory.setStoreName(store.getName());
-    createdInventory.setTotalStock(inventory.getStock());
-
-    return createdInventory;
+    return DTOConverter.convertToDto(inventory);
   }
 
   @Transactional

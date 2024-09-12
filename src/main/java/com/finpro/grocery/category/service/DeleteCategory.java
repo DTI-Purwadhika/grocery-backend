@@ -30,7 +30,7 @@ public class DeleteCategory {
     category.setDeletedAt(Instant.now());
     categoryRepository.save(category);
 
-    return ConvertToResponse(category);
+    return DTOConverter.convertToDto(category);
   }
 
   @Transactional
@@ -43,16 +43,7 @@ public class DeleteCategory {
     category.setDeletedAt(null);
     categoryRepository.save(category);
 
-    return ConvertToResponse(category);
+    return DTOConverter.convertToDto(category);
   }
   
-  private ResponseCategoryDTO ConvertToResponse(Category category) {
-    ResponseCategoryDTO response = new ResponseCategoryDTO();
-    response.setId(category.getId());
-    response.setName(category.getName());
-    response.setDescription(category.getDescription());
-    response.setTotalProduct(category.getProducts().size()); 
-
-    return response;
-  }
 }

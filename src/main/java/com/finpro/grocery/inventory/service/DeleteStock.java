@@ -27,17 +27,7 @@ public class DeleteStock {
     inventory.setStock(0L);
     inventoryRepository.save(inventory);
 
-    return convertToDto(inventory);
+    return DTOConverter.convertToDto(inventory);
   }
 
-  private ResponseInventoryDTO convertToDto(Inventory inventory) {
-    ResponseInventoryDTO responseInventoryDTO = new ResponseInventoryDTO();
-    responseInventoryDTO.setId(inventory.getId());
-    responseInventoryDTO.setCode(inventory.getCode());
-    responseInventoryDTO.setTotalStock(inventory.getStock());
-    responseInventoryDTO.setStoreName(inventory.getStore().getName());
-    responseInventoryDTO.setName(inventory.getProduct().getName());
-
-    return responseInventoryDTO;
-  }
 }
