@@ -5,6 +5,7 @@ import java.time.Instant;
 import com.finpro.grocery.discount.dto.request.RequestDiscountDTO;
 import com.finpro.grocery.discount.dto.response.ResponseDiscountDTO;
 import com.finpro.grocery.discount.entity.Discount;
+import com.finpro.grocery.discount.entity.DiscountType;
 import com.finpro.grocery.product.entity.Product;
 import com.finpro.grocery.store.entity.Store;
 
@@ -21,6 +22,7 @@ class DTOConverter {
     response.setMaxDiscountAmount(discount.getMaxDiscountAmount()); 
     response.setStoreName(discount.getStore().getName()); 
     response.setProductName(discount.getProduct().getName());
+    response.setType(discount.getType().toString());
 
     return response;
   }
@@ -33,13 +35,22 @@ class DTOConverter {
       request.setDescription(discount.getDescription());
     
     if(discount.getValue() != null)
-    request.setValue(discount.getValue());
+      request.setValue(discount.getValue());
     
     if(discount.getMinPurchaseAmount() != null)
-    request.setMinPurchaseAmount(discount.getMinPurchaseAmount());
+      request.setMinPurchaseAmount(discount.getMinPurchaseAmount());
     
     if(discount.getMaxDiscountAmount() != null)
-    request.setMaxDiscountAmount(discount.getMaxDiscountAmount());
+      request.setMaxDiscountAmount(discount.getMaxDiscountAmount());
+
+    if(discount.getType() != null){
+      try {
+        DiscountType discountType = DiscountType.valueOf(discount.getType().toUpperCase());
+        request.setType(discountType);
+      } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException("Invalid discount type: " + discount.getType());
+      }
+    }
     
     request.setStore(store);
     request.setProduct(product);

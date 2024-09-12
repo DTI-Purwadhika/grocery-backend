@@ -18,14 +18,14 @@ public class DeleteDiscountController {
   private DeleteDiscount discountService;
 
   @DeleteMapping("/{id}")
-  public ApiResponse<ResponseDiscountDTO> removeDiscount(@PathVariable Long name) {
-    ResponseDiscountDTO deletedDiscount = discountService.removeDiscount(name);
+  public ApiResponse<ResponseDiscountDTO> removeDiscount(@PathVariable Long id) {
+    ResponseDiscountDTO deletedDiscount = discountService.removeDiscount(id);
     return new ApiResponse<>("DELETED", "200", deletedDiscount);
   }
 
   @PutMapping("/{id}/restore")
-  public ApiResponse<ResponseDiscountDTO> restoreDiscount(@PathVariable Long name) {
-    ResponseDiscountDTO restoredDiscount = discountService.restoreDiscount(name);
+  public ApiResponse<ResponseDiscountDTO> restoreDiscount(@PathVariable Long id) {
+    ResponseDiscountDTO restoredDiscount = discountService.restoreDiscount(id);
     return new ApiResponse<>("OK", "200", restoredDiscount);
   }
   
