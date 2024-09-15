@@ -11,6 +11,7 @@ import com.finpro.grocery.share.exception.BadRequestException;
 import com.finpro.grocery.store.entity.Store;
 
 class DTOConverter {
+  
   static ResponseDiscountDTO convertToDto(Discount discount) {
     ResponseDiscountDTO response = new ResponseDiscountDTO();
 
