@@ -44,13 +44,19 @@ public class ReadStock {
   }
 
   public Inventory getInventory(Long id) {
-    return inventoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("There's no Inventory with id: " + id));
+    return inventoryRepository.findById(id)
+      .orElseThrow(() -> new ResourceNotFoundException("There's no Inventory with id: " + id));
   }
 
   public ResponseInventoryDTO getInventoryDetail(Long id) {
     Inventory inventory = getInventory(id);
     ResponseInventoryDTO response = DTOConverter.convertToDto(inventory);
     return response;
+  }
+
+  public Inventory checkStock(Long productId, Long storeId) {
+    return inventoryRepository.checkStock(productId, storeId)
+      .orElseThrow(() -> new ResourceNotFoundException("There's no Inventory with product id: " + productId + " and store id: " + storeId));
   }
 
 }
