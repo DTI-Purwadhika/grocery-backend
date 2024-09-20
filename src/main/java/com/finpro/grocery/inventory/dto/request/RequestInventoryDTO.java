@@ -12,6 +12,7 @@ public class RequestInventoryDTO {
 
   private Long productId;
   private Long storeId;
+  private String storeName;
   @Min(value = 0, message = "Stock cannot be negative")
   private Long stock;
 

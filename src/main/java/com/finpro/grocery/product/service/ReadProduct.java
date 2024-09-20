@@ -25,7 +25,7 @@ public class ReadProduct {
   private ReadCategory categoryService;
   
   public Pagination<ResponseProductDTO> getAll(String keywordName, String keywordCode, String category, int page, int size, String sortBy, String sortDir) {
-    if(category != null && category != "" && categoryService.getCategoryByName(category) == null) throw new ResourceNotFoundException("Category with name " + category + " not found");
+    if(category == null || category == "" ) category = null;
     String name = keywordName == null ? "" : keywordName;
     String code = keywordCode == null ? "" : keywordCode;
     Long categoryId = category == null ? null : categoryService.getCategoryByName(category).getId();
@@ -53,19 +53,7 @@ public class ReadProduct {
   }
 
   private ResponseProductDTO convertToDto(Product product) {
-    ResponseProductDTO getDto = new ResponseProductDTO();
-    
-    getDto.setId(product.getId());
-    getDto.setName(product.getName());
-    getDto.setCategory(product.getCategory().getName());
-    getDto.setPrice(product.getPrice());
-    if (product.getImages().isEmpty()) {
-      getDto.setImages(null);
-    } else {
-      getDto.setImages(product.getImages().get(0).getUrl());
-    }
-    
-    return getDto;
+    return DTOConverter.convertToDtoSum(product);
   }
 
 }

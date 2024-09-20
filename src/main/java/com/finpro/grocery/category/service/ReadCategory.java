@@ -57,12 +57,7 @@ public class ReadCategory {
   }
 
   private ResponseCategoryDTO convertToDto(Category category) {
-    ResponseCategoryDTO getDto = new ResponseCategoryDTO();
-    getDto.setId(category.getId());
-    getDto.setName(category.getName());
-    getDto.setDescription(category.getDescription());
-    getDto.setTotalProduct(category.getProducts().size());
-    return getDto;
+    return DTOConverter.convertToDto(category);
   }
 
 }

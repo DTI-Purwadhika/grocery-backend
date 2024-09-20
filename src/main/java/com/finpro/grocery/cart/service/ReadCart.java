@@ -6,9 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.stream.Collectors;
 
-import com.finpro.grocery.cart.dto.response.GetCartItem;
 import com.finpro.grocery.cart.dto.response.GetCartResponse;
 import com.finpro.grocery.cart.entity.Cart;
 import com.finpro.grocery.cart.repository.CartRepository;
@@ -29,11 +27,12 @@ public class ReadCart {
   public Pagination<GetCartResponse> getCart(Long userId, int page, int size, String sortBy, String sortDir) {
     Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
     Pageable pageable = PageRequest.of(page, size, sort);
-
-    Page<Cart> carts;
-    carts =  cartRepository.findByUserId(userId, pageable);
-
+    
+    Page<Cart> carts =  cartRepository.findByUserId(userId, pageable);
+    
     Page<GetCartResponse> cartResponse = carts.map(this::convertToDto);
+    System.out.println(cartResponse.getTotalElements());
+    System.out.println(cartResponse.getContent());
     
     return new Pagination<>(
       cartResponse.getTotalPages(),
@@ -45,16 +44,7 @@ public class ReadCart {
   }
 
   private GetCartResponse convertToDto(Cart cart) {
-    GetCartResponse response = new GetCartResponse();
-
-    response.setStoreName(cart.getStore().getName());
-    response.setItems(cart.getItems().stream().map(item -> {
-      GetCartItem cartItem = new GetCartItem();
-      cartItem.setProductId(item.getProduct().getId());
-      cartItem.setQuantity(item.getQuantity());
-      return cartItem;
-    }).collect(Collectors.toList()));
-    
+    GetCartResponse response = CartDTOConverter.convertToDto(cart);
     return response;
   }
 

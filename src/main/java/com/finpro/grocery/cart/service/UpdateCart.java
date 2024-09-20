@@ -24,7 +24,7 @@ public class UpdateCart {
   @Autowired
   private ReadStock stockService;
 
-  public GetCartResponse updateItemQuantity(Long cartId, Long productId, Long storeId, Integer quantity) {
+  public GetCartResponse updateItemQuantity(Long cartId, Long productId, Integer quantity) {
     Cart cart = cartRepository.findById(cartId)
       .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
@@ -34,7 +34,7 @@ public class UpdateCart {
       .orElseThrow(() -> new ResourceNotFoundException("Product not found in cart"));
 
     if (quantity > 0) {
-      Inventory stock = stockService.checkStock(productId, storeId);
+      Inventory stock = stockService.checkStock(productId, cart.getStore().getId());
       if (stock.getStock() < quantity) throw new IllegalArgumentException("Not enough stock available");
       cartItem.setQuantity(quantity);
     } else {
@@ -43,7 +43,7 @@ public class UpdateCart {
     }
 
     cartRepository.save(cart);
-    return DTOConverter.convertToDto(cart);
+    return CartDTOConverter.convertToDto(cart);
   }
 
 }

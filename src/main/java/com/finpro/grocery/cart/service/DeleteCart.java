@@ -35,7 +35,7 @@ public class DeleteCart {
     cartItemRepository.delete(cartItem);
     cartRepository.save(cart);
 
-    return DTOConverter.convertToDto(cart);
+    return CartDTOConverter.convertToDto(cart);
   }
 
   public GetCartResponse clearCart(Long cartId) {
@@ -44,7 +44,7 @@ public class DeleteCart {
     cartItemRepository.deleteAll(cart.getItems());
     Cart updatedCart = cartRepository.save(cart);
 
-    return DTOConverter.convertToDto(updatedCart);
+    return CartDTOConverter.convertToDto(updatedCart);
   }
 
 }
