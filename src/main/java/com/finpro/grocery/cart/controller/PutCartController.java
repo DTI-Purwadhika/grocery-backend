@@ -22,10 +22,9 @@ public class PutCartController {
   public ApiResponse<GetCartResponse> updateItemQuantity(
     @PathVariable Long cartId, 
     @PathVariable Long productId, 
-    @RequestParam Long storeId, 
     @RequestParam Integer quantity
   ) {
-    GetCartResponse cart = cartService.updateItemQuantity(cartId, productId, storeId, quantity);
+    GetCartResponse cart = cartService.updateItemQuantity(cartId, productId, quantity);
     return new ApiResponse<>("OK", "200", cart);
   }
 

@@ -49,19 +49,7 @@ public class ReadDiscount {
   }
 
   private ResponseDiscountDTO convertToDto(Discount discount) {
-    ResponseDiscountDTO getDto = new ResponseDiscountDTO();
-
-    getDto.setId(discount.getId());
-    getDto.setName(discount.getName());
-    getDto.setDescription(discount.getDescription());
-    getDto.setCode(discount.getCode());
-    getDto.setValue(discount.getValue()); 
-    getDto.setMinPurchaseAmount(discount.getMinPurchaseAmount()); 
-    getDto.setMaxDiscountAmount(discount.getMaxDiscountAmount()); 
-    getDto.setStoreName(discount.getStore().getName()); 
-    getDto.setProductName(discount.getProduct().getName());
-
-    return getDto;
+    return DTOConverter.convertToDto(discount);
   }
   
 }
