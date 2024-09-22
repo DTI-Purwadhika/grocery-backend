@@ -67,7 +67,7 @@ public class ReadStock {
   }
 
   public ResponseInventoryDTO checkStockProduct(Long productId) {
-    return inventoryRepository.checkStock(productId)
+    return inventoryRepository.checkStockByProduct(productId)
       .orElseThrow(() -> new ResourceNotFoundException("There's no Inventory with product id: " + productId ));
   }
 

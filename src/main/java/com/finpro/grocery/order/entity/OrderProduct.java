@@ -42,10 +42,10 @@ public class OrderProduct {
   @JsonBackReference
   private Inventory inventory;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "discount_id", nullable = false)
-  @JsonBackReference
-  private Discount discount;
+  // @ManyToOne(fetch = FetchType.LAZY, optional = true)
+  // @JoinColumn(name = "discount_id", nullable = true)
+  // @JsonBackReference
+  // private Discount discount;
 
   @Column(name = "quantity", nullable = false)
   private int quantity;

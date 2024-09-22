@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.finpro.grocery.discount.entity.Discount;
 import com.finpro.grocery.store.entity.Store;
-import com.xendit.model.Invoice;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,7 +17,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -42,11 +40,6 @@ public class Order {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @OneToOne(fetch = FetchType.LAZY, optional = true)
-  @JoinColumn(name = "invoice_id", nullable = true)
-  @JsonBackReference
-  private Invoice invoice;
-
   // @ManyToOne(fetch = FetchType.LAZY, optional = false)
   // @JoinColumn(name = "user_id", nullable = false)
   // @JsonBackReference
@@ -55,10 +48,10 @@ public class Order {
   @Column(name = "user_id", nullable = false)
   private Long user;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = true)
-  @JoinColumn(name = "discount_id", nullable = true)
-  @JsonBackReference
-  private Discount discount;
+  // @ManyToOne(fetch = FetchType.LAZY, optional = true)
+  // @JoinColumn(name = "discount_id", nullable = true)
+  // @JsonBackReference
+  // private Discount discount;
   
   @ManyToOne(fetch = FetchType.LAZY, optional = true)
   @JoinColumn(name = "store_id", nullable = true)
@@ -72,6 +65,13 @@ public class Order {
   @NotBlank(message = "Order Code is required")
   @Column(name = "code", nullable = false, unique = true)
   private String code;
+
+  @NotBlank(message = "Invoice URL is required")
+  @Column(name = "invoice_url", nullable = false)
+  private String invoiceUrl;
+
+  @Column(name = "description", nullable = true)
+  private String description;
 
   @NotNull(message = "Total Amount is required")
   @Column(name = "total_amount", nullable = false)
@@ -96,6 +96,10 @@ public class Order {
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
   private List<OrderProduct> items = new ArrayList<>();
+
+  @NotNull(message = "Expiry Date is required")
+  @Column(name = "expiry_date", nullable = false)
+  private String expiryDate;
 
   @Column(name = "created_at", nullable = false)
   private Instant createdAt = Instant.now();
