@@ -20,26 +20,16 @@ import java.util.stream.Collectors;
 @Service
 @Log
 public class AuthServiceImpl implements AuthService {
-
-    private final UserRepository userRepository;
     private final JwtEncoder jwtEncoder;
     private final AuthRedisService authRedisService;
 
-    public AuthServiceImpl(UserRepository userRepository, JwtEncoder jwtEncoder, AuthRedisService authRedisService){
-        this.userRepository = userRepository;
+    public AuthServiceImpl(JwtEncoder jwtEncoder, AuthRedisService authRedisService){
         this.jwtEncoder = jwtEncoder;
         this.authRedisService = authRedisService;
     }
     @Override
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
-
-//        String existingToken = authRedisService.getJwt(authentication.getName());
-
-//        if( existingToken != null ){
-//            log.info("Token already exists for user: " + authentication.getName());
-//            return existingToken;
-//        }
 
         String scope = authentication.getAuthorities()
                 .stream()

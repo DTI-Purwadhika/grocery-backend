@@ -36,10 +36,12 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 public class SecurityConfig {
     private final RsaKeyConfigProperties rsaKeyConfigProperties;
     private final UserDetailsService userDetailsService;
+    private final CorsConfigSourceImpl corsConfigSource;
 
-    public SecurityConfig(RsaKeyConfigProperties rsaKeyConfigProperties, UserDetailsService userDetailsService){
+    public SecurityConfig(RsaKeyConfigProperties rsaKeyConfigProperties, UserDetailsService userDetailsService, CorsConfigSourceImpl corsConfigSource){
         this.rsaKeyConfigProperties = rsaKeyConfigProperties;
         this.userDetailsService = userDetailsService;
+        this.corsConfigSource = corsConfigSource;
     }
 
     @Bean
@@ -59,13 +61,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector handlerMappingIntrospector) throws Exception{
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-//                .cors(cors -> cors.configurationSource(corsConfigSource))
+                .cors(cors -> cors.configurationSource(corsConfigSource))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/error/**").permitAll();
                     auth.requestMatchers("/api/users/register").permitAll();
                     auth.requestMatchers("/api/auth/**").permitAll();
                     auth.requestMatchers("/api/users/set-password").permitAll();
+                    auth.requestMatchers("/api/users/check-verification-link").permitAll();
+                    auth.requestMatchers("/api/users/new-verification-link").permitAll();
+                    auth.requestMatchers("/api/users/reset-password").permitAll();
+                    auth.requestMatchers("/api/users/check-reset-password-link").permitAll();
+                    auth.requestMatchers("/api/users/new-reset-password-link").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -75,7 +81,7 @@ public class SecurityConfig {
                         Cookie[] cookies = request.getCookies();
                         if (cookies != null){
                             for (Cookie cookie : cookies){
-                                if ("sid".equals(cookie.getName())){
+                                if ("Sid".equals(cookie.getName())){
                                     return cookie.getValue();
                                 }
                             }

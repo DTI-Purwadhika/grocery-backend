@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,38 +46,45 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO userLogin){
         log.info("User login request received for user: " + userLogin.getEmail());
 
-        Optional<User> user = userService.getUserByEmail(userLogin.getEmail());
+        try{
+            Optional<User> user = userService.getUserByEmail(userLogin.getEmail());
 
-        if(user.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User with this email not found"));
+            if(user.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User with this email not found"));
+            }
+
+            if(!user.get().getIsVerified()){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Email has not been verified"));
+            }
+
+
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()
+                    ));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            UserAuth userDetails = (UserAuth) authentication.getPrincipal();
+            log.info("Token requested for user " + userDetails.getUsername() + "with roles" + userDetails.getAuthorities());
+            String token = authService.generateToken(authentication);
+
+            LoginResponseDTO response = new LoginResponseDTO();
+            response.setUserId(user.get().getId().toString());
+            response.setEmail(userDetails.getUsername());
+            response.setRole(user.get().getRole().toString());
+            response.setToken(token);
+
+            Cookie cookie = new Cookie("Sid", token);
+            cookie.setPath("/");
+            cookie.setMaxAge(5 * 60 * 60);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Set-cookie", cookie.getName() + "=" + cookie.getValue() + "; Path=/; HttpOnly");
+
+            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(response);
         }
-
-        if(!user.get().getIsVerified()){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Email has not been verified"));
+        catch (BadCredentialsException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials"));
         }
-
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()
-                ));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserAuth userDetails = (UserAuth) authentication.getPrincipal();
-        log.info("Token requested for user " + userDetails.getUsername() + "with roles" + userDetails.getAuthorities());
-        String token = authService.generateToken(authentication);
-
-        LoginResponseDTO response = new LoginResponseDTO();
-        response.setEmail(userDetails.getUsername());
-        response.setToken(token);
-
-        Cookie cookie = new Cookie("sid", token);
-        cookie.setPath("/");
-        cookie.setMaxAge(5 * 60 * 60);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Set-cookie", cookie.getName() + "=" + cookie.getValue() + "; Path=/; HttpOnly");
-
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(response);
     }
 
     @PostMapping("/logout")

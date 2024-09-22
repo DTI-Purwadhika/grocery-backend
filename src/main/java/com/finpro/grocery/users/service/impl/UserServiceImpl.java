@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthRedisService authRedisService;
 
-    public UserServiceImpl(UserRepository userRepository, EmailService emailService, PasswordEncoder passwordEncoder, AuthRedisService authRedisService){
+    public UserServiceImpl(UserRepository userRepository, EmailService emailService, PasswordEncoder passwordEncoder, AuthRedisService authRedisService) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
@@ -40,8 +40,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ProfileDataDTO getProfileData(String email){
-        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("Email not found"));
+    public ProfileDataDTO getProfileData(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
 
         return ProfileDataDTO.toDto(user);
     }
@@ -49,10 +49,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User setPassword(SetPasswordDTO setPasswordDTO) {
-        User user = userRepository.findByEmail(setPasswordDTO.getEmail()).orElseThrow(()-> new ResourceNotFoundException("Email not found"));
+        User user = userRepository.findByEmail(setPasswordDTO.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
 
-        if(!user.getIsVerified()){
+        if (!user.getIsVerified()) {
             user.setIsVerified(true);
+        }
+
+        if(authRedisService.isResetPasswordLinkValid(user.getEmail())){
+            authRedisService.deleteResetPasswordLink(user.getEmail());
         }
 
         user.setUpdatedAt(Instant.now());
@@ -65,13 +69,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User register(RegisterUserDTO registerUserDTO) {
-        if(userRepository.findByEmail(registerUserDTO.getEmail()).isPresent()){
+        if (userRepository.findByEmail(registerUserDTO.getEmail()).isPresent()) {
             throw new ResourceAlreadyExistsException("An account with this email has already been registered");
         }
 
         User registeredUser = registerUserDTO.toEntity();
 
-        if(registeredUser.getRole() == User.UserRole.CUSTOMER){
+        if (registeredUser.getRole() == User.UserRole.CUSTOMER) {
             String code = ReferralCodeGenerator.generateCode();
             registeredUser.setReferralCode(code);
         }
@@ -87,41 +91,44 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String checkVerificationLink(CheckVerificationLinkDTO checkVerificationLinkDTO) {
-        User user = userRepository.findByEmail(checkVerificationLinkDTO.getEmail()).orElseThrow(()-> new ResourceNotFoundException("Email not found"));
+        User user = userRepository.findByEmail(checkVerificationLinkDTO.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
         String token = authRedisService.getVerificationLink(checkVerificationLinkDTO.getEmail());
 
-        if(user.getIsVerified()){
-            return "User verified";
-        }
-        else if( !user.getIsVerified() && authRedisService.isVerificationLinkValid(checkVerificationLinkDTO.getEmail()) && token.equals(checkVerificationLinkDTO.getToken()) ){
+        if ( !user.getIsVerified() && authRedisService.isVerificationLinkValid(checkVerificationLinkDTO.getEmail()) && token.equals(checkVerificationLinkDTO.getToken()) ) {
             return "User not verified";
+        } else if ( user.getIsVerified() ) {
+            return "User verified";
         }
         else {
             return "Expired";
         }
-    }
+}
 
     @Override
     public void newVerificationLink(String email) {
-        if(authRedisService.isVerificationLinkValid(email)){
-            authRedisService.deleteVerificationLink(email);
+        Optional<User> user = userRepository.findByEmail((email));
+
+        if(user.isPresent() && !user.get().getIsVerified()){
+            if(authRedisService.isVerificationLinkValid(email)){
+                authRedisService.deleteVerificationLink(email);
+            }
+
+            String token = authRedisService.saveVerificationLink(email);
+
+            sendVerificationEmail(email, token);
         }
-
-        String token = authRedisService.saveVerificationLink(email);
-
-        sendVerificationEmail(email, token);
     }
 
     @Override
     public String resetPassword(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("Email not found"));
+        Optional<User> user = userRepository.findByEmail((email));
 
-        if(!user.getIsVerified()){
-            return "User not verified";
+        if(user.isEmpty()){
+            return "User not registered";
         }
 
-        if(user == null || user.getPassword() == null){
-            return "User not registered";
+        if(!user.get().getIsVerified()){
+            return "User not verified";
         }
 
         if(authRedisService.isResetPasswordLinkValid(email)){
@@ -130,9 +137,9 @@ public class UserServiceImpl implements UserService {
 
         String token = authRedisService.saveResetPasswordLink(email);
 
-        sendResetPasswordEmail(user.getEmail(), token);
+        sendResetPasswordEmail(user.get().getEmail(), token);
 
-        return "Reset password successful";
+        return "Successful";
     }
 
     @Override
@@ -201,7 +208,7 @@ public class UserServiceImpl implements UserService {
                 "<h1 style='color: #E85C0D;'>Reset your Password</h1>" +
                 "<p style='color: #333;'>Hi,<br>Please click the button below to reset your password.</p>" +
                 "<a href='http://localhost:3000/reset-password?token=" + token +"&email=" + email + "' style='text-decoration: none;'>" +
-                "<button style='background-color: #C7253E; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;'>VERIFY YOUR EMAIL</button>" +
+                "<button style='background-color: #C7253E; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;'>RESET PASSWORD</button>" +
                 "</a>" +
                 "</div>" +
 
