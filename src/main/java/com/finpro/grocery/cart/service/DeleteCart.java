@@ -22,7 +22,7 @@ public class DeleteCart {
   @Autowired
   private ReadCart read;
 
-  public GetCartResponse removeItemFromCart(Long cartId, Long productId) {
+  public GetCartResponse removeItem(Long cartId, Long productId) {
     Cart cart = cartRepository.findById(cartId)
       .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
@@ -38,8 +38,8 @@ public class DeleteCart {
     return CartDTOConverter.convertToDto(cart);
   }
 
-  public GetCartResponse clearCart(Long cartId) {
-    Cart cart = read.getCart(cartId);
+  public GetCartResponse clear(Long cartId) {
+    Cart cart = read.getCartById(cartId);
 
     cartItemRepository.deleteAll(cart.getItems());
     Cart updatedCart = cartRepository.save(cart);

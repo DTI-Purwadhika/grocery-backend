@@ -42,10 +42,7 @@ public class CreateCart {
     if (request.getQuantity() <= 0) 
       throw new BadRequestException("Quantity must be greater than 0");
    
-    Inventory stock = stockService.checkStock(request.getProductId(), request.getStoreId());
-
-    if (stock.getStock() < request.getQuantity())
-      throw new BadRequestException("Insufficient stock available");
+    Inventory stock = stockService.checkStock(request.getProductId(), request.getStoreId(), request.getQuantity());
    
     // ! Still use user dummy data for now, change when user is implemented
     Cart cart = cartRepository.findCart(1L, request.getStoreId())

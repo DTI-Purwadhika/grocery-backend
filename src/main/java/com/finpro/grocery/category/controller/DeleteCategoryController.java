@@ -15,18 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeleteCategoryController {
 
   @Autowired
-  private DeleteCategory categoryService;
+  private DeleteCategory category;
 
   @DeleteMapping("/{id}")
   public ApiResponse<ResponseCategoryDTO> removeCategory(@PathVariable Long id) {
-    ResponseCategoryDTO deletedCategory = categoryService.removeCategory(id);
-    return new ApiResponse<>("DELETED", "200", deletedCategory);
+    return new ApiResponse<>("DELETED", "200", category.remove(id));
   }
 
   @PutMapping("/{id}/restore")
   public ApiResponse<ResponseCategoryDTO> restoreCategory(@PathVariable Long id) {
-    ResponseCategoryDTO restoredCategory = categoryService.restoreCategory(id);
-    return new ApiResponse<>("OK", "200", restoredCategory);
+    return new ApiResponse<>("OK", "200", category.restore(id));
   }
   
 }

@@ -16,12 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UpdateCategoryController {
   
   @Autowired
-  private UpdateCategory categoryService;
+  private UpdateCategory category;
 
   @PutMapping("/{id}")
-    public ApiResponse<ResponseCategoryDTO> updateCategory(@PathVariable Long id, @RequestBody RequestCategoryDTO category) {
-    ResponseCategoryDTO updatedCategory = categoryService.updateCategory(id, category);
-    return new ApiResponse<>("OK", "200", updatedCategory);
+    public ApiResponse<ResponseCategoryDTO> updateCategory(@PathVariable Long id, @RequestBody RequestCategoryDTO categoryDto) {
+    return new ApiResponse<>("OK", "200", category.update(id, categoryDto));
   }
 
 }

@@ -59,4 +59,20 @@ public class ReadStock {
       .orElseThrow(() -> new ResourceNotFoundException("There's no Inventory with product id: " + productId + " and store id: " + storeId));
   }
 
+  public Inventory checkStock(Long productId, Long storeId, int quantity) {
+    Inventory inventory = checkStock(productId, storeId);
+    if(inventory.getStock() < quantity) 
+      throw new ResourceNotFoundException("There's no enough stock for product id: " + productId + " and store id: " + storeId);
+    return inventory;
+  }
+
+  public ResponseInventoryDTO checkStockProduct(Long productId) {
+    return inventoryRepository.checkStock(productId)
+      .orElseThrow(() -> new ResourceNotFoundException("There's no Inventory with product id: " + productId ));
+  }
+
+  public boolean checkStockProduct(Long productId, int quantity) {
+    ResponseInventoryDTO inventory = checkStockProduct(productId);
+    return inventory.getTotalStock() < quantity ? false : true;
+  }
 }

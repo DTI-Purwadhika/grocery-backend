@@ -21,7 +21,7 @@ public class DeleteCategory {
   private ReadCategory read;
 
   @Transactional
-  public ResponseCategoryDTO removeCategory(Long id) {
+  public ResponseCategoryDTO remove(Long id) {
     Category category = read.getCategory(id);
 
     if(category.getDeletedAt() != null) throw new ResourceNotFoundException("Category with name " + category.getName() + " already deleted");
@@ -34,7 +34,7 @@ public class DeleteCategory {
   }
 
   @Transactional
-  public ResponseCategoryDTO restoreCategory(Long id) {
+  public ResponseCategoryDTO restore(Long id) {
     Category category = read.getCategory(id);
 
     if(category.getDeletedAt() == null) throw new ResourceNotFoundException("Category with name " + category.getName() + " not yet deleted");

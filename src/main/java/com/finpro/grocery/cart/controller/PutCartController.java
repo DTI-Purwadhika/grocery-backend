@@ -16,7 +16,7 @@ import com.finpro.grocery.share.response.ApiResponse;
 public class PutCartController {
 
   @Autowired
-  private UpdateCart cartService;
+  private UpdateCart cart;
 
   @PutMapping("/{cartId}/update-item/{productId}")
   public ApiResponse<GetCartResponse> updateItemQuantity(
@@ -24,8 +24,7 @@ public class PutCartController {
     @PathVariable Long productId, 
     @RequestParam Integer quantity
   ) {
-    GetCartResponse cart = cartService.updateItemQuantity(cartId, productId, quantity);
-    return new ApiResponse<>("OK", "200", cart);
+    return new ApiResponse<>("OK", "200", cart.updateItemQuantity(cartId, productId, quantity));
   }
 
 }

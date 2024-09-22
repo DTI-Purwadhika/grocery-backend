@@ -32,4 +32,9 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
   @Query("SELECT i FROM Inventory i WHERE i.product.id = :productId AND i.store.id = :storeId")
   Optional<Inventory> checkStock(@Param("productId") Long productId, @Param("storeId") Long storeId);
+
+  @Query("SELECT new com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO(i.product.id, i.product.name, SUM(i.stock)) FROM Inventory i WHERE i.product.id = :productId GROUP BY i.product.id, i.product.name")
+  Optional<ResponseInventoryDTO> checkStock(@Param("productId") Long productId);
+
+
 }

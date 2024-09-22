@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GetCategoryController {
 
   @Autowired
-  private ReadCategory categoryService;
+  private ReadCategory category;
 
   @GetMapping
   public ApiResponse<Pagination<ResponseCategoryDTO>> getAll(
@@ -27,19 +27,17 @@ public class GetCategoryController {
     @RequestParam(defaultValue = "name") String sortBy,
     @RequestParam(defaultValue = "asc") String sortDir
   ) {
-    return new ApiResponse<>("OK", "200", categoryService.getAll(keyword, page, size, sortBy, sortDir));
+    return new ApiResponse<>("OK", "200", category.getAll(keyword, page, size, sortBy, sortDir));
   }
 
   @GetMapping("/{name}")
   public ApiResponse<ResponseCategoryListDTO> getCategoryList(@PathVariable String name) {
     if (name.matches("\\d+")) return getCategory(Long.parseLong(name));
-    ResponseCategoryListDTO category = categoryService.getCategoryList(name);
-    return new ApiResponse<>("OK", "200", category);
+    return new ApiResponse<>("OK", "200", category.getCategoryList(name));
   }
 
   private ApiResponse<ResponseCategoryListDTO> getCategory(Long id) {
-    ResponseCategoryListDTO category = categoryService.getCategoryById(id);
-    return new ApiResponse<>("OK", "200", category);
+    return new ApiResponse<>("OK", "200", category.getCategoryById(id));
   }
 
 
