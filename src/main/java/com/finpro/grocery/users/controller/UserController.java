@@ -10,8 +10,12 @@ import com.finpro.grocery.users.dto.SetPasswordDTO;
 import com.finpro.grocery.users.service.UserService;
 import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -40,8 +44,18 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ApiResponse<?> register(@RequestBody RegisterUserDTO registerUserDTO){
-        return new ApiResponse<>("OK", "200", userService.register(registerUserDTO));
+    public ResponseEntity<?> register(@RequestBody RegisterUserDTO registerUserDTO){
+        String result = userService.register(registerUserDTO);
+
+        if(result.equals("Email is already registered with social account")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email already registered with social account"));
+        }
+        else if(result.equals("An account with this email has already been registered")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Account with this email already registered"));
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        }
     }
 
     @PostMapping("/check-verification-link")

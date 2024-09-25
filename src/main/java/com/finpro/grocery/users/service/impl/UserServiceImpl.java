@@ -1,10 +1,8 @@
 package com.finpro.grocery.users.service.impl;
-
-import com.finpro.grocery.auth.helper.Claims;
+import com.finpro.grocery.auth.dto.SocialLoginRequestDTO;
 import com.finpro.grocery.auth.service.impl.AuthRedisService;
 import com.finpro.grocery.email.service.EmailService;
 import com.finpro.grocery.referral.ReferralCodeGenerator;
-import com.finpro.grocery.share.exception.ResourceAlreadyExistsException;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
 import com.finpro.grocery.users.dto.*;
 import com.finpro.grocery.users.entity.User;
@@ -12,11 +10,14 @@ import com.finpro.grocery.users.repository.UserRepository;
 import com.finpro.grocery.users.service.UserService;
 import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -46,6 +47,25 @@ public class UserServiceImpl implements UserService {
         return ProfileDataDTO.toDto(user);
     }
 
+    @Override
+    public Boolean isSocialLogin(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        return user.isPresent() && user.get().getIsVerified() && (user.get().getPassword() == null);
+    }
+
+    @Override
+    public void saveUserSocialLogin(SocialLoginRequestDTO socialLoginRequestDTO) {
+        User newUser = new User();
+        newUser.setRole(socialLoginRequestDTO.getRole());
+        newUser.setEmail(socialLoginRequestDTO.getEmail());
+        newUser.setName(socialLoginRequestDTO.getName());
+        newUser.setProfilePicture(socialLoginRequestDTO.getProfilePicture());
+        newUser.setIsVerified(true);
+
+        userRepository.save(newUser);
+    }
+
     @Transactional
     @Override
     public User setPassword(SetPasswordDTO setPasswordDTO) {
@@ -68,9 +88,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User register(RegisterUserDTO registerUserDTO) {
+    public String register(RegisterUserDTO registerUserDTO) {
         if (userRepository.findByEmail(registerUserDTO.getEmail()).isPresent()) {
-            throw new ResourceAlreadyExistsException("An account with this email has already been registered");
+            if(isSocialLogin(registerUserDTO.getEmail())){
+                return "Email is already registered with social account";
+            }
+
+            return "An account with this email has already been registered";
         }
 
         User registeredUser = registerUserDTO.toEntity();
@@ -86,7 +110,7 @@ public class UserServiceImpl implements UserService {
 
         sendVerificationEmail(registeredUser.getEmail(), token);
 
-        return registeredUser;
+        return "Success";
     }
 
     @Override

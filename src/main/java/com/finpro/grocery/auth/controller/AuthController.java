@@ -2,6 +2,8 @@ package com.finpro.grocery.auth.controller;
 
 import com.finpro.grocery.auth.dto.LoginRequestDTO;
 import com.finpro.grocery.auth.dto.LoginResponseDTO;
+import com.finpro.grocery.auth.dto.SocialLoginRequestDTO;
+import com.finpro.grocery.auth.dto.SocialLoginResponseDTO;
 import com.finpro.grocery.auth.entity.UserAuth;
 import com.finpro.grocery.auth.service.AuthService;
 import com.finpro.grocery.share.response.ApiResponse;
@@ -85,6 +87,19 @@ public class AuthController {
         catch (BadCredentialsException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials"));
         }
+    }
+
+    @PostMapping("/login-social")
+    public ResponseEntity<?> socialLogin(@RequestBody SocialLoginRequestDTO socialLoginRequestDTO){
+        SocialLoginResponseDTO response = authService.socialLogin(socialLoginRequestDTO);
+
+        Cookie cookie = new Cookie("Sid", response.getToken());
+        cookie.setPath("/");
+        cookie.setMaxAge(5 * 60 * 60);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Set-cookie", cookie.getName() + "=" + cookie.getValue() + "; Path=/; HttpOnly");
+
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(response);
     }
 
     @PostMapping("/logout")
