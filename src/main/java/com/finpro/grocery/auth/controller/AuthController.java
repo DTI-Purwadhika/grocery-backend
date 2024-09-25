@@ -108,13 +108,13 @@ public class AuthController {
         if (cookies != null){
             for (Cookie cookie : cookies){
                 if ("sid".equals(cookie.getName())){
+                    authService.logout();
                     cookie.setMaxAge(0);
                     cookie.setValue(null);
                     cookie.setPath("/");
                     response.addCookie(cookie);
                 }
             }
-            authService.logout();
         }
 
         return new ApiResponse<>("OK", "200", "Logout successful");
