@@ -11,8 +11,10 @@ class DTOConverter {
     response.setId(category.getId());
     response.setName(category.getName());
     response.setDescription(category.getDescription());
-    response.setTotalProduct(category.getProducts().size()); 
-
+    if(category.getProducts() != null)
+      response.setTotalProduct(category.getProducts().size()); 
+    else
+      response.setTotalProduct(0);
     return response;
   }
 

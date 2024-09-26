@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostCategoryController {
 
   @Autowired
-  private CreateCategory categoryService;
+  private CreateCategory category;
 
   @PostMapping
-  public ApiResponse<ResponseCategoryDTO> saveCategory(@RequestBody RequestCategoryDTO category) {
-    ResponseCategoryDTO savedCategory = categoryService.saveCategory(category);
-    return new ApiResponse<>("OK", "200", savedCategory);
+  public ApiResponse<ResponseCategoryDTO> saveCategory(@RequestBody RequestCategoryDTO categoryDto) {
+    return new ApiResponse<>("OK", "200", category.save(categoryDto));
   }
 
 }

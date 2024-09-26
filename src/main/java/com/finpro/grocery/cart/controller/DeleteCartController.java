@@ -15,23 +15,19 @@ import com.finpro.grocery.share.response.ApiResponse;
 public class DeleteCartController {
 
   @Autowired
-  DeleteCart cartService;
+  DeleteCart cart;
   
   @DeleteMapping("/{cartId}/remove-item/{productId}")
   public ApiResponse<GetCartResponse> removeItem(
     @PathVariable Long cartId, 
     @PathVariable Long productId
   ) {
-    GetCartResponse cart = cartService.removeItemFromCart(cartId, productId);
-    return new ApiResponse<>("OK", "200", cart);
+    return new ApiResponse<>("OK", "200", cart.removeItem(cartId, productId));
   }
 
   @DeleteMapping("/{cartId}/clear")
-  public ApiResponse<GetCartResponse> clearCart(
-    @PathVariable Long cartId
-  ) {
-    GetCartResponse cart = cartService.clearCart(cartId);
-    return new ApiResponse<>("OK", "200", cart);
+  public ApiResponse<GetCartResponse> clearCart(@PathVariable Long cartId ) {
+    return new ApiResponse<>("OK", "200", cart.clear(cartId));
   }
 
 }

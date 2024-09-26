@@ -17,15 +17,14 @@ import com.finpro.grocery.share.response.ApiResponse;
 public class PostCartController {
   
   @Autowired
-  private CreateCart cartService;
+  private CreateCart cart;
 
   @PostMapping
   public ApiResponse<GetCartResponse> addToCart (
     @RequestParam Long userId, 
     @RequestBody AddToCartRequest request
   ) {
-    GetCartResponse cart = cartService.addToCart(userId, request);
-    return new ApiResponse<>("OK", "200", cart);
+    return new ApiResponse<>("OK", "200", cart.addToCart(userId, request));
   }
 
 }

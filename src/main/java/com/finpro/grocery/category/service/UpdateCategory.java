@@ -21,7 +21,7 @@ public class UpdateCategory {
   private ReadCategory read;
 
   @Transactional
-  public ResponseCategoryDTO updateCategory(Long id, RequestCategoryDTO category) {
+  public ResponseCategoryDTO update(Long id, RequestCategoryDTO category) {
     Category updatedCategory = read.getCategory(id);
 
     if(!category.getName().isBlank())

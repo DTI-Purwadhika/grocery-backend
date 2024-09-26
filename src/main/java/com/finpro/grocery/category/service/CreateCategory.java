@@ -18,7 +18,7 @@ public class CreateCategory {
   private CategoryRepository categoryRepository;
 
   @Transactional
-  public ResponseCategoryDTO saveCategory(RequestCategoryDTO category) {
+  public ResponseCategoryDTO save(RequestCategoryDTO category) {
     if(categoryRepository.isExist(category.getName())) throw new BadRequestException("Category already exist");
 
     Category newCategory = new Category();
