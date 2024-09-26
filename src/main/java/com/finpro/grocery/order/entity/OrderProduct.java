@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.finpro.grocery.discount.entity.Discount;
 import com.finpro.grocery.inventory.entity.Inventory;
 
 import lombok.AllArgsConstructor;

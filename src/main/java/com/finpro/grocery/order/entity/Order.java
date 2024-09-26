@@ -2,7 +2,6 @@ package com.finpro.grocery.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.finpro.grocery.discount.entity.Discount;
 import com.finpro.grocery.store.entity.Store;
 
 import jakarta.persistence.CascadeType;
@@ -21,6 +20,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,28 +71,34 @@ public class Order {
   @Column(name = "invoice_url", nullable = false)
   private String invoiceUrl;
 
+  @Column(name = "proof_url", nullable = true)
+  private String proofUrl;
+
+  @Column(name = "resi_number", nullable = true)
+  private String resiNumber;
+
   @Column(name = "description", nullable = true)
   private String description;
 
   @NotNull(message = "Total Amount is required")
   @Column(name = "total_amount", nullable = false)
   @Min(value = 0, message = "Total amount must be greater than 0")
-  private double totalAmount = 0;
+  private BigDecimal totalAmount = BigDecimal.ZERO;
 
   @NotNull(message = "Total Shipment is required")
   @Column(name = "total_shipment", nullable = false)
   @Min(value = 0, message = "Total shipment must be greater than 0")
-  private double totalShipment = 0;
+  private BigDecimal totalShipment = BigDecimal.ZERO;
 
   @NotNull(message = "Total Discount is required")
   @Column(name = "total_discount", nullable = true)
   @Min(value = 0, message = "Total discount must be greater than 0")
-  private double totalDiscount = 0;
+  private BigDecimal totalDiscount = BigDecimal.ZERO;
 
   @NotNull(message = "Total Payment is required")
   @Column(name = "total_payment", nullable = false)
   @Min(value = 0, message = "Total payment must be greater than 0")
-  private double totalPayment = 0;
+  private BigDecimal totalPayment = BigDecimal.ZERO;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference

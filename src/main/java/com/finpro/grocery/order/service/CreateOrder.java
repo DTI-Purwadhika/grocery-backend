@@ -60,9 +60,11 @@ public class CreateOrder {
     order.setInvoiceUrl(orderInvoice.getInvoiceUrl());
     order.setDescription(orderInvoice.getDescription());
     orderRepository.save(order);
-
+    // deleteCartService.clear(1L);
     return InvoiceDTOConverter.convertToDTO(orderInvoice);
-  } 
+  }
+
+
 
   private void verifyStock(Cart cart) {
     List<String> emptyStock = new ArrayList<>();
@@ -81,10 +83,14 @@ public class CreateOrder {
     order.setStore(cart.getStore());
     order.setStatus(OrderStatus.Menunggu_Pembayaran);
     order.setCode(sequenceService.generateUniqueCode("discount_code_sequence", "INV%09d"));
-    order.setTotalAmount(10000);
-    order.setTotalShipment(8000);
-    order.setTotalDiscount(0);
-    order.setTotalPayment(18000);
+    
+    BigDecimal totalAmount = BigDecimal.ZERO;
+    for (CartItem item : cart.getItems()) 
+      totalAmount.add(BigDecimal.valueOf(item.getQuantity()).multiply(item.getProduct().getPrice()));
+    order.setTotalAmount(totalAmount);
+    order.setTotalShipment(BigDecimal.valueOf(8000));
+    order.setTotalDiscount(BigDecimal.valueOf(0));
+    order.setTotalPayment(totalAmount.add(order.getTotalShipment()).subtract(order.getTotalDiscount()));
     
     List<OrderProduct> orderProducts = createOrderProduct(cart, order);
     order.setItems(orderProducts);

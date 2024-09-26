@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvoiceDTO {
+
   private String id;
   private String code;
   private Number amount;
@@ -16,4 +17,5 @@ public class InvoiceDTO {
   private String invoiceUrl;
   private String expiryDate;
   private String createdAt;
+  
 }
