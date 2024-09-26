@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.finpro.grocery.store.entity.Store;
+
 import java.time.Instant;
 
 @Data
@@ -46,6 +49,11 @@ public class User {
     @Column(name = "referral_code", unique = true, length = 20)
     private String referralCode;
 
+    @JoinColumn(name = "store_id", nullable = true)
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JsonBackReference
+    private Store store;
+
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false)
@@ -55,6 +63,9 @@ public class User {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Column(name = "deleted_at", nullable = true)
+    private Instant deletedAt;
 
     @PrePersist
     public void prePersist(){
