@@ -21,11 +21,13 @@ public class UpdateCart {
   private CartItemRepository cartItemRepository;
 
   @Autowired
+  private ReadCart read;
+
+  @Autowired
   private ReadStock stockService;
 
   public GetCartResponse updateItemQuantity(Long cartId, Long productId, Integer quantity) {
-    Cart cart = cartRepository.findById(cartId)
-      .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+    Cart cart = read.getCartById(cartId);
 
     CartItem cartItem = cart.getItems().stream()
       .filter(item -> item.getProduct().getId().equals(productId))
