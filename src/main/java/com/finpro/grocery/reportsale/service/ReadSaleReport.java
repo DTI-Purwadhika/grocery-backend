@@ -1,4 +1,4 @@
-package com.finpro.grocery.reportstock.service;
+package com.finpro.grocery.reportsale.service;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -7,11 +7,10 @@ import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.finpro.grocery.reportstock.dto.response.StockHistoryDTO;
-import com.finpro.grocery.reportstock.dto.response.StockSummaryDTO;
-import com.finpro.grocery.reportstock.entity.StockReport;
-import com.finpro.grocery.reportstock.repository.StockReportRepository;
-import com.finpro.grocery.share.exception.ResourceNotFoundException;
+import com.finpro.grocery.order.entity.Order;
+import com.finpro.grocery.reportsale.dto.response.SaleHistoryDTO;
+import com.finpro.grocery.reportsale.dto.response.SaleSummaryDTO;
+import com.finpro.grocery.reportsale.repository.SaleReportRepository;
 import com.finpro.grocery.share.pagination.Pagination;
 
 import org.springframework.data.domain.Page;
@@ -21,35 +20,30 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ReadStockReport {
+public class ReadSaleReport {
   
   @Autowired
-  private StockReportRepository repository;
+  private SaleReportRepository repository;
 
-  public Pagination<StockHistoryDTO> getAll(String start, String end, Long productId, Long storeId, int page, int size, String sortBy, String sortDir) {
+  public Pagination<SaleHistoryDTO> getAll(String start, String end, Long storeId, int page, int size, String sortBy, String sortDir) {
     Instant startDate = start == null ? Instant.now().minus(10, ChronoUnit.YEARS) : Instant.parse(start);
     Instant endDate = end == null ? Instant.now().plus(1, ChronoUnit.DAYS) : Instant.parse(end);
     Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
     Pageable pageable = PageRequest.of(page, size, sort);
 
-    Page<StockReport> reports = repository.getAll(startDate, endDate, productId, storeId, pageable);
-    Page<StockHistoryDTO> stockDTO = reports.map(this::convertToDto);
+    Page<Order> reports = repository.getAll(startDate, endDate, storeId, pageable);
+    Page<SaleHistoryDTO> saleDTO = reports.map(this::convertToDto);
 
     return new Pagination<>(
-      stockDTO.getTotalPages(),
-      stockDTO.getTotalElements(),
-      stockDTO.isFirst(),
-      stockDTO.isLast(),
-      stockDTO.getContent()
+      saleDTO.getTotalPages(),
+      saleDTO.getTotalElements(),
+      saleDTO.isFirst(),
+      saleDTO.isLast(),
+      saleDTO.getContent()
     );
   }
 
-  public StockHistoryDTO getStockReport(Long id) {
-    StockReport stock = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Stock Report Not Found"));
-    return convertToDto(stock);
-  }
-
-  public StockSummaryDTO getSummary(String start, String end, Long storeId, Long productId) {
+  public SaleSummaryDTO getSummary(String start, String end, Long storeId) {
     Instant startDate = start == null ? null : Instant.parse(start);
     Instant endDate = end == null ? Instant.now().plus(1, ChronoUnit.DAYS) : Instant.parse(end);
     if(start == null){
@@ -57,16 +51,16 @@ public class ReadStockReport {
       startDate = startOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant();
     }
 
-    return repository.getSummary(startDate, endDate, storeId, productId);
+    return repository.getSummary(startDate, endDate, storeId);
   }
 
-  public Pagination<StockSummaryDTO> getAllSummary(String start, String end, Long productId, Long storeId, int page, int size, String sortBy, String sortDir) {
+  public Pagination<SaleSummaryDTO> getAllSummary(String start, String end, Long storeId, int page, int size, String sortBy, String sortDir) {
     Instant startDate = start == null ? Instant.now().minus(10, ChronoUnit.YEARS) : Instant.parse(start);
     Instant endDate = end == null ? Instant.now().plus(1, ChronoUnit.DAYS) : Instant.parse(end);
     Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
     Pageable pageable = PageRequest.of(page, size, sort);
 
-    Page<StockSummaryDTO> reports = repository.getAllSummary(startDate, endDate, productId, storeId, pageable);
+    Page<SaleSummaryDTO> reports = repository.getAllSummary(startDate, endDate, storeId, pageable);
 
     return new Pagination<>(
       reports.getTotalPages(),
@@ -77,8 +71,8 @@ public class ReadStockReport {
     );
   }
 
-  private StockHistoryDTO convertToDto(StockReport stockHistory) {
-    return StockReportDTOConverter.convertToDTO(stockHistory);
+  private SaleHistoryDTO convertToDto(Order saleHistory) {
+    return SaleReportDTOConverter.convertToDTO(saleHistory);
   }
 
 }
