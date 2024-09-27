@@ -71,7 +71,7 @@ public class AuthController {
             String token = authService.generateToken(authentication);
 
             LoginResponseDTO response = new LoginResponseDTO();
-            response.setUserId(user.get().getId().toString());
+            response.setName(user.get().getName());
             response.setEmail(userDetails.getUsername());
             response.setRole(user.get().getRole().toString());
             response.setToken(token);
@@ -107,7 +107,7 @@ public class AuthController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null){
             for (Cookie cookie : cookies){
-                if ("sid".equals(cookie.getName())){
+                if ("Sid".equals(cookie.getName())){
                     authService.logout();
                     cookie.setMaxAge(0);
                     cookie.setValue(null);
