@@ -1,6 +1,7 @@
 package com.finpro.grocery.users.service.impl;
 import com.finpro.grocery.auth.dto.SocialLoginRequestDTO;
 import com.finpro.grocery.auth.service.impl.AuthRedisService;
+import com.finpro.grocery.cloudinary.CloudinaryService;
 import com.finpro.grocery.email.service.EmailService;
 import com.finpro.grocery.referral.ReferralCodeGenerator;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
@@ -10,14 +11,12 @@ import com.finpro.grocery.users.repository.UserRepository;
 import com.finpro.grocery.users.service.UserService;
 import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.Instant;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -27,12 +26,19 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final AuthRedisService authRedisService;
+    private final CloudinaryService cloudinaryService;
 
-    public UserServiceImpl(UserRepository userRepository, EmailService emailService, PasswordEncoder passwordEncoder, AuthRedisService authRedisService) {
+    public UserServiceImpl(UserRepository userRepository, EmailService emailService, PasswordEncoder passwordEncoder, AuthRedisService authRedisService, CloudinaryService cloudinaryService) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.authRedisService = authRedisService;
+        this.cloudinaryService = cloudinaryService;
+    }
+
+    @Override
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 
     @Override
@@ -44,7 +50,69 @@ public class UserServiceImpl implements UserService {
     public ProfileDataDTO getProfileData(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
 
-        return ProfileDataDTO.toDto(user);
+        ProfileDataDTO profileDataDTO = new ProfileDataDTO();
+        profileDataDTO.setName(user.getName());
+        profileDataDTO.setEmail(user.getEmail());
+        profileDataDTO.setRole(user.getRole());
+        profileDataDTO.setProfilePicture(cloudinaryService.generateUrl(user.getProfilePicture()));
+        profileDataDTO.setReferralCode(user.getReferralCode());
+        profileDataDTO.setIsVerified(user.getIsVerified());
+
+        return profileDataDTO;
+    }
+
+    @Transactional
+    @Override
+    public ProfileDataDTO updateUser(String email, UpdateProfileDTO updateProfileDTO) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+
+        if(updateProfileDTO.getProfilePicture() != null){
+
+            if(user.getProfilePicture() != null){
+                try{
+                    cloudinaryService.deleteFile(user.getProfilePicture());
+                }catch(IOException e){
+                    throw new RuntimeException(e);
+                }
+            }
+
+            try{
+                user.setProfilePicture(cloudinaryService.uploadFile(updateProfileDTO.getProfilePicture()));
+            }catch(IOException e){
+                throw new RuntimeException(e);
+            }
+        }
+
+        if(updateProfileDTO.getName() != null){
+            user.setName(updateProfileDTO.getName());
+        }
+
+        if(updateProfileDTO.getEmail() != null){
+            user.setEmail(updateProfileDTO.getEmail());
+        }
+
+        if(updateProfileDTO.getPassword() != null){
+            user.setPassword(updateProfileDTO.getPassword());
+        }
+
+        userRepository.save(user);
+
+        ProfileDataDTO profileDataDTO = new ProfileDataDTO();
+        profileDataDTO.setName(user.getName());
+        profileDataDTO.setEmail(user.getEmail());
+        profileDataDTO.setRole(user.getRole());
+        profileDataDTO.setProfilePicture(cloudinaryService.generateUrl(user.getProfilePicture()));
+        profileDataDTO.setReferralCode(user.getReferralCode());
+        profileDataDTO.setIsVerified(user.getIsVerified());
+
+        return profileDataDTO;
+    }
+
+    @Transactional
+    @Override
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+        userRepository.delete(user);
     }
 
     @Override
@@ -60,7 +128,6 @@ public class UserServiceImpl implements UserService {
         newUser.setRole(socialLoginRequestDTO.getRole());
         newUser.setEmail(socialLoginRequestDTO.getEmail());
         newUser.setName(socialLoginRequestDTO.getName());
-        newUser.setProfilePicture(socialLoginRequestDTO.getProfilePicture());
         newUser.setIsVerified(true);
 
         userRepository.save(newUser);

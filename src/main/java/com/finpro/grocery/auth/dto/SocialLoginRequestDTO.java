@@ -8,5 +8,4 @@ public class SocialLoginRequestDTO {
     private String name;
     private String email;
     private User.UserRole role;
-    private String profilePicture;
 }
