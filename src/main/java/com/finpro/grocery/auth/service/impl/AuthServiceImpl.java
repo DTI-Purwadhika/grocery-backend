@@ -91,6 +91,8 @@ public class AuthServiceImpl implements AuthService {
             socialLoginResponseDTO.setEmail(socialLoginRequestDTO.getEmail());
             socialLoginResponseDTO.setRole(socialLoginRequestDTO.getRole().name());
             socialLoginResponseDTO.setToken(token);
+            socialLoginResponseDTO.setIsVerified(user.get().getIsVerified());
+            socialLoginResponseDTO.setReferralCode(user.get().getReferralCode());
         }
         else{
             userService.saveUserSocialLogin(socialLoginRequestDTO);

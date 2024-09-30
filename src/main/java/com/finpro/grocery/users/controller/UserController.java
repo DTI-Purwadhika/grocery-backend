@@ -66,7 +66,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Account with this email already registered"));
         }
         else{
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("success", "Account registered successfully"));
         }
     }
 

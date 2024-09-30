@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ProfileDataDTO updateUser(String email, UpdateProfileDTO updateProfileDTO) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+        ProfileDataDTO profileDataDTO = new ProfileDataDTO();
 
         if(updateProfileDTO.getProfilePicture() != null){
 
@@ -88,7 +89,18 @@ public class UserServiceImpl implements UserService {
         }
 
         if(updateProfileDTO.getEmail() != null){
-            user.setEmail(updateProfileDTO.getEmail());
+            if(!updateProfileDTO.getEmail().equals(user.getEmail()) && userRepository.findByEmail(updateProfileDTO.getEmail()).isEmpty()){
+                user.setIsVerified(false);
+
+                String token = authRedisService.saveVerificationLink(updateProfileDTO.getEmail());
+
+                sendVerificationEmail(updateProfileDTO.getEmail(), token);
+
+                user.setEmail(updateProfileDTO.getEmail());
+            }
+            else if(!updateProfileDTO.getEmail().equals(user.getEmail()) && userRepository.findByEmail(updateProfileDTO.getEmail()).isPresent()) {
+                profileDataDTO.setError("This email has been registered. Please update to a different email");
+            }
         }
 
         if(updateProfileDTO.getPassword() != null){
@@ -97,7 +109,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        ProfileDataDTO profileDataDTO = new ProfileDataDTO();
         profileDataDTO.setName(user.getName());
         profileDataDTO.setEmail(user.getEmail());
         profileDataDTO.setRole(user.getRole());
@@ -125,6 +136,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUserSocialLogin(SocialLoginRequestDTO socialLoginRequestDTO) {
         User newUser = new User();
+        newUser.setReferralCode(ReferralCodeGenerator.generateCode());
         newUser.setRole(socialLoginRequestDTO.getRole());
         newUser.setEmail(socialLoginRequestDTO.getEmail());
         newUser.setName(socialLoginRequestDTO.getName());

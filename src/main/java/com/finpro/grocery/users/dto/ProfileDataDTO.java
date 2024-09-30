@@ -11,4 +11,5 @@ public class ProfileDataDTO {
     private String profilePicture;
     private String referralCode;
     private Boolean isVerified;
+    private String error = "None";
 }

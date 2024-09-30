@@ -78,6 +78,8 @@ public class AuthController {
             response.setEmail(userDetails.getUsername());
             response.setRole(user.get().getRole().toString());
             response.setToken(token);
+            response.setIsVerified(user.get().getIsVerified());
+            response.setReferralCode(user.get().getReferralCode());
             response.setProfilePicture(cloudinaryService.generateUrl(user.get().getProfilePicture()));
 
             Cookie cookie = new Cookie("Sid", token);
