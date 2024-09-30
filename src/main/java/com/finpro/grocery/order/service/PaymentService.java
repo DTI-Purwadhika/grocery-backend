@@ -17,6 +17,9 @@ public class PaymentService {
 
   @Value("${xendit.secret_api_key}")
   private String apiKey;
+  
+  @Value("${baseurl.frontend}")
+  private String baseUrl;
 
   @PostConstruct
   public void init() {
@@ -31,6 +34,8 @@ public class PaymentService {
       params.put("amount", amount);
       params.put("payer_email", payerEmail);
       params.put("description", description);
+      params.put("success_redirect_url", baseUrl+"/my-cart/checkout/payment-success");
+      params.put("failure_redirect_url", baseUrl+"/my-cart/checkout/payment-failed");
       Invoice invoice = Invoice.create(params);
 
       return invoice;

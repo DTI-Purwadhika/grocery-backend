@@ -50,7 +50,7 @@ public class User {
     private String referralCode;
 
     @JoinColumn(name = "store_id", nullable = true)
-    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JsonBackReference
     private Store store;
 
