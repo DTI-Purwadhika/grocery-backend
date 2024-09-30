@@ -12,6 +12,7 @@ public class AdminRequestDTO {
   private String name;
   private String email;
   private String profilePicture;
+  private String password;
   private Long storeId;
 
 }
