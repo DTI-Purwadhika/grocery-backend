@@ -10,7 +10,7 @@ import com.finpro.grocery.users.entity.User;
 
 public interface AdminRepository extends JpaRepository<User, Long> {
 
-    @Query("SELECT c FROM User c WHERE c.deletedAt IS NULL AND ((LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) OR (LOWER(c.email) LIKE LOWER(CONCAT('%', :name, '%')))) AND (:role IS NULL OR c.role = :role)")
-    Page<User> getAll(@Param("name") String name, @Param("role") String role, Pageable pageable);
+    @Query("SELECT c FROM User c WHERE c.deletedAt IS NULL AND (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')) OR (LOWER(c.email) LIKE LOWER(CONCAT('%', :name, '%')))) AND (:role IS NULL OR c.role = :role)")
+    Page<User> getAll(@Param("name") String name, @Param("role") User.UserRole role, Pageable pageable);
   
 } 

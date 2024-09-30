@@ -13,6 +13,7 @@ public class AdminResponseDTO {
   private String name;
   private String email;
   private String role;
+  private String store;
   private String profilePicture;
   private Boolean isVerified;
 
