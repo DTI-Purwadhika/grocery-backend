@@ -6,6 +6,7 @@ import com.finpro.grocery.auth.dto.SocialLoginRequestDTO;
 import com.finpro.grocery.auth.dto.SocialLoginResponseDTO;
 import com.finpro.grocery.auth.entity.UserAuth;
 import com.finpro.grocery.auth.service.AuthService;
+import com.finpro.grocery.cloudinary.CloudinaryService;
 import com.finpro.grocery.share.response.ApiResponse;
 import com.finpro.grocery.users.entity.User;
 import com.finpro.grocery.users.service.UserService;
@@ -38,10 +39,12 @@ public class AuthController {
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    public AuthController(AuthService authService, AuthenticationManager authenticationManager, UserService userService){
+    private final CloudinaryService cloudinaryService;
+    public AuthController(AuthService authService, AuthenticationManager authenticationManager, UserService userService, CloudinaryService cloudinaryService){
         this.authService = authService;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @PostMapping("/login")
@@ -75,6 +78,9 @@ public class AuthController {
             response.setEmail(userDetails.getUsername());
             response.setRole(user.get().getRole().toString());
             response.setToken(token);
+            response.setIsVerified(user.get().getIsVerified());
+            response.setReferralCode(user.get().getReferralCode());
+            response.setProfilePicture(cloudinaryService.generateUrl(user.get().getProfilePicture()));
 
             Cookie cookie = new Cookie("Sid", token);
             cookie.setPath("/");

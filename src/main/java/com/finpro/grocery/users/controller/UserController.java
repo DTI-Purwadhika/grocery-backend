@@ -1,12 +1,10 @@
 package com.finpro.grocery.users.controller;
 
+import com.cloudinary.Api;
 import com.finpro.grocery.auth.helper.Claims;
 import com.finpro.grocery.email.service.EmailService;
 import com.finpro.grocery.share.response.ApiResponse;
-import com.finpro.grocery.users.dto.CheckResetPasswordLinkDTO;
-import com.finpro.grocery.users.dto.CheckVerificationLinkDTO;
-import com.finpro.grocery.users.dto.RegisterUserDTO;
-import com.finpro.grocery.users.dto.SetPasswordDTO;
+import com.finpro.grocery.users.dto.*;
 import com.finpro.grocery.users.service.UserService;
 import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
@@ -38,6 +36,20 @@ public class UserController {
         return new ApiResponse<>("OK", "200", userService.getProfileData(currentUserEmail));
     }
 
+    @PutMapping("/update")
+    public ApiResponse<?> updateProfile(@ModelAttribute UpdateProfileDTO updateProfileDTO){
+        var claims = Claims.getClaimsFromJwt();
+        String currentUserEmail = (String) claims.get("sub");
+
+        return new ApiResponse<>("OK", "200", userService.updateUser(currentUserEmail, updateProfileDTO));
+    }
+
+    @DeleteMapping("")
+    public ApiResponse<?> deleteProfile(@RequestParam String email){
+        userService.deleteUser(email);
+        return new ApiResponse<>("OK", "200", "User profile deleted successfully");
+    }
+
     @PostMapping("/set-password")
     public ApiResponse<?> setPassword(@RequestBody SetPasswordDTO setPasswordDTO){
         return new ApiResponse<>("OK", "200", userService.setPassword(setPasswordDTO));
@@ -54,7 +66,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Account with this email already registered"));
         }
         else{
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("success", "Account registered successfully"));
         }
     }
 

@@ -8,4 +8,7 @@ public class LoginResponseDTO {
     private String email;
     private String token;
     private String role;
+    private String referralCode;
+    private String profilePicture;
+    private Boolean isVerified;
 }

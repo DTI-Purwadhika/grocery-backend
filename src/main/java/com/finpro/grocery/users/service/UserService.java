@@ -8,8 +8,11 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 
 public interface UserService {
+    public void saveUser(User user);
     public Optional<User> getUserByEmail(String email);
     public ProfileDataDTO getProfileData(String email);
+    public ProfileDataDTO updateUser(String email, UpdateProfileDTO updateProfileDTO);
+    public void deleteUser(String email);
     public Boolean isSocialLogin(String email);
     public void saveUserSocialLogin(SocialLoginRequestDTO socialLoginRequestDTO);
     public User setPassword(SetPasswordDTO setPasswordDTO);

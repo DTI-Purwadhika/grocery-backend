@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -75,6 +76,7 @@ public class AuthServiceImpl implements AuthService {
         return tokenResult;
     }
 
+    @Transactional
     @Override
     public SocialLoginResponseDTO socialLogin(SocialLoginRequestDTO socialLoginRequestDTO) {
         Optional<User> user = userService.getUserByEmail(socialLoginRequestDTO.getEmail());
@@ -82,10 +84,15 @@ public class AuthServiceImpl implements AuthService {
         SocialLoginResponseDTO socialLoginResponseDTO = new SocialLoginResponseDTO();
 
         if(user.isPresent()){
+            user.get().setName(socialLoginRequestDTO.getName());
+            userService.saveUser(user.get());
+
             String token = generateSocialToken(socialLoginRequestDTO.getEmail());
             socialLoginResponseDTO.setEmail(socialLoginRequestDTO.getEmail());
             socialLoginResponseDTO.setRole(socialLoginRequestDTO.getRole().name());
             socialLoginResponseDTO.setToken(token);
+            socialLoginResponseDTO.setIsVerified(user.get().getIsVerified());
+            socialLoginResponseDTO.setReferralCode(user.get().getReferralCode());
         }
         else{
             userService.saveUserSocialLogin(socialLoginRequestDTO);
