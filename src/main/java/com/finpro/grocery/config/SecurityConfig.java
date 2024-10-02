@@ -72,6 +72,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/users/reset-password").permitAll();
                     auth.requestMatchers("/api/users/check-reset-password-link").permitAll();
                     auth.requestMatchers("/api/users/new-reset-password-link").permitAll();
+                    auth.requestMatchers("/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

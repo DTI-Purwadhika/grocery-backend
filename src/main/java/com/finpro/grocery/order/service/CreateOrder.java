@@ -3,16 +3,20 @@ package com.finpro.grocery.order.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.finpro.grocery.cart.entity.Cart;
 import com.finpro.grocery.cart.entity.CartItem;
+import com.finpro.grocery.cart.service.DeleteCart;
 import com.finpro.grocery.cart.service.ReadCart;
 import com.finpro.grocery.inventory.entity.Inventory;
 import com.finpro.grocery.inventory.service.ReadStock;
-import com.finpro.grocery.order.dto.response.InvoiceDTO;
+import com.finpro.grocery.order.dto.response.OrderResponseDTO;
 import com.finpro.grocery.order.entity.Order;
 import com.finpro.grocery.order.entity.OrderProduct;
 import com.finpro.grocery.order.entity.OrderStatus;
@@ -41,8 +45,11 @@ public class CreateOrder {
   @Autowired
   private SequenceService sequenceService;
 
+  @Value("${baseurl.frontend}")
+  private String baseUrl;
+
   @Transactional
-  public InvoiceDTO save(Long cartId) {
+  public OrderResponseDTO save(Long cartId, String method) {
     // 1. Verify stock across warehouses
     Cart cart = cartService.getCartById(cartId);
     verifyStock(cart);
@@ -55,16 +62,20 @@ public class CreateOrder {
     Order order = createOrder(cart);
 
     // ! For now, use dummy user data
-    Invoice orderInvoice = paymentService.createInvoice(order.getCode(), order.getTotalPayment(), "budi@gmail.com", "Payment for order " + order.getCode());
-    order.setExpiryDate(orderInvoice.getExpiryDate());
-    order.setInvoiceUrl(orderInvoice.getInvoiceUrl());
-    order.setDescription(orderInvoice.getDescription());
+    if(method == "auto"){
+      Invoice orderInvoice = paymentService.createInvoice(order.getCode(), order.getTotalPayment(), "budi@gmail.com", "Payment for order " + order.getCode());
+      order.setExpiryDate(orderInvoice.getExpiryDate());
+      order.setInvoiceUrl(orderInvoice.getInvoiceUrl());
+      order.setDescription(orderInvoice.getDescription());
+    }
+    else{
+      order.setExpiryDate(Instant.now().plus(1, ChronoUnit.HOURS).toString());
+      order.setInvoiceUrl(baseUrl+"/my-cart/checkout/" + order.getCode());
+      order.setDescription("Manual transfer payment for " + order.getCode());
+    }
     orderRepository.save(order);
-    // deleteCartService.clear(1L);
-    return InvoiceDTOConverter.convertToDTO(orderInvoice);
+    return InvoiceDTOConverter.convertToDTO(order);
   }
-
-
 
   private void verifyStock(Cart cart) {
     List<String> emptyStock = new ArrayList<>();
@@ -94,7 +105,6 @@ public class CreateOrder {
     
     List<OrderProduct> orderProducts = createOrderProduct(cart, order);
     order.setItems(orderProducts);
-
     return order;
   }
 
@@ -115,6 +125,7 @@ public class CreateOrder {
       orderProduct.setDiscountAmount(BigDecimal.ZERO);
       orderProducts.add(orderProduct);
     }
+    
     return orderProducts;
   }
 

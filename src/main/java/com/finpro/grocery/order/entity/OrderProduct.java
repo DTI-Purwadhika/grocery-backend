@@ -64,6 +64,4 @@ public class OrderProduct {
   @Column(name = "updated_at", nullable = true)
   private Instant updatedAt = Instant.now();
 
-  @Column(name = "deleted_at", nullable = true)
-  private Instant deletedAt;
 }

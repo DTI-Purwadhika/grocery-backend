@@ -1,6 +1,7 @@
 package com.finpro.grocery.order.dto.response;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,5 +26,7 @@ public class OrderResponseDTO {
   private BigDecimal totalDiscount;
   private BigDecimal totalPayment;
   private String expiryDate;
+  private String createdAt;
+  private List<OrderProductResponseDTO> items;
   
 }
