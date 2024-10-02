@@ -28,24 +28,18 @@ public class ReadAdmin {
   }
 
   public Pagination<AdminResponseDTO> getAll(String keyword, String roleKeyword, int page, int size, String sortBy, String sortDir) {
-    System.out.println("uhuy");
     String name = keyword == null ? "" : keyword;
     User.UserRole userRole = null;
     
     if(!roleKeyword.isBlank())
       userRole = User.UserRole.valueOf(roleKeyword);
     
-    System.out.println("ahay");
     Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
     Pageable pageable = PageRequest.of(page, size, sort);
-    System.out.println("ehey");
     
     Page<User> admins =  adminRepository.getAll(name, userRole, pageable);
-    System.out.println(admins);
-    System.out.println("ohoy");
     
     Page<AdminResponseDTO> adminDto = admins.map(this::convertToDto);
-    System.out.println(adminDto);
     
     return new Pagination<>(
       adminDto.getTotalPages(),

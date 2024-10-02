@@ -27,10 +27,6 @@ public class CreateAdmin {
     Store store = storeService.getStoreById(user.getStoreId());
     User admin = new User();
 
-    System.out.println("hehe");
-    System.out.println(user);
-    System.out.println(user.getProfilePicture());
-
     admin.setName(user.getName());
     admin.setEmail(user.getEmail());
     admin.setRole(User.UserRole.ADMIN);

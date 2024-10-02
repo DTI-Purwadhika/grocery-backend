@@ -29,14 +29,14 @@ public class GetOrderController {
     @RequestParam(required = false) String endDate,
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size,
-    @RequestParam(defaultValue = "code") String sortBy,
+    @RequestParam(defaultValue = "id") String sortBy,
     @RequestParam(defaultValue = "asc") String sortDir
   ) {
     return new ApiResponse<>("OK", "200", order.getAll(keyword, userId, storeId, page, size, sortBy, sortDir, startDate, endDate));
   }
 
   @GetMapping("/{id}")
-  public ApiResponse<OrderResponseDTO> getOrder(@PathVariable Long id) {
+  public ApiResponse<OrderResponseDTO> getOrder(@PathVariable String id) {
     return new ApiResponse<>("OK", "200", order.getOrder(id));
   }
   

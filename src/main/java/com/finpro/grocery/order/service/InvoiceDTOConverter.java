@@ -1,8 +1,14 @@
 package com.finpro.grocery.order.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.finpro.grocery.order.dto.response.InvoiceDTO;
+import com.finpro.grocery.order.dto.response.OrderProductResponseDTO;
 import com.finpro.grocery.order.dto.response.OrderResponseDTO;
 import com.finpro.grocery.order.entity.Order;
+import com.finpro.grocery.order.entity.OrderProduct;
+import com.finpro.grocery.product.entity.ProductImage;
 import com.xendit.model.Invoice;
 
 class InvoiceDTOConverter {
@@ -32,6 +38,26 @@ class InvoiceDTOConverter {
     response.setTotalDiscount(order.getTotalDiscount());
     response.setTotalPayment(order.getTotalPayment());
     response.setExpiryDate(order.getExpiryDate());
+    response.setCreatedAt(order.getCreatedAt().toString());
+    response.setStatus(order.getStatus().toString());
+    response.setUser(order.getUser());
+    response.setItems(new ArrayList<>());
+
+    for (OrderProduct orderProduct : order.getItems()) {
+      OrderProductResponseDTO orderProductResponseDTO = new OrderProductResponseDTO();
+      List<ProductImage> images = orderProduct.getInventory().getProduct().getImages();
+      if (!images.isEmpty()) 
+        orderProductResponseDTO.setImage(images.get(0).getUrl());
+      else 
+        orderProductResponseDTO.setImage(null);
+      orderProductResponseDTO.setId(orderProduct.getId());
+      orderProductResponseDTO.setName(orderProduct.getInventory().getProduct().getName());
+      orderProductResponseDTO.setPrice(orderProduct.getInventory().getProduct().getPrice());
+      orderProductResponseDTO.setQuantity(orderProduct.getQuantity());
+      orderProductResponseDTO.setTotalPrice(orderProduct.getTotalPrice());
+      response.getItems().add(orderProductResponseDTO);
+    }
+
     return response;
   }
 

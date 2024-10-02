@@ -114,7 +114,4 @@ public class Order {
   @Column(name = "updated_at", nullable = false)
   private Instant updatedAt = Instant.now();
 
-  @Column(name = "deleted_at")
-  private Instant deletedAt;
-
 }

@@ -1,6 +1,8 @@
 package com.finpro.grocery.order.service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,9 +25,14 @@ public class ReadOrder {
 
   public Pagination<OrderResponseDTO> getAll(String keyword, Long userId, Long storeId, int page, int size, String sortBy, String sortDir, String startDate, String endDate) {
     String code = keyword == null ? "" : keyword;
-
-    Instant start = startDate == null ? null : Instant.parse(startDate);
-    Instant end = endDate == null ? null : Instant.parse(endDate);
+    Instant start, end = Instant.now();
+    
+    if(startDate == null)
+      start = LocalDateTime.now().minusYears(10).atZone(ZoneId.systemDefault()).toInstant();
+    else 
+      start = Instant.parse(startDate);
+    if(endDate != null) 
+      end = Instant.parse(endDate);
 
     Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
     Pageable pageable = PageRequest.of(page, size, sort);
@@ -42,10 +49,11 @@ public class ReadOrder {
     );
   }
 
-  public OrderResponseDTO getOrder (Long orderId) {
-    Order order = findOrder(orderId);
+  public OrderResponseDTO getOrder (String orderId) {
+    Order order = finOrderByCode(orderId);
     return convertToDto(order);
   }
+
 
   public Order findOrder(Long orderId) {
     return orderRepository.findById(orderId)
