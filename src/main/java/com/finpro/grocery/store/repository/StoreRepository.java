@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.finpro.grocery.store.entity.Store;
 
+import java.util.Optional;
+
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long>{
-
+    Optional<Store> findByName(String name);
 } 

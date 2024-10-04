@@ -17,7 +17,7 @@ import com.finpro.grocery.share.exception.ResourceNotFoundException;
 import com.finpro.grocery.share.sequence.service.SequenceService;
 import com.finpro.grocery.store.entity.Store;
 import com.finpro.grocery.store.repository.StoreRepository;
-import com.finpro.grocery.store.service.StoreService;
+import com.finpro.grocery.store.service.impl.StoreServiceImpl;
 
 import jakarta.transaction.Transactional;
 
@@ -36,7 +36,7 @@ public class CreateStock {
   private StoreRepository storeRepository;
 
   @Autowired
-  private StoreService storeService;
+  private StoreServiceImpl storeServiceImpl;
 
   @Autowired
   private SequenceService sequenceService;
@@ -49,7 +49,7 @@ public class CreateStock {
     Product product = productService.getProductById(inventoryDTO.getProductId());
     if (product == null) throw new ResourceNotFoundException("Product not found");
     
-    Store store = storeService.getStoreById(inventoryDTO.getStoreId());
+    Store store = storeServiceImpl.getStoreById(inventoryDTO.getStoreId());
     if (store == null) throw new ResourceNotFoundException("Store not found");
 
     Inventory inventory = DTOConverter.convertToEntity(inventoryDTO, product, store, sequenceService);

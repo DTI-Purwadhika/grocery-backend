@@ -8,7 +8,7 @@ import com.finpro.grocery.inventory.dto.response.ResponseInventoryDTO;
 import com.finpro.grocery.inventory.entity.Inventory;
 import com.finpro.grocery.inventory.repository.InventoryRepository;
 import com.finpro.grocery.product.service.ReadProduct;
-import com.finpro.grocery.store.service.StoreService;
+import com.finpro.grocery.store.service.impl.StoreServiceImpl;
 
 import jakarta.transaction.Transactional;
 import java.time.Instant;
@@ -26,7 +26,7 @@ public class UpdateStock {
   private ReadProduct productService;
 
   @Autowired
-  private StoreService storeService;
+  private StoreServiceImpl storeServiceImpl;
 
   @Transactional
   public ResponseInventoryDTO updateInventory(Long id, RequestInventoryDTO inventory) {
@@ -36,7 +36,7 @@ public class UpdateStock {
       updatedInventory.setProduct(productService.getProductById(inventory.getProductId()));
     
     if(inventory.getStoreId() != null)
-      updatedInventory.setStore(storeService.getStoreById(inventory.getStoreId()));
+      updatedInventory.setStore(storeServiceImpl.getStoreById(inventory.getStoreId()));
     
     if(inventory.getStock() != null)
       updatedInventory.setStock(inventory.getStock());
