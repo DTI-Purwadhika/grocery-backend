@@ -51,7 +51,6 @@ public class User {
 
     @JoinColumn(name = "store_id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JsonBackReference
     private Store store;
 
     @NotNull

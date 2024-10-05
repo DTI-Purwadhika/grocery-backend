@@ -2,6 +2,7 @@ package com.finpro.grocery.store.entity;
 
 import java.time.Instant;
 
+import com.finpro.grocery.city.entity.City;
 import com.finpro.grocery.users.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -25,6 +26,10 @@ public class Store {
 
   @Column(name = "address", nullable = false)
   private String address;
+
+  @JoinColumn(name = "city_id", nullable = true)
+  @ManyToOne(fetch = FetchType.LAZY, optional = true)
+  private City city;
 
   @Column(name = "postcode", nullable = false)
   private String postcode;
