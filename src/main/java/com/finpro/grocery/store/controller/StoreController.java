@@ -26,13 +26,13 @@ public class StoreController {
 //  }
 
   @GetMapping("")
-  public ApiResponse<Pagination<StoreResponseDTO>> getAllStores(@RequestParam(required = false) String name,
+  public ApiResponse<Pagination<StoreResponseDTO>> getAllStores(@RequestParam(required = false) String keyword,
                                                 @RequestParam(required = false) String city,
                                                 @RequestParam(defaultValue = "0") int page,
                                                 @RequestParam(defaultValue = "10") int size,
                                                 @RequestParam(defaultValue = "id") String sortBy,
                                                 @RequestParam(defaultValue = "asc") String sortDir){
-     return new ApiResponse<>("OK", "200", storeService.getAllStores(name, city, page, size, sortBy, sortDir));
+     return new ApiResponse<>("OK", "200", storeService.getAllStores(keyword, city, page, size, sortBy, sortDir));
  }
 
   @PostMapping("/create")
