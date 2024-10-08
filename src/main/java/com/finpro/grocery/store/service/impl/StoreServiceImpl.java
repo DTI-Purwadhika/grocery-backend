@@ -34,6 +34,13 @@ public class StoreServiceImpl implements StoreService {
   }
 
     @Override
+    public StoreResponseDTO getStoreDTOById(Long id) {
+        Store store = storeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Store not found"));
+
+        return StoreResponseDTO.toDto(store);
+    }
+
+    @Override
     public Pagination<StoreResponseDTO> getAllStores(String name, String city, int page, int size, String sortBy, String sortDir) {
         Specification<Store> storeSpecification = Specification.where(StoreSpecification.byName(name)
                 .and(StoreSpecification.byCity(city)));
@@ -58,6 +65,7 @@ public class StoreServiceImpl implements StoreService {
   public StoreResponseDTO createStore(StoreRequestDTO storeRequestDTO) {
      Store store = new Store();
      City city = cityService.getCity(storeRequestDTO.getCityId());
+        System.out.println(city);
      store.setName(storeRequestDTO.getName());
      store.setAddress(storeRequestDTO.getAddress());
      store.setCity(city);
@@ -83,6 +91,14 @@ public class StoreServiceImpl implements StoreService {
         storeRepository.save(store);
 
         return StoreResponseDTO.toDto(store);
+    }
+
+    @Transactional
+    @Override
+    public void deleteStore(Long id) {
+        Store deletedStore = storeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Store not found"));
+
+        storeRepository.delete(deletedStore);
     }
 }
 

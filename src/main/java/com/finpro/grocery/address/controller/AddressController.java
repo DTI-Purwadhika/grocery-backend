@@ -39,12 +39,12 @@ public class AddressController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<Address> updateAddress(@PathVariable Long id, @RequestBody AddressRequestDTO addressRequestDTO){
+    public ApiResponse<Address> updateAddress(@PathVariable("id") Long id, @RequestBody AddressRequestDTO addressRequestDTO){
         return new ApiResponse<>("OK", "200", addressService.updateAddress(id, addressRequestDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<?> deleteAddress(@PathVariable Long id){
+    public ApiResponse<?> deleteAddress(@PathVariable("id") Long id){
         var claims = Claims.getClaimsFromJwt();
         String currentUserEmail = (String) claims.get("sub");
         addressService.deleteAddress(currentUserEmail, id);
@@ -53,7 +53,7 @@ public class AddressController {
     }
 
     @PutMapping("/change-primary-address/{id}")
-    public ApiResponse<Address> changePrimaryAddress(@PathVariable Long id){
+    public ApiResponse<Address> changePrimaryAddress(@PathVariable("id") Long id){
         var claims = Claims.getClaimsFromJwt();
         String currentUserEmail = (String) claims.get("sub");
 

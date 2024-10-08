@@ -15,15 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/stores")
 public class StoreController {
   private final StoreService storeService;
- public StoreController(StoreService storeService){
+  public StoreController(StoreService storeService){
    this.storeService = storeService;
- }
+  }
 
-//  @GetMapping
-//  public ApiResponse<Iterable<Store>> getAll() {
-//    Iterable<Store> stores = storeService.getAll();
-//    return new ApiResponse<>("OK", "200", stores);
-//  }
+  @GetMapping("/{id}")
+  public ApiResponse<StoreResponseDTO> getStoreById(@PathVariable("id") Long id){
+      return new ApiResponse<>("OK", "200", storeService.getStoreDTOById(id));
+  }
 
   @GetMapping("")
   public ApiResponse<Pagination<StoreResponseDTO>> getAllStores(@RequestParam(required = false) String keyword,
@@ -38,6 +37,17 @@ public class StoreController {
   @PostMapping("/create")
   public ApiResponse<StoreResponseDTO> createStore(@RequestBody StoreRequestDTO storeRequestDTO){
     return new ApiResponse<>("OK", "200", storeService.createStore(storeRequestDTO));
+  }
+
+  @PutMapping("/{id}")
+  public ApiResponse<StoreResponseDTO> updateStore(@PathVariable("id") Long id, @RequestBody StoreRequestDTO storeRequestDTO){
+     return new ApiResponse<>("OK", "200", storeService.updateStore(id, storeRequestDTO));
+  }
+
+  @DeleteMapping("/{id}")
+  public ApiResponse<?> deleteStore(@PathVariable("id") Long id){
+      storeService.deleteStore(id);
+      return new ApiResponse<>("OK", "200", "Store deleted successfully");
   }
 
 }
