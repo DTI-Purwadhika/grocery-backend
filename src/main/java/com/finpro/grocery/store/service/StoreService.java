@@ -1,21 +1,15 @@
 package com.finpro.grocery.store.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.finpro.grocery.share.pagination.Pagination;
+import com.finpro.grocery.store.dto.StoreRequestDTO;
+import com.finpro.grocery.store.dto.StoreResponseDTO;
 import com.finpro.grocery.store.entity.Store;
-import com.finpro.grocery.store.repository.StoreRepository;
 
-@Service
-public class StoreService {
-  @Autowired
-  private StoreRepository storeRepository;
-
-  public Iterable<Store> getAll() {
-    return storeRepository.findAll();
-  }
-
-  public Store getStoreById(Long id) {
-    return storeRepository.findById(id).orElse(null);
-  }
+public interface StoreService {
+    public Store getStoreById(Long id);
+    public StoreResponseDTO getStoreDTOById(Long id);
+    public Pagination<StoreResponseDTO> getAllStores(String name, String city, int page, int size, String sortBy, String sortDir);
+    public StoreResponseDTO createStore(StoreRequestDTO storeRequestDTO);
+    public StoreResponseDTO updateStore(Long id, StoreRequestDTO storeRequestDTO);
+    public void deleteStore(Long id);
 }

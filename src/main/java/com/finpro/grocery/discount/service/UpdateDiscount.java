@@ -10,7 +10,7 @@ import com.finpro.grocery.discount.repository.DiscountRepository;
 import com.finpro.grocery.product.entity.Product;
 import com.finpro.grocery.product.service.ReadProduct;
 import com.finpro.grocery.store.entity.Store;
-import com.finpro.grocery.store.service.StoreService;
+import com.finpro.grocery.store.service.impl.StoreServiceImpl;
 
 import jakarta.transaction.Transactional;
 
@@ -27,13 +27,13 @@ public class UpdateDiscount {
   private ReadProduct productService;
 
   @Autowired
-  private StoreService storeService;
+  private StoreServiceImpl storeServiceImpl;
 
   @Transactional
   public ResponseDiscountDTO updateDiscount(Long id, RequestDiscountDTO discount) {
 
     Product product = productService.getProductById(discount.getProductId());
-    Store store = storeService.getStoreById(discount.getStoreId());
+    Store store = storeServiceImpl.getStoreById(discount.getStoreId());
 
     Discount newDiscount = DTOConverter.convertToEntity(discount, read.getDiscount(id), store, product);
     discountRepository.save(newDiscount);

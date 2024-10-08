@@ -8,7 +8,7 @@ import com.finpro.grocery.admin.dto.response.AdminResponseDTO;
 import com.finpro.grocery.admin.dto.request.AdminRequestDTO;
 import com.finpro.grocery.admin.repository.AdminRepository;
 import com.finpro.grocery.store.entity.Store;
-import com.finpro.grocery.store.service.StoreService;
+import com.finpro.grocery.store.service.impl.StoreServiceImpl;
 import com.finpro.grocery.users.entity.User;
 
 @Service
@@ -18,13 +18,13 @@ public class CreateAdmin {
   private AdminRepository adminRepository;
 
   @Autowired
-  private StoreService storeService;
+  private StoreServiceImpl storeServiceImpl;
 
   @Autowired
   private PasswordEncoder passwordEncoder;
 
   public AdminResponseDTO save(AdminRequestDTO user) {
-    Store store = storeService.getStoreById(user.getStoreId());
+    Store store = storeServiceImpl.getStoreById(user.getStoreId());
     User admin = new User();
 
     admin.setName(user.getName());

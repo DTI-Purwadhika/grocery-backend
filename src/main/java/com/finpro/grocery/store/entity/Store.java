@@ -2,12 +2,9 @@ package com.finpro.grocery.store.entity;
 
 import java.time.Instant;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.finpro.grocery.city.entity.City;
+import com.finpro.grocery.users.entity.User;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +24,23 @@ public class Store {
   @Column(name = "name", nullable = false)
   private String name;
 
-   @Column(name = "created_at", nullable = false)
+  @Column(name = "address", nullable = false)
+  private String address;
+
+  @JoinColumn(name = "city_id", nullable = true)
+  @ManyToOne(fetch = FetchType.LAZY, optional = true)
+  private City city;
+
+  @Column(name = "postcode", nullable = false)
+  private String postcode;
+
+  @Column(name = "latitude", nullable = false)
+  private Float latitude;
+
+  @Column(name = "longitude", nullable = false)
+  private Float longitude;
+
+  @Column(name = "created_at", nullable = false)
   private Instant createdAt = Instant.now();
 
   @Column(name = "updated_at", nullable = false)
