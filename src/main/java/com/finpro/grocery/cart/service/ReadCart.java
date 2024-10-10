@@ -1,5 +1,6 @@
 package com.finpro.grocery.cart.service;
 
+import com.finpro.grocery.cart.entity.CartItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,11 @@ public class ReadCart {
     Cart cart =  cartRepository.findByUserId(userId);
     
     return CartDTOConverter.convertToDto(cart);
+  }
+
+  public int getTotalWeight(Long userId){
+    Cart cart =  cartRepository.findByUserId(userId);
+    return cart.getItems().stream().map(CartItem::getQuantity).mapToInt(Integer::intValue).sum() * 100;
   }
 
 }

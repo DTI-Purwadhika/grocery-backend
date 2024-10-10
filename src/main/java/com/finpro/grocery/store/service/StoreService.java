@@ -12,4 +12,5 @@ public interface StoreService {
     public StoreResponseDTO createStore(StoreRequestDTO storeRequestDTO);
     public StoreResponseDTO updateStore(Long id, StoreRequestDTO storeRequestDTO);
     public void deleteStore(Long id);
+    public Store getNearestStore(String email);
 }
