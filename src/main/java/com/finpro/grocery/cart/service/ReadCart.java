@@ -20,7 +20,9 @@ public class ReadCart {
   }
 
   public GetCartResponse getCart(Long userId) {
-    Cart cart =  cartRepository.findByUserId(userId);
+    Cart cart =  cartRepository.findByUserId(userId).orElse(
+      new Cart(userId, null)
+    );
     
     return CartDTOConverter.convertToDto(cart);
   }

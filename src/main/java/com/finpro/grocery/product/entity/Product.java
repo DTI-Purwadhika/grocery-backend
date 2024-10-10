@@ -53,7 +53,7 @@ public class Product {
   @Column(name = "code", nullable = false, unique = true)
   private String code;
 
-  @Column(name = "description")
+  @Column(name = "description", columnDefinition = "TEXT")
   private String description;
 
   @NotNull(message = "Price is required")

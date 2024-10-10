@@ -4,6 +4,9 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
+
+import com.finpro.grocery.inventory.dto.request.RequestInventoryDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +23,6 @@ public class RequestProductDTO {
   @Digits(integer = 12, fraction = 2, message = "Invalid price format")
   private BigDecimal price;
   private List<RequestProductImage> images;
+  private List<RequestInventoryDTO> stocks;
 
 }
