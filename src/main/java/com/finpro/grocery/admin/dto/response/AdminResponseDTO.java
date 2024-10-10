@@ -14,6 +14,7 @@ public class AdminResponseDTO {
   private String email;
   private String role;
   private String store;
+  private String storeId;
   private String profilePicture;
   private Boolean isVerified;
 

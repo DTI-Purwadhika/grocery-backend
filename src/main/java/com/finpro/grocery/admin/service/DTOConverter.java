@@ -11,9 +11,12 @@ class DTOConverter {
     response.setName(user.getName());
     response.setEmail(user.getEmail());
     response.setRole(user.getRole().toString());
-    response.setStore(user.getStore().getName());
     response.setProfilePicture(user.getProfilePicture());
     response.setIsVerified(user.getIsVerified());
+    if(user.getStore() != null){
+      response.setStoreId(user.getStore().getId().toString());
+      response.setStore(user.getStore().getName());
+    }
     
     return response;
   }

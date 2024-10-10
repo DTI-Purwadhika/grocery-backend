@@ -2,6 +2,9 @@ package com.finpro.grocery.product.service;
 
 import com.finpro.grocery.category.entity.Category;
 import com.finpro.grocery.category.service.ReadCategory;
+import com.finpro.grocery.inventory.dto.request.RequestInventoryDTO;
+import com.finpro.grocery.inventory.entity.Inventory;
+import com.finpro.grocery.inventory.service.CreateStock;
 import com.finpro.grocery.product.dto.request.RequestProductDTO;
 import com.finpro.grocery.product.dto.response.ResponseProductDetailDTO;
 import com.finpro.grocery.product.entity.Product;
@@ -30,6 +33,9 @@ public class CreateProduct {
   @Autowired
   private ReadCategory categoryService;
 
+  @Autowired
+  private CreateStock createStock;
+
   @Transactional
   public ResponseProductDetailDTO saveProduct(RequestProductDTO productDTO) {
     if(productRepository.existsByName(productDTO.getName()))
@@ -38,8 +44,20 @@ public class CreateProduct {
     Category category =  categoryService.getCategoryByName(productDTO.getCategory());
     
     Product product = DTOConverter.convertToProduct(productDTO, new Product(), category);
-    product.setCode(sequenceService.generateUniqueCode("product_code_sequence", "PRD%05d"));	
-    productRepository.save(product);
+    product.setCode(sequenceService.generateUniqueCode("product_code_sequence", "PRD%06d"));	
+    Product savedProduct = productRepository.save(product);
+
+    System.out.println(productDTO);
+
+    if(productDTO.getStocks() != null){
+      productDTO.getStocks().forEach(stock -> {
+        RequestInventoryDTO inventory = new RequestInventoryDTO();
+        inventory.setProductId(savedProduct.getId());
+        inventory.setStoreId(stock.getStoreId());
+        inventory.setStock(stock.getStock());
+        createStock.saveInventory(inventory);
+      });
+    }
 
     return DTOConverter.convertToDTO(product);
   }
