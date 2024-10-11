@@ -8,4 +8,6 @@ import lombok.Data;
 public class ShippingCostDTO {
     private String courier;
     private int cost;
+    private String description;
+    private String etd;
 }

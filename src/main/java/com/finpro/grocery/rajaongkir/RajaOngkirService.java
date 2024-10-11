@@ -67,13 +67,25 @@ public class RajaOngkirService {
 
         Map<String, Object> rajaongkir = (Map<String, Object>) response.getBody().get("rajaongkir");
         List<Map<String, Object>> results = (List<Map<String, Object>>) rajaongkir.get("results");
-        List<Map<String, Object>> costs = (List<Map<String, Object>>) results.get(0).get("costs");
+        List<Map<String,  Object>> costs = (List<Map<String, Object>>) results.get(0).get("costs");
 
-        int lowestCost = costs.stream().flatMap(cost -> ((List<Map<String, Object>>) cost.get("cost")).stream())
-                .mapToInt(cost -> (int) cost.get("value"))
-                .min().orElse(0);
+        int lowestCost = 999999;
+        String description = "";
+        String etd = "";
 
-        return new ShippingCostDTO(courier, lowestCost);
+        for (Map<String, Object> item : costs) {
+            List<Object> costList  = (List<Object>) item.get("cost");
+            Map<String, Object> cost = (Map<String, Object>) costList.getFirst();
+
+            int costValue = (int) cost.get("value");
+            if (costValue < lowestCost) {
+                lowestCost = costValue;
+                description = (String) item.get("description");
+                etd = (String) cost.get("etd");
+            }
+        }
+
+        return new ShippingCostDTO(courier, lowestCost, description, etd);
     }
 
     public City mapToCity(RajaOngkirCityResult result) {

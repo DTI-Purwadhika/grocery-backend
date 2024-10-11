@@ -28,6 +28,12 @@ public class Shipping {
     @Column(name = "cost", nullable = false)
     private int cost;
 
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Column(name = "etd", nullable = false)
+    private String etd;
+
     @Column(name = "courier", nullable = false)
     private String courier;
 

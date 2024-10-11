@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class ShippingServiceImpl implements ShippingService {
@@ -52,6 +50,7 @@ public class ShippingServiceImpl implements ShippingService {
         Store nearestStore = storeService.getNearestStore(email);
 
         List<Shipping> shippingList = shippingRepository.findByOriginAndDestinationAndWeight(nearestStore.getCity(), primaryAddress.getCity(), totalWeight);
+        List<ShippingDTO> shippingDTOList = new ArrayList<>();
 
         if(shippingList.isEmpty()){
             List<ShippingCostDTO> shippingCostsAllCouriersList = rajaOngkirService.getShippingCostsAllCouriers(nearestStore.getCity().getId().toString(), primaryAddress.getCity().getId().toString(), totalWeight);
@@ -64,15 +63,43 @@ public class ShippingServiceImpl implements ShippingService {
                 shipping.setWeight(totalWeight);
                 shipping.setOrigin(cityService.getCity(nearestStore.getCity().getId()));
                 shipping.setDestination(cityService.getCity(primaryAddress.getCity().getId()));
+                shipping.setDescription(shippingCost.getDescription());
+                shipping.setEtd(shippingCost.getEtd());
                 shippingRepository.save(shipping);
 
-                shippings.add(ShippingDTO.toDto(shipping));
+                ShippingDTO shippingDTO = new ShippingDTO();
+                shippingDTO.setId(shipping.getId());
+                shippingDTO.setCourier(shipping.getCourier());
+                shippingDTO.setCost(shipping.getCost());
+                shippingDTO.setDescription(shipping.getDescription());
+                shippingDTO.setEtd(shipping.getEtd());
+                String cityOrigin = shipping.getOrigin().getName();
+                shippingDTO.setOrigin(cityOrigin);
+                String cityDestination = shipping.getDestination().getName();
+                shippingDTO.setDestination(cityDestination);
+
+                shippings.add(shippingDTO);
             }
 
             return shippings;
         }
 
-        return shippingList.stream().map(ShippingDTO::toDto).collect(Collectors.toList());
+        for(Shipping shipping : shippingList){
+            ShippingDTO shippingDTO = new ShippingDTO();
+            shippingDTO.setId(shipping.getId());
+            shippingDTO.setCourier(shipping.getCourier());
+            shippingDTO.setCost(shipping.getCost());
+            shippingDTO.setDescription(shipping.getDescription());
+            shippingDTO.setEtd(shipping.getEtd());
+            String cityOrigin = shipping.getOrigin().getName();
+            shippingDTO.setOrigin(cityOrigin);
+            String cityDestination = shipping.getDestination().getName();
+            shippingDTO.setDestination(cityDestination);
+
+            shippingDTOList.add(shippingDTO);
+        }
+
+        return shippingDTOList;
     }
 
     @Override
