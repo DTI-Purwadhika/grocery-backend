@@ -62,16 +62,16 @@ public class CreateOrder {
     Order order = createOrder(cart);
 
     // ! For now, use dummy user data
-    if(method == "auto"){
+    if(method == "manual"){
+      order.setExpiryDate(Instant.now().plus(1, ChronoUnit.HOURS).toString());
+      order.setInvoiceUrl(baseUrl+"/my-cart/checkout/" + order.getCode());
+      order.setDescription("Manual transfer payment for " + order.getCode());
+    }
+    else{
       Invoice orderInvoice = paymentService.createInvoice(order.getCode(), order.getTotalPayment(), "budi@gmail.com", "Payment for order " + order.getCode());
       order.setExpiryDate(orderInvoice.getExpiryDate());
       order.setInvoiceUrl(orderInvoice.getInvoiceUrl());
       order.setDescription(orderInvoice.getDescription());
-    }
-    else{
-      order.setExpiryDate(Instant.now().plus(1, ChronoUnit.HOURS).toString());
-      order.setInvoiceUrl(baseUrl+"/my-cart/checkout/" + order.getCode());
-      order.setDescription("Manual transfer payment for " + order.getCode());
     }
     orderRepository.save(order);
     return InvoiceDTOConverter.convertToDTO(order);

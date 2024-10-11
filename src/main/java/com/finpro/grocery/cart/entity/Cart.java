@@ -39,8 +39,8 @@ public class Cart {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "store_id", nullable = false)
+  @OneToOne(fetch = FetchType.LAZY, optional = true)
+  @JoinColumn(name = "store_id", nullable = true)
   private Store store;
 
   @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
