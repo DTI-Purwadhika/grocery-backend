@@ -46,7 +46,8 @@ public class ShippingServiceImpl implements ShippingService {
     public List<ShippingDTO> getAllShippings(String email) {
         User customer = userService.getUserByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Long userId = customer.getId();
-        int totalWeight = readCart.getTotalWeight(userId);
+//        int totalWeight = readCart.getTotalWeight(userId);
+        int totalWeight = 2000;
         Address primaryAddress = addressService.getPrimaryAddress(email);
         Store nearestStore = storeService.getNearestStore(email);
 
