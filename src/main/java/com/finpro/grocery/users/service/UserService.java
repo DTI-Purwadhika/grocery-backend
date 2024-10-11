@@ -1,6 +1,7 @@
 package com.finpro.grocery.users.service;
 
 import com.finpro.grocery.auth.dto.SocialLoginRequestDTO;
+import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.users.dto.*;
 import com.finpro.grocery.users.entity.User;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ public interface UserService {
     public void saveUser(User user);
     public Optional<User> getUserByEmail(String email);
     public ProfileDataDTO getProfileData(String email);
+    public Pagination<CustomerResponseDTO> getAllUsers(String name, String roleKeyword, int page, int size, String sortBy, String sortDir);
     public ProfileDataDTO updateUser(String email, UpdateProfileDTO updateProfileDTO);
     public void deleteUser(String email);
     public Boolean isSocialLogin(String email);

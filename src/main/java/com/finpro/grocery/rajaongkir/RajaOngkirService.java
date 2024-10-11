@@ -5,14 +5,12 @@ import com.finpro.grocery.city.entity.City;
 import com.finpro.grocery.city.repository.CityRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +44,48 @@ public class RajaOngkirService {
             return results;
         }
         return null;
+    }
+
+    public List<ShippingCostDTO> getShippingCostsAllCouriers(String origin, String destination, int weight){
+        List<String> couriers = Arrays.asList("pos", "tiki", "jne");
+
+        return couriers.stream().map(courier -> getShippingCost(origin, destination, weight, courier)).toList();
+    }
+
+    public ShippingCostDTO getShippingCost(String origin, String destination, int weight, String courier){
+        String url = BASE_URL + "/cost";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("key", apiKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String request = String.format("{ \"origin\":\"%s\", \"destination\":\"%s\", \"weight\":%d, \"courier\":\"%s\" }",
+                origin, destination, weight, courier);
+
+        HttpEntity<String> entity =  new HttpEntity<>(request, headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+
+        Map<String, Object> rajaongkir = (Map<String, Object>) response.getBody().get("rajaongkir");
+        List<Map<String, Object>> results = (List<Map<String, Object>>) rajaongkir.get("results");
+        List<Map<String,  Object>> costs = (List<Map<String, Object>>) results.get(0).get("costs");
+
+        int lowestCost = 999999;
+        String description = "";
+        String etd = "";
+
+        for (Map<String, Object> item : costs) {
+            List<Object> costList  = (List<Object>) item.get("cost");
+            Map<String, Object> cost = (Map<String, Object>) costList.getFirst();
+
+            int costValue = (int) cost.get("value");
+            if (costValue < lowestCost) {
+                lowestCost = costValue;
+                description = (String) item.get("description");
+                etd = (String) cost.get("etd");
+            }
+        }
+
+        return new ShippingCostDTO(courier, lowestCost, description, etd);
     }
 
     public City mapToCity(RajaOngkirCityResult result) {

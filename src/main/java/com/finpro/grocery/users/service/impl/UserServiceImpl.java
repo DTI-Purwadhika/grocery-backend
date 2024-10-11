@@ -5,12 +5,20 @@ import com.finpro.grocery.cloudinary.CloudinaryService;
 import com.finpro.grocery.email.service.EmailService;
 import com.finpro.grocery.referral.ReferralCodeGenerator;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
+import com.finpro.grocery.share.pagination.Pagination;
+import com.finpro.grocery.store.specification.StoreSpecification;
 import com.finpro.grocery.users.dto.*;
 import com.finpro.grocery.users.entity.User;
 import com.finpro.grocery.users.repository.UserRepository;
 import com.finpro.grocery.users.service.UserService;
+import com.finpro.grocery.users.specification.UserSpecification;
 import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +67,32 @@ public class UserServiceImpl implements UserService {
         profileDataDTO.setIsVerified(user.getIsVerified());
 
         return profileDataDTO;
+    }
+
+    @Override
+    public Pagination<CustomerResponseDTO> getAllUsers(String name, String roleKeyword, int page, int size, String sortBy, String sortDir) {
+        User.UserRole userRole = null;
+
+        if(!roleKeyword.isBlank()){
+           userRole = User.UserRole.valueOf(roleKeyword);
+        }
+
+//        Specification<User> userSpecification = Specification.where(UserSpecification.byName(name).and(UserSpecification.byRole(userRole)));
+
+        Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<User> users = userRepository.getAll(name, userRole, pageable);
+
+        Page<CustomerResponseDTO> usersDTO = users.map(CustomerResponseDTO::toDto);
+
+        return new Pagination<>(
+                usersDTO.getTotalPages(),
+                usersDTO.getTotalElements(),
+                usersDTO.isFirst(),
+                usersDTO.isLast(),
+                usersDTO.getContent()
+        );
     }
 
     @Transactional

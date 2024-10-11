@@ -31,11 +31,11 @@ public class Address {
     private Float longitude;
 
     @JoinColumn(name = "user_id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     private User user;
 
     @JoinColumn(name = "city_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     private City city;
 
     @Column(name = "created_at", nullable = false)
