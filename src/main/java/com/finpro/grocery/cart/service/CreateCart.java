@@ -2,6 +2,9 @@ package com.finpro.grocery.cart.service;
 
 import java.util.Optional;
 
+import com.finpro.grocery.share.exception.ResourceNotFoundException;
+import com.finpro.grocery.users.entity.User;
+import com.finpro.grocery.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +31,13 @@ public class CreateCart {
   private ReadStock stockService;
 
   // ! Still use user dummy data for now, change when user is implemented
-  // @Autowired
-  // private UserRepository userRepository;
+   @Autowired
+   private UserRepository userRepository;
 
   public GetCartResponse addToCart(Long userId, AddToCartRequest request) {
     // ! Check if the user is registered and verified, change when user is implemented
-    // User user = userRepository.findById(userId)
-    //     .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+     User user = userRepository.findById(userId)
+         .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     
     // if (!user.isVerified()) 
     //   throw new AccessDeniedException("User not verified");
@@ -45,8 +48,8 @@ public class CreateCart {
     Inventory stock = stockService.checkStock(request.getProductId(), request.getStoreId(), request.getQuantity());
    
     // ! Still use user dummy data for now, change when user is implemented
-    Cart cart = cartRepository.findCart(1L, request.getStoreId())
-      .orElse(new Cart(1L, stock.getStore()));
+    Cart cart = cartRepository.findCart(userRepository.findById(userId).get(), request.getStoreId())
+      .orElse(new Cart(userRepository.findById(userId).get(), stock.getStore()));
 
     cartRepository.save(cart);
     
