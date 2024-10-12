@@ -6,19 +6,16 @@ import com.finpro.grocery.email.service.EmailService;
 import com.finpro.grocery.referral.ReferralCodeGenerator;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
 import com.finpro.grocery.share.pagination.Pagination;
-import com.finpro.grocery.store.specification.StoreSpecification;
 import com.finpro.grocery.users.dto.*;
 import com.finpro.grocery.users.entity.User;
 import com.finpro.grocery.users.repository.UserRepository;
 import com.finpro.grocery.users.service.UserService;
-import com.finpro.grocery.users.specification.UserSpecification;
 import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,8 +73,6 @@ public class UserServiceImpl implements UserService {
         if(!roleKeyword.isBlank()){
            userRole = User.UserRole.valueOf(roleKeyword);
         }
-
-//        Specification<User> userSpecification = Specification.where(UserSpecification.byName(name).and(UserSpecification.byRole(userRole)));
 
         Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -301,28 +296,77 @@ public class UserServiceImpl implements UserService {
     @Override
     public void sendVerificationEmail(String email, String token){
         String subject = "Verify Your Account";
-        String htmlMessage = "<html>" +
-                "<body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;'>" +
-                "<div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px;'>" +
+        String htmlMessage = "<!DOCTYPE html><html lang='en'> <head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Verify Your Email</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: Arial, sans-serif;\n" +
+                "            margin: 0;\n" +
+                "            padding: 0;\n" +
+                "            background-color: #f4f4f4;\n" +
+                "            color: #333333;\n" +
+                "        }\n" +
+                "        .container {\n" +
+                "            width: 100%;\n" +
+                "            max-width: 600px;\n" +
+                "            margin: 0 auto;\n" +
+                "            background-color: #ffffff;\n" +
+                "            padding: 20px;\n" +
+                "            border-radius: 8px;\n" +
+                "            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\n" +
+                "        }\n" +
+                "        .header {\n" +
+                "            text-align: center;\n" +
+                "            padding: 10px 0;\n" +
+                "            background-color: #4CAF50;\n" +
+                "            color: #ffffff;\n" +
+                "            border-radius: 8px 8px 0 0;\n" +
+                "        }\n" +
+                "        .content {\n" +
+                "            padding: 20px;\n" +
+                "            text-align: center;\n" +
+                "        }\n" +
+                "        .button {\n" +
+                "            display: inline-block;\n" +
+                "            padding: 12px 24px;\n" +
+                "            margin: 20px 0;\n" +
+                "            background-color: #4CAF50;\n" +
+                "            color: #ffffff;\n" +
+                "            text-decoration: none;\n" +
+                "            border-radius: 5px;\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "        .footer {\n" +
+                "            padding: 10px;\n" +
+                "            text-align: center;\n" +
+                "            font-size: 12px;\n" +
+                "            color: #888888;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div class=\"container\">\n" +
+                "        <div class=\"header\">\n" +
+                "            <h1>Verify Your Email</h1>\n" +
+                "        </div>\n" +
+                "        <div class=\"content\">\n" +
+                "            <p>Hi,</p>\n" +
+                "            <p>Thank you for registering! Please click the button below to verify your email address and complete your registration.</p>\n" +
+                "            <a href=\"http://localhost:3000/set-password?token={{token}}&email={{email}}\" class=\"button\">Verify Email</a>\n" +
+                "            <p>If the button doesn't work, please copy and paste the following link into your browser:</p>\n" +
+                "            <p><a href=\"http://localhost:3000/set-password?token={{token}}&email={{email}}\">http://localhost:3000/set-password?token={{token}}&email={{email}}</a></p>\n" +
+                "        </div>\n" +
+                "        <div class=\"footer\">\n" +
+                "            <p>If you did not request this email, you can safely ignore it.</p>\n" +
+                "            <p>&copy; 2024 Grocery APP. All rights reserved.</p>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body> </html>";
 
-                "<div style='text-align: center; background-color: #FABC3F; padding: 20px;'>" +
-                "</div>" +
-
-                "<div style='text-align: center; padding: 40px 20px;'>" +
-                "<h1 style='color: #E85C0D;'>Thanks for Signing Up!</h1>" +
-                "<h2 style='color: #E85C0D;'>Verify Your Email</h2>" +
-                "<p style='color: #333;'>Hi,<br>Your registration is almost complete. Please click on the button below to verify your email address</p>" +
-                "<a href='http://localhost:3000/set-password?token=" + token +"&email=" + email + "' style='text-decoration: none;'>" +
-                "<button style='background-color: #C7253E; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;'>VERIFY YOUR EMAIL</button>" +
-                "</a>" +
-                "</div>" +
-
-                "<div style='background-color: #e0e0e0; padding: 20px; text-align: center;'>" +
-                "<p style='color: #333;'>Get in touch:<br>+62 123 456 789<br>xyz@gmail.com</p>" +
-                "</div>" +
-                "</div>" +
-                "</body>" +
-                "</html>";
+        htmlMessage = htmlMessage.replace("{{token}}", token);
+        htmlMessage = htmlMessage.replace("{{email}}", email);
 
         try{
             emailService.sendEmail(email, subject, htmlMessage);
@@ -334,27 +378,77 @@ public class UserServiceImpl implements UserService {
     @Override
     public void sendResetPasswordEmail(String email, String token){
         String subject = "Reset Account Password";
-        String htmlMessage = "<html>" +
-                "<body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;'>" +
-                "<div style='max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px;'>" +
+        String htmlMessage = "<!DOCTYPE html><html lang='en'> <head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Verify Your Email</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: Arial, sans-serif;\n" +
+                "            margin: 0;\n" +
+                "            padding: 0;\n" +
+                "            background-color: #f4f4f4;\n" +
+                "            color: #333333;\n" +
+                "        }\n" +
+                "        .container {\n" +
+                "            width: 100%;\n" +
+                "            max-width: 600px;\n" +
+                "            margin: 0 auto;\n" +
+                "            background-color: #ffffff;\n" +
+                "            padding: 20px;\n" +
+                "            border-radius: 8px;\n" +
+                "            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\n" +
+                "        }\n" +
+                "        .header {\n" +
+                "            text-align: center;\n" +
+                "            padding: 10px 0;\n" +
+                "            background-color: #4CAF50;\n" +
+                "            color: #ffffff;\n" +
+                "            border-radius: 8px 8px 0 0;\n" +
+                "        }\n" +
+                "        .content {\n" +
+                "            padding: 20px;\n" +
+                "            text-align: center;\n" +
+                "        }\n" +
+                "        .button {\n" +
+                "            display: inline-block;\n" +
+                "            padding: 12px 24px;\n" +
+                "            margin: 20px 0;\n" +
+                "            background-color: #4CAF50;\n" +
+                "            color: #ffffff;\n" +
+                "            text-decoration: none;\n" +
+                "            border-radius: 5px;\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "        .footer {\n" +
+                "            padding: 10px;\n" +
+                "            text-align: center;\n" +
+                "            font-size: 12px;\n" +
+                "            color: #888888;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div class=\"container\">\n" +
+                "        <div class=\"header\">\n" +
+                "            <h1>Verify Your Email</h1>\n" +
+                "        </div>\n" +
+                "        <div class=\"content\">\n" +
+                "            <p>Hi,</p>\n" +
+                "            <p>Please click the button below to reset your password.</p>\n" +
+                "            <a href=\"http://localhost:3000/reset-password?token={{token}}&email={{email}}\" class=\"button\">Reset Password</a>\n" +
+                "            <p>If the button doesn't work, please copy and paste the following link into your browser:</p>\n" +
+                "            <p><a href=\"http://localhost:3000/reset-password?token={{token}}&email={{email}}\">http://localhost:3000/reset-password?token={{token}}&email={{email}}</a></p>\n" +
+                "        </div>\n" +
+                "        <div class=\"footer\">\n" +
+                "            <p>If you did not request this email, you can safely ignore it.</p>\n" +
+                "            <p>&copy; 2024 Grocery APP. All rights reserved.</p>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body> </html>";
 
-                "<div style='text-align: center; background-color: #FABC3F; padding: 20px;'>" +
-                "</div>" +
-
-                "<div style='text-align: center; padding: 40px 20px;'>" +
-                "<h1 style='color: #E85C0D;'>Reset your Password</h1>" +
-                "<p style='color: #333;'>Hi,<br>Please click the button below to reset your password.</p>" +
-                "<a href='http://localhost:3000/reset-password?token=" + token +"&email=" + email + "' style='text-decoration: none;'>" +
-                "<button style='background-color: #C7253E; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;'>RESET PASSWORD</button>" +
-                "</a>" +
-                "</div>" +
-
-                "<div style='background-color: #e0e0e0; padding: 20px; text-align: center;'>" +
-                "<p style='color: #333;'>Get in touch:<br>+62 123 456 789<br>xyz@gmail.com</p>" +
-                "</div>" +
-                "</div>" +
-                "</body>" +
-                "</html>";
+        htmlMessage = htmlMessage.replace("{{token}}", token);
+        htmlMessage = htmlMessage.replace("{{email}}", email);
 
         try{
             emailService.sendEmail(email, subject, htmlMessage);
