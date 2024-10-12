@@ -12,6 +12,7 @@ import com.finpro.grocery.users.repository.UserRepository;
 import com.finpro.grocery.users.service.UserService;
 import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthRedisService authRedisService;
     private final CloudinaryService cloudinaryService;
+    @Value("${baseurl.frontend}")
+    private String baseUrl;
 
     public UserServiceImpl(UserRepository userRepository, EmailService emailService, PasswordEncoder passwordEncoder, AuthRedisService authRedisService, CloudinaryService cloudinaryService) {
         this.userRepository = userRepository;
@@ -354,9 +357,9 @@ public class UserServiceImpl implements UserService {
                 "        <div class=\"content\">\n" +
                 "            <p>Hi,</p>\n" +
                 "            <p>Thank you for registering! Please click the button below to verify your email address and complete your registration.</p>\n" +
-                "            <a href=\"http://localhost:3000/set-password?token={{token}}&email={{email}}\" class=\"button\">Verify Email</a>\n" +
+                "            <a href=\"{{baseUrl}}/set-password?token={{token}}&email={{email}}\" class=\"button\">Verify Email</a>\n" +
                 "            <p>If the button doesn't work, please copy and paste the following link into your browser:</p>\n" +
-                "            <p><a href=\"http://localhost:3000/set-password?token={{token}}&email={{email}}\">http://localhost:3000/set-password?token={{token}}&email={{email}}</a></p>\n" +
+                "            <p><a href=\"{{baseUrl}}/set-password?token={{token}}&email={{email}}\">{{baseUrl}}/set-password?token={{token}}&email={{email}}</a></p>\n" +
                 "        </div>\n" +
                 "        <div class=\"footer\">\n" +
                 "            <p>If you did not request this email, you can safely ignore it.</p>\n" +
@@ -367,6 +370,7 @@ public class UserServiceImpl implements UserService {
 
         htmlMessage = htmlMessage.replace("{{token}}", token);
         htmlMessage = htmlMessage.replace("{{email}}", email);
+        htmlMessage = htmlMessage.replace("{{baseUrl}}", baseUrl);
 
         try{
             emailService.sendEmail(email, subject, htmlMessage);
@@ -436,9 +440,9 @@ public class UserServiceImpl implements UserService {
                 "        <div class=\"content\">\n" +
                 "            <p>Hi,</p>\n" +
                 "            <p>Please click the button below to reset your password.</p>\n" +
-                "            <a href=\"http://localhost:3000/reset-password?token={{token}}&email={{email}}\" class=\"button\">Reset Password</a>\n" +
+                "            <a href=\"{{baseUrl}}/reset-password?token={{token}}&email={{email}}\" class=\"button\">Reset Password</a>\n" +
                 "            <p>If the button doesn't work, please copy and paste the following link into your browser:</p>\n" +
-                "            <p><a href=\"http://localhost:3000/reset-password?token={{token}}&email={{email}}\">http://localhost:3000/reset-password?token={{token}}&email={{email}}</a></p>\n" +
+                "            <p><a href=\"{{baseUrl}}/reset-password?token={{token}}&email={{email}}\">{{baseUrl}}/reset-password?token={{token}}&email={{email}}</a></p>\n" +
                 "        </div>\n" +
                 "        <div class=\"footer\">\n" +
                 "            <p>If you did not request this email, you can safely ignore it.</p>\n" +
@@ -449,6 +453,7 @@ public class UserServiceImpl implements UserService {
 
         htmlMessage = htmlMessage.replace("{{token}}", token);
         htmlMessage = htmlMessage.replace("{{email}}", email);
+        htmlMessage = htmlMessage.replace("{{baseUrl}}", baseUrl);
 
         try{
             emailService.sendEmail(email, subject, htmlMessage);
