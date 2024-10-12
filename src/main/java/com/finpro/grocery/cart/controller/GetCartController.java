@@ -21,4 +21,9 @@ public class GetCartController {
   public ApiResponse<GetCartResponse> getCart(@PathVariable long userId) {
     return new ApiResponse<>("OK", "200", cart.getCart(userId));
   }
+
+  @GetMapping("/user/{userId}/weight")
+  public ApiResponse<?> getTotalWeight(@PathVariable long userId) {
+    return new ApiResponse<>("OK", "200", cart.getTotalWeight(userId));
+  }
 }
