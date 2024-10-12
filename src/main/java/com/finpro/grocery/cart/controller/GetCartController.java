@@ -18,7 +18,7 @@ public class GetCartController {
   private ReadCart cart;
 
   @GetMapping("/user/{userId}")
-  public ApiResponse<GetCartResponse> getCart(@PathVariable long userId) {
+  public ApiResponse<GetCartResponse> getCart(@PathVariable String userId) {
     return new ApiResponse<>("OK", "200", cart.getCart(userId));
   }
 }

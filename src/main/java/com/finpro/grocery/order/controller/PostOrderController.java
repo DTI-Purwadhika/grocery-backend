@@ -19,7 +19,7 @@ public class PostOrderController {
   private CreateOrder order;
   
   @PostMapping("/{cartId}")
-  public ApiResponse<OrderResponseDTO> createOrder(@PathVariable Long cartId,  @RequestParam(defaultValue = "auto") String method) {
+  public ApiResponse<OrderResponseDTO> createOrder(@PathVariable Long cartId, @RequestParam String method) {
     return new ApiResponse<>("OK", "200", order.save(cartId, method));
   }
 

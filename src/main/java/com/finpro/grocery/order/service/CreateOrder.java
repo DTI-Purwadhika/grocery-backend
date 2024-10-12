@@ -40,6 +40,9 @@ public class CreateOrder {
   private ReadCart cartService;
 
   @Autowired
+  private DeleteCart deleteCart;
+
+  @Autowired
   private PaymentService paymentService;
 
   @Autowired
@@ -50,7 +53,6 @@ public class CreateOrder {
 
   @Transactional
   public OrderResponseDTO save(Long cartId, String method) {
-    // 1. Verify stock across warehouses
     Cart cart = cartService.getCartById(cartId);
     verifyStock(cart);
 
@@ -58,22 +60,22 @@ public class CreateOrder {
     // ! For now, use the store of the cart
     // Store store = storeService.getStoreById(cart.getStore().getId());
    
-    // 3. Create order
     Order order = createOrder(cart);
-
-    // ! For now, use dummy user data
-    if(method == "manual"){
+    if(method.equals("manual")){
       order.setExpiryDate(Instant.now().plus(1, ChronoUnit.HOURS).toString());
       order.setInvoiceUrl(baseUrl+"/my-cart/checkout/" + order.getCode());
       order.setDescription("Manual transfer payment for " + order.getCode());
     }
-    else{
-      Invoice orderInvoice = paymentService.createInvoice(order.getCode(), order.getTotalPayment(), "budi@gmail.com", "Payment for order " + order.getCode());
+    else if(method.equals("auto")){
+      Invoice orderInvoice = paymentService.createInvoice(order.getCode(), order.getTotalPayment(), order.getUser().getEmail(), "Payment for order " + order.getCode());
       order.setExpiryDate(orderInvoice.getExpiryDate());
       order.setInvoiceUrl(orderInvoice.getInvoiceUrl());
       order.setDescription(orderInvoice.getDescription());
     }
     orderRepository.save(order);
+
+    deleteCart.clear(cart.getId());
+    
     return InvoiceDTOConverter.convertToDTO(order);
   }
 
@@ -89,11 +91,11 @@ public class CreateOrder {
 
   private Order createOrder(Cart cart) {
     Order order = new Order();
-    order.setUser(1L); // ! For now, use dummy user data
+    order.setUser(cart.getUser());
     // order.setDiscount(new Discount());
-    order.setStore(cart.getStore());
+    // order.setStore(cart.getStore());
     order.setStatus(OrderStatus.Menunggu_Pembayaran);
-    order.setCode(sequenceService.generateUniqueCode("discount_code_sequence", "INV%09d"));
+    order.setCode(sequenceService.generateUniqueCode("order_code_sequence", "INV%09d"));
     
     BigDecimal totalAmount = BigDecimal.ZERO;
     for (CartItem item : cart.getItems()) 
@@ -111,7 +113,7 @@ public class CreateOrder {
   private List<OrderProduct> createOrderProduct(Cart cart, Order order) {
     List<OrderProduct> orderProducts = new ArrayList<>();
     for (CartItem item : cart.getItems()) {
-      Inventory inventory = stockService.checkStock(item.getProduct().getId(), cart.getStore().getId());
+      Inventory inventory = stockService.checkStock(item.getProduct().getId(), 1L);
       OrderProduct orderProduct = new OrderProduct();
       
       orderProduct.setOrder(order);

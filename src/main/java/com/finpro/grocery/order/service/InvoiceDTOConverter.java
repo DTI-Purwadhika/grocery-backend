@@ -40,7 +40,7 @@ class InvoiceDTOConverter {
     response.setExpiryDate(order.getExpiryDate());
     response.setCreatedAt(order.getCreatedAt().toString());
     response.setStatus(order.getStatus().toString());
-    response.setUser(order.getUser());
+    response.setUser(order.getUser().getId());
     response.setItems(new ArrayList<>());
 
     for (OrderProduct orderProduct : order.getItems()) {
