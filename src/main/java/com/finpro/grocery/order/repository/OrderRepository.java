@@ -18,7 +18,7 @@ import com.finpro.grocery.order.entity.OrderStatus;
 public interface OrderRepository extends JpaRepository<Order, Long> {
   Optional<Order> findByCode(String code);
 
-  @Query("SELECT c FROM Order c WHERE (LOWER(c.code) LIKE LOWER(CONCAT('%', :code, '%'))) AND (:userId IS NULL OR c.user = :userId) AND (:storeId IS NULL OR c.store.id = :storeId) AND (c.createdAt >= :start) AND (c.createdAt <= :end)")
+  @Query("SELECT c FROM Order c WHERE (LOWER(c.code) LIKE LOWER(CONCAT('%', :code, '%'))) AND (:userId IS NULL OR c.user.id = :userId) AND (:storeId IS NULL OR c.store.id = :storeId) AND (c.createdAt >= :start) AND (c.createdAt <= :end)")
   Page<Order> getAll(@Param("code") String code, @Param("userId") Long userId, @Param("storeId") Long storeId, @Param("start") Instant start, @Param("end") Instant end, Pageable pageable);
 
   @Query("SELECT o FROM Order o WHERE o.status = :status")

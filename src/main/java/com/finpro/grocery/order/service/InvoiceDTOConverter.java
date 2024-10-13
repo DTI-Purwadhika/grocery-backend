@@ -50,7 +50,7 @@ class InvoiceDTOConverter {
         orderProductResponseDTO.setImage(images.get(0).getUrl());
       else 
         orderProductResponseDTO.setImage(null);
-      orderProductResponseDTO.setId(orderProduct.getId());
+      orderProductResponseDTO.setId(orderProduct.getInventory().getProduct().getId());
       orderProductResponseDTO.setName(orderProduct.getInventory().getProduct().getName());
       orderProductResponseDTO.setPrice(orderProduct.getInventory().getProduct().getPrice());
       orderProductResponseDTO.setQuantity(orderProduct.getQuantity());
