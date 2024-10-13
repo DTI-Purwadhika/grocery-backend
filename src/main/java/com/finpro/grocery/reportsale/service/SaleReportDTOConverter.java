@@ -9,7 +9,7 @@ class SaleReportDTOConverter {
     SaleHistoryDTO saleHistoryDTO = new SaleHistoryDTO();
     
     saleHistoryDTO.setId(saleReport.getId());
-    saleHistoryDTO.setUser(saleReport.getUser());
+    saleHistoryDTO.setUser(saleReport.getUser().getId());
     saleHistoryDTO.setStore(saleReport.getStore().getId());
     saleHistoryDTO.setStoreName(saleReport.getStore().getName());
     saleHistoryDTO.setStatus(saleReport.getStatus().toString());

@@ -47,7 +47,6 @@ public class CreateProduct {
     product.setCode(sequenceService.generateUniqueCode("product_code_sequence", "PRD%06d"));	
     Product savedProduct = productRepository.save(product);
 
-    System.out.println(productDTO);
 
     if(productDTO.getStocks() != null){
       productDTO.getStocks().forEach(stock -> {

@@ -3,6 +3,7 @@ package com.finpro.grocery.order.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.finpro.grocery.store.entity.Store;
+import com.finpro.grocery.users.entity.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -41,13 +42,10 @@ public class Order {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  // @JoinColumn(name = "user_id", nullable = false)
-  // @JsonBackReference
-  // private User user;
-  
-  @Column(name = "user_id", nullable = false)
-  private Long user;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  @JsonBackReference
+  private User user;
 
   // @ManyToOne(fetch = FetchType.LAZY, optional = true)
   // @JoinColumn(name = "discount_id", nullable = true)

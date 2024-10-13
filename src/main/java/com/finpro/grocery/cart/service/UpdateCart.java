@@ -35,8 +35,10 @@ public class UpdateCart {
       .orElseThrow(() -> new ResourceNotFoundException("Product not found in cart"));
 
     if (quantity > 0) {
-      stockService.checkStock(productId, cart.getStore().getId(), quantity);
-      cartItem.setQuantity(quantity);
+      if(stockService.checkStockProduct(productId, quantity))
+        cartItem.setQuantity(quantity);
+      else
+        throw new ResourceNotFoundException("Insufficient stock available for the updated quantity");
     } else {
       cart.removeItem(cartItem);
       cartItemRepository.delete(cartItem);
