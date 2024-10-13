@@ -74,6 +74,22 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/v1/users/new-reset-password-link").permitAll();
                     auth.requestMatchers("/api/v1/products/**").permitAll();
                     auth.requestMatchers("/api/v1/categories/**").permitAll();
+
+                    auth.requestMatchers("/api/addresses/**").hasAuthority("SCOPE_CUSTOMER");
+                    auth.requestMatchers("/api/v1/cart/**").hasAuthority("SCOPE_CUSTOMER");
+
+                    auth.requestMatchers("/api/v1/users").hasAuthority("SCOPE_SUPER");
+                    auth.requestMatchers("/api/v1/admins/**").hasAuthority("SCOPE_SUPER");
+                    auth.requestMatchers("/api/v1/stores/**").hasAuthority("SCOPE_SUPER");
+                    auth.requestMatchers("/api/v1/sale-history/**").hasAuthority("SCOPE_SUPER");
+                    auth.requestMatchers("/api/v1/stock-history/**").hasAuthority("SCOPE_SUPER");
+                    auth.requestMatchers("/api/v1/inventory/**").hasAuthority("SCOPE_SUPER");
+                    auth.requestMatchers("/api/v1/promotions/**").hasAuthority("SCOPE_SUPER");
+                    auth.requestMatchers("/api/v1/checkouts/**").hasAuthority("SCOPE_SUPER");
+
+                    auth.requestMatchers("/api/v1/inventory/**").hasAuthority("SCOPE_ADMIN");
+                    auth.requestMatchers("/api/v1/promotions/**").hasAuthority("SCOPE_ADMIN");
+
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

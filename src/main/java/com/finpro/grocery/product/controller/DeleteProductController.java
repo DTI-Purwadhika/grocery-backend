@@ -5,6 +5,7 @@ import com.finpro.grocery.product.service.DeleteProduct;
 import com.finpro.grocery.share.response.ApiResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,18 +22,21 @@ public class DeleteProductController {
   private DeleteProduct productService;
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER') or hasAuthority('SCOPE_ADMIN')")
   public ApiResponse<ResponseProductDetailDTO> removeProduct(@PathVariable Long id) {
     ResponseProductDetailDTO removedProduct = productService.removeProduct(id);
     return new ApiResponse<>("DELETED", "200", removedProduct);
   }
 
   @PutMapping("/{id}/restore")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER') or hasAuthority('SCOPE_ADMIN')")
   public ApiResponse<ResponseProductDetailDTO> restoreProduct(@PathVariable Long id) {
     ResponseProductDetailDTO restoredProduct = productService.restoreProduct(id);
     return new ApiResponse<>("OK", "200", restoredProduct);
   }
 
   @DeleteMapping("/{id}/images/{imageId}")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER') or hasAuthority('SCOPE_ADMIN')")
   public ApiResponse<ResponseProductDetailDTO> removeImageFromProduct(
     @PathVariable Long id, 
     @PathVariable Long imageId
@@ -42,6 +46,7 @@ public class DeleteProductController {
   }
   
   @DeleteMapping("/{id}/images/{imageId}/restore")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER') or hasAuthority('SCOPE_ADMIN')")
   public ApiResponse<ResponseProductDetailDTO> restoreImageFromProduct(
     @PathVariable Long id, 
     @PathVariable Long imageId

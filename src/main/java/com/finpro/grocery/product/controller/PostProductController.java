@@ -9,6 +9,7 @@ import com.finpro.grocery.share.response.ApiResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,12 +26,14 @@ public class PostProductController {
   private CreateProduct productService;
 
   @PostMapping
+  @PreAuthorize("hasAuthority('SCOPE_SUPER') or hasAuthority('SCOPE_ADMIN')")
   public ApiResponse<ResponseProductDetailDTO> saveProduct(@Valid @RequestBody RequestProductDTO product) {
     ResponseProductDetailDTO savedProduct = productService.saveProduct(product);
     return new ApiResponse<>("CREATED", "201", savedProduct);
   }
 
   @PostMapping("/{id}/images")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER') or hasAuthority('SCOPE_ADMIN')")
   public ApiResponse<ResponseProductDetailDTO> addImageToProduct(
     @PathVariable Long id, 
     @Valid @RequestBody ProductImage image
