@@ -10,10 +10,8 @@ import com.finpro.grocery.cart.entity.Cart;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long>  {
-  @Query("SELECT c FROM Cart c WHERE c.userId = :userId AND c.store.id = :storeId")
-  Optional<Cart> findCart(Long userId, Long storeId);
 
-  @Query("SELECT c FROM Cart c WHERE c.userId = :userId")
+  @Query("SELECT c FROM Cart c WHERE c.user.id = :userId")
   Optional<Cart> findByUserId(Long userId);
 
   boolean existsByUserId(Long userId);

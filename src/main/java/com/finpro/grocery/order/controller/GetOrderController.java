@@ -23,7 +23,7 @@ public class GetOrderController {
   @GetMapping
   public ApiResponse<Pagination<OrderResponseDTO>> getAll(
     @RequestParam(required = false) String keyword,
-    @RequestParam(required = false) Long userId,
+    @RequestParam(required = false) String userId,
     @RequestParam(required = false) Long storeId,
     @RequestParam(required = false) String startDate,
     @RequestParam(required = false) String endDate,

@@ -10,6 +10,8 @@ import com.finpro.grocery.cart.repository.CartItemRepository;
 import com.finpro.grocery.cart.repository.CartRepository;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class DeleteCart {
 
@@ -22,6 +24,7 @@ public class DeleteCart {
   @Autowired
   private ReadCart read;
 
+  @Transactional
   public GetCartResponse removeItem(Long cartId, Long productId) {
     Cart cart = cartRepository.findById(cartId)
       .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
@@ -38,12 +41,11 @@ public class DeleteCart {
     return CartDTOConverter.convertToDto(cart);
   }
 
+  @Transactional
   public GetCartResponse clear(Long cartId) {
     Cart cart = read.getCartById(cartId);
-
-    cartItemRepository.deleteAll(cart.getItems());
+    cart.getItems().clear();
     Cart updatedCart = cartRepository.save(cart);
-
     return CartDTOConverter.convertToDto(updatedCart);
   }
 

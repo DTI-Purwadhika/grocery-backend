@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.finpro.grocery.store.entity.Store;
+import com.finpro.grocery.users.entity.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,16 +34,9 @@ public class Cart {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // ! Change when user is implemented
-  // @OneToOne(fetch = FetchType.LAZY)
-  // @JoinColumn(name = "user_id", nullable = false)
-  // private User user;
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
-
-  @OneToOne(fetch = FetchType.LAZY, optional = true)
-  @JoinColumn(name = "store_id", nullable = true)
-  private Store store;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
   @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
@@ -55,10 +48,8 @@ public class Cart {
   @Column(name = "updated_at", nullable = false)
   private Instant updatedAt = Instant.now();
 
-  // ! Change when user is implemented
-  public Cart(Long user, Store store) {
-    this.userId = user;
-    this.store = store;
+  public Cart(User user) {
+    this.user = user;
   }
 
   public void addItem(CartItem item) {

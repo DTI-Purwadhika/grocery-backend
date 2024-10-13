@@ -1,6 +1,7 @@
 package com.finpro.grocery.address.service.impl;
 
 import com.finpro.grocery.address.dto.AddressRequestDTO;
+import com.finpro.grocery.address.dto.AddressResponseDTO;
 import com.finpro.grocery.address.entity.Address;
 import com.finpro.grocery.address.repository.AddressRepository;
 import com.finpro.grocery.address.service.AddressService;
@@ -70,7 +71,14 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Address switchPrimaryAddress(String customerEmail, Long addressId) {
+    public Address getPrimaryAddress(String customerEmail) {
+        User customer = userService.getUserByEmail(customerEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return addressRepository.findByUserAndIsPrimaryTrue(customer).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
+    }
+
+    @Override
+    public AddressResponseDTO switchPrimaryAddress(String customerEmail, Long addressId) {
         User customer = userService.getUserByEmail(customerEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Address initialPrimaryAddress = addressRepository.findByUserAndIsPrimaryTrue(customer).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
 
@@ -79,8 +87,9 @@ public class AddressServiceImpl implements AddressService {
 
         Address updatedPrimaryAddress = addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
         updatedPrimaryAddress.setIsPrimary(true);
+        addressRepository.save(updatedPrimaryAddress);
 
-        return addressRepository.save(updatedPrimaryAddress);
+        return AddressResponseDTO.toDto(updatedPrimaryAddress);
     }
 
     @Transactional
@@ -101,23 +110,32 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Pagination<Address> getAddressesByUserId(String customerEmail, String addressName, int page, int size, String sortBy, String sortDir) {
+    public Pagination<AddressResponseDTO> getCustomerAddresses(String customerEmail, String addressName, int page, int size, String sortBy, String sortDir) {
         User customer = userService.getUserByEmail(customerEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Specification<Address> addressSpecification = Specification.where(AddressSpecification.byAddressName(addressName)
-                .and(AddressSpecification.byUserId(customer.getId())));
+                .and(AddressSpecification.byUserId(customer.getId()))
+        );
 
         Sort sort = Sort.by(sortDir.equalsIgnoreCase("desc") ? Sort.Order.desc(sortBy) : Sort.Order.asc(sortBy));
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Address> addresses = addressRepository.findAll(addressSpecification, pageable);
 
+        Page<AddressResponseDTO> addressesDTO = addresses.map(AddressResponseDTO::toDto);
+
         return new Pagination<>(
-                addresses.getTotalPages(),
-                addresses.getTotalElements(),
-                addresses.isFirst(),
-                addresses.isLast(),
-                addresses.getContent()
+                addressesDTO.getTotalPages(),
+                addressesDTO.getTotalElements(),
+                addressesDTO.isFirst(),
+                addressesDTO.isLast(),
+                addressesDTO.getContent()
         );
+    }
+
+    @Override
+    public AddressResponseDTO getAddress(Long id) {
+        Address address = addressRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Address not found"));
+        return AddressResponseDTO.toDto(address);
     }
 }

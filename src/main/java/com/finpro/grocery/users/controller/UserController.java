@@ -3,6 +3,7 @@ package com.finpro.grocery.users.controller;
 import com.cloudinary.Api;
 import com.finpro.grocery.auth.helper.Claims;
 import com.finpro.grocery.email.service.EmailService;
+import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.share.response.ApiResponse;
 import com.finpro.grocery.users.dto.*;
 import com.finpro.grocery.users.service.UserService;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 @Validated
 @Log
 public class UserController {
@@ -24,6 +25,16 @@ public class UserController {
 
     public UserController(UserService userService){
         this.userService = userService;
+    }
+
+    @GetMapping("")
+    public ApiResponse<Pagination<CustomerResponseDTO>> getAllUsers(@RequestParam(defaultValue = "") String keyword,
+                                               @RequestParam(defaultValue = "CUSTOMER") String roleKeyword,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "10") int size,
+                                               @RequestParam(defaultValue = "id") String sortBy,
+                                               @RequestParam(defaultValue = "asc") String sortDir){
+        return new ApiResponse<>("OK", "200", userService.getAllUsers(keyword, roleKeyword, page, size, sortBy, sortDir));
     }
 
     @GetMapping("/profile")

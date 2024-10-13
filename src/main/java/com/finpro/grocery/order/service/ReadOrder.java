@@ -16,6 +16,8 @@ import com.finpro.grocery.order.entity.Order;
 import com.finpro.grocery.order.repository.OrderRepository;
 import com.finpro.grocery.share.exception.BadRequestException;
 import com.finpro.grocery.share.pagination.Pagination;
+import com.finpro.grocery.users.entity.User;
+import com.finpro.grocery.users.repository.UserRepository;
 
 @Service
 public class ReadOrder {
@@ -23,8 +25,15 @@ public class ReadOrder {
   @Autowired
   private OrderRepository orderRepository;
 
-  public Pagination<OrderResponseDTO> getAll(String keyword, Long userId, Long storeId, int page, int size, String sortBy, String sortDir, String startDate, String endDate) {
+  @Autowired
+  private UserRepository userRepository;
+
+  public Pagination<OrderResponseDTO> getAll(String keyword, String userEmail, Long storeId, int page, int size, String sortBy, String sortDir, String startDate, String endDate) {
     String code = keyword == null ? "" : keyword;
+    User user = userEmail == null ? null : userRepository.findByEmail(userEmail).orElseThrow(() -> new BadRequestException("User not found"));
+    Long userId = user == null ? null : user.getId();
+    System.out.println("code user id");
+    System.out.println(userId);
     Instant start, end = Instant.now();
     
     if(startDate == null)

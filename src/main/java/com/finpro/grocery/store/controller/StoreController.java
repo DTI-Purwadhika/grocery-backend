@@ -1,5 +1,7 @@
 package com.finpro.grocery.store.controller;
 
+import com.cloudinary.Api;
+import com.finpro.grocery.auth.helper.Claims;
 import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.share.response.ApiResponse;
 import com.finpro.grocery.store.dto.StoreRequestDTO;
@@ -48,6 +50,14 @@ public class StoreController {
   public ApiResponse<?> deleteStore(@PathVariable("id") Long id){
       storeService.deleteStore(id);
       return new ApiResponse<>("OK", "200", "Store deleted successfully");
+  }
+
+  @GetMapping("/nearest")
+  public ApiResponse<Store> getNearestStore(){
+      var claims = Claims.getClaimsFromJwt();
+      String currentUserEmail = (String) claims.get("sub");
+
+      return new ApiResponse<>("OK", "200", storeService.getNearestStore(currentUserEmail));
   }
 
 }

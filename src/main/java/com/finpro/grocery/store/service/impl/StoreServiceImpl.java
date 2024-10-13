@@ -1,5 +1,7 @@
 package com.finpro.grocery.store.service.impl;
 
+import com.finpro.grocery.address.entity.Address;
+import com.finpro.grocery.address.service.AddressService;
 import com.finpro.grocery.city.entity.City;
 import com.finpro.grocery.city.service.CityService;
 import com.finpro.grocery.share.exception.ResourceNotFoundException;
@@ -23,9 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class StoreServiceImpl implements StoreService {
   private final StoreRepository storeRepository;
   private final CityService cityService;
- public StoreServiceImpl(StoreRepository storeRepository, CityService cityService){
+  private final AddressService addressService;
+ public StoreServiceImpl(StoreRepository storeRepository, CityService cityService, AddressService addressService){
    this.storeRepository = storeRepository;
    this.cityService = cityService;
+   this.addressService = addressService;
  }
 
   @Override
@@ -99,6 +103,13 @@ public class StoreServiceImpl implements StoreService {
         Store deletedStore = storeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Store not found"));
 
         storeRepository.delete(deletedStore);
+    }
+
+    @Override
+    public Store getNearestStore(String email) {
+        Address primaryAddress = addressService.getPrimaryAddress(email);
+
+        return storeRepository.getNearestStore(primaryAddress.getLongitude(), primaryAddress.getLatitude());
     }
 }
 

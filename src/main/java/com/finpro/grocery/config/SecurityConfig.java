@@ -64,15 +64,16 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigSource))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/error/**").permitAll();
-                    auth.requestMatchers("/api/users/register").permitAll();
                     auth.requestMatchers("/api/auth/**").permitAll();
-                    auth.requestMatchers("/api/users/set-password").permitAll();
-                    auth.requestMatchers("/api/users/check-verification-link").permitAll();
-                    auth.requestMatchers("/api/users/new-verification-link").permitAll();
-                    auth.requestMatchers("/api/users/reset-password").permitAll();
-                    auth.requestMatchers("/api/users/check-reset-password-link").permitAll();
-                    auth.requestMatchers("/api/users/new-reset-password-link").permitAll();
-                    auth.requestMatchers("/**").permitAll();
+                    auth.requestMatchers("/api/v1/users/register").permitAll();
+                    auth.requestMatchers("/api/v1/users/set-password").permitAll();
+                    auth.requestMatchers("/api/v1/users/check-verification-link").permitAll();
+                    auth.requestMatchers("/api/v1/users/new-verification-link").permitAll();
+                    auth.requestMatchers("/api/v1/users/reset-password").permitAll();
+                    auth.requestMatchers("/api/v1/users/check-reset-password-link").permitAll();
+                    auth.requestMatchers("/api/v1/users/new-reset-password-link").permitAll();
+                    auth.requestMatchers("/api/v1/products/**").permitAll();
+                    auth.requestMatchers("/api/v1/categories/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,7 +1,7 @@
 package com.finpro.grocery.address.controller;
 
-import com.cloudinary.Api;
 import com.finpro.grocery.address.dto.AddressRequestDTO;
+import com.finpro.grocery.address.dto.AddressResponseDTO;
 import com.finpro.grocery.address.entity.Address;
 import com.finpro.grocery.address.service.AddressService;
 import com.finpro.grocery.auth.helper.Claims;
@@ -13,21 +13,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/addresses")
 public class AddressController {
     private final AddressService addressService;
-
     public AddressController(AddressService addressService){
         this.addressService = addressService;
+
     }
 
     @GetMapping("")
-    public ApiResponse<Pagination<Address>> getAddressesByUserId(@RequestParam(value = "addressName",required = false) String addressName,
-                                                                 @RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int size,
-                                                                 @RequestParam(defaultValue = "id") String sortBy,
-                                                                 @RequestParam(defaultValue = "asc") String sortDir){
+    public ApiResponse<Pagination<AddressResponseDTO>> getCustomerAddresses(@RequestParam(value = "addressName",required = false) String addressName,
+                                                                            @RequestParam(defaultValue = "0") int page,
+                                                                            @RequestParam(defaultValue = "10") int size,
+                                                                            @RequestParam(defaultValue = "id") String sortBy,
+                                                                            @RequestParam(defaultValue = "asc") String sortDir){
         var claims = Claims.getClaimsFromJwt();
         String currentUserEmail = (String) claims.get("sub");
 
-        return new ApiResponse<>("OK", "200", addressService.getAddressesByUserId(currentUserEmail, addressName, page, size, sortBy, sortDir));
+        return new ApiResponse<>("OK", "200", addressService.getCustomerAddresses(currentUserEmail, addressName, page, size, sortBy, sortDir));
     }
 
     @PostMapping("/create")
@@ -53,10 +53,23 @@ public class AddressController {
     }
 
     @PutMapping("/change-primary-address/{id}")
-    public ApiResponse<Address> changePrimaryAddress(@PathVariable("id") Long id){
+    public ApiResponse<AddressResponseDTO> changePrimaryAddress(@PathVariable("id") Long id){
         var claims = Claims.getClaimsFromJwt();
         String currentUserEmail = (String) claims.get("sub");
 
         return new ApiResponse<>("OK", "200", addressService.switchPrimaryAddress(currentUserEmail, id));
+    }
+
+    @GetMapping("/primary")
+    public ApiResponse<Address> getPrimaryAddress() {
+        var claims = Claims.getClaimsFromJwt();
+        String currentUserEmail = (String) claims.get("sub");
+
+        return new ApiResponse<>("OK", "200", addressService.getPrimaryAddress(currentUserEmail));
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<AddressResponseDTO> getAddress(@PathVariable Long id) {
+        return new ApiResponse<>("OK", "200", addressService.getAddress(id));
     }
 }

@@ -48,4 +48,13 @@ public class UpdateStock {
     return inventoryDto;
   }
 
+  @Transactional
+  public void decreaseStock(Inventory inventory, Long stock) {
+    inventory.setStock(inventory.getStock() - stock);
+
+    inventory.setUpdatedAt(Instant.now());
+    inventoryInventory.save(inventory);
+
+  }
+
 }

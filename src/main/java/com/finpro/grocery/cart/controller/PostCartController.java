@@ -21,7 +21,7 @@ public class PostCartController {
 
   @PostMapping
   public ApiResponse<GetCartResponse> addToCart (
-    @RequestParam Long userId, 
+    @RequestParam String userId, 
     @RequestBody AddToCartRequest request
   ) {
     return new ApiResponse<>("OK", "200", cart.addToCart(userId, request));
