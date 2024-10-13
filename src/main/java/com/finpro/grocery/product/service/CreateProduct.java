@@ -3,7 +3,6 @@ package com.finpro.grocery.product.service;
 import com.finpro.grocery.category.entity.Category;
 import com.finpro.grocery.category.service.ReadCategory;
 import com.finpro.grocery.inventory.dto.request.RequestInventoryDTO;
-import com.finpro.grocery.inventory.entity.Inventory;
 import com.finpro.grocery.inventory.service.CreateStock;
 import com.finpro.grocery.product.dto.request.RequestProductDTO;
 import com.finpro.grocery.product.dto.response.ResponseProductDetailDTO;
