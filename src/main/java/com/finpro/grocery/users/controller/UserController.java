@@ -11,6 +11,7 @@ import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +56,7 @@ public class UserController {
         return new ApiResponse<>("OK", "200", userService.updateUser(currentUserEmail, updateProfileDTO));
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("/delete")
     public ApiResponse<?> deleteProfile(@RequestParam String email){
         userService.deleteUser(email);
         return new ApiResponse<>("OK", "200", "User profile deleted successfully");
