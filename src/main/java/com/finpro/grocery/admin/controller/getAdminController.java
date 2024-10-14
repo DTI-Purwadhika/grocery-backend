@@ -1,6 +1,7 @@
 package com.finpro.grocery.admin.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ public class getAdminController {
   private ReadAdmin admin;
 
   @GetMapping
+  @PreAuthorize("hasAuthority('SCOPE_SUPER') or hasAuthority('SCOPE_ADMIN')")
   public ApiResponse<Pagination<AdminResponseDTO>> getAll(
     @RequestParam(defaultValue = "") String keyword,
     @RequestParam(defaultValue = "") String roleKeyword,
@@ -32,6 +34,7 @@ public class getAdminController {
   }
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER') or hasAuthority('SCOPE_ADMIN')")
   public ApiResponse<AdminResponseDTO> getAdmin(@PathVariable Long id) {
     return new ApiResponse<>("OK", "200", admin.getAdmin(id));
   }

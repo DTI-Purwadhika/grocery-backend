@@ -5,6 +5,7 @@ import com.finpro.grocery.admin.dto.response.AdminResponseDTO;
 import com.finpro.grocery.admin.service.UpdateAdmin;
 import com.finpro.grocery.share.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ public class UpdateAdminController {
   private UpdateAdmin admin;
 
   @PutMapping("/{id}")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER')")
     public ApiResponse<AdminResponseDTO> updateAdmin(@PathVariable Long id, @RequestBody AdminRequestDTO adminDto) {
     return new ApiResponse<>("OK", "200", admin.update(id, adminDto));
   }
