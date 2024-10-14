@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class CheckVerificationLinkDTO {
-    private String email;
+    private String id;
     private String token;
 }
