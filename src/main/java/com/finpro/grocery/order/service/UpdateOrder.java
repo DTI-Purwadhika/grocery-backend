@@ -26,7 +26,6 @@ public class UpdateOrder {
   @Transactional
   public String UpdateStatus(Long id, String update, String status) {
     Order order = read.findOrder(id);
-    
     switch (status) {
       case "upload_proof":
         order.setProofUrl(update);
@@ -52,7 +51,6 @@ public class UpdateOrder {
         order.setStatus(OrderStatus.Menunggu_Pembayaran);
         break;
     }
-
     orderRepository.save(order);
 
     return status + " order success";	

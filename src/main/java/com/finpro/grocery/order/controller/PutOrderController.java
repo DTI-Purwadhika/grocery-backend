@@ -26,7 +26,7 @@ public class PutOrderController {
   }
 
   @PutMapping("/{id}")
-  public ApiResponse<String> uploadPaymentProof(@RequestParam("status") String status, @RequestParam("update") String update, @PathVariable("id") Long orderId) {
+  public ApiResponse<String> uploadPaymentProof(@RequestParam(required = false) String status, @RequestParam(required = false) String update, @PathVariable("id") Long orderId) {
     return new ApiResponse<>("OK", "200", order.UpdateStatus(orderId, update, status));
   }
 

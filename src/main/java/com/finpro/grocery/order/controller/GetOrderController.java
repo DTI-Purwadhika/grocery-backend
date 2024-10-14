@@ -30,7 +30,7 @@ public class GetOrderController {
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size,
     @RequestParam(defaultValue = "id") String sortBy,
-    @RequestParam(defaultValue = "asc") String sortDir
+    @RequestParam(defaultValue = "desc") String sortDir
   ) {
     return new ApiResponse<>("OK", "200", order.getAll(keyword, userId, storeId, page, size, sortBy, sortDir, startDate, endDate));
   }

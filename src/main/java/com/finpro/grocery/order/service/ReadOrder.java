@@ -32,8 +32,6 @@ public class ReadOrder {
     String code = keyword == null ? "" : keyword;
     User user = userEmail == null ? null : userRepository.findByEmail(userEmail).orElseThrow(() -> new BadRequestException("User not found"));
     Long userId = user == null ? null : user.getId();
-    System.out.println("code user id");
-    System.out.println(userId);
     Instant start, end = Instant.now();
     
     if(startDate == null)
