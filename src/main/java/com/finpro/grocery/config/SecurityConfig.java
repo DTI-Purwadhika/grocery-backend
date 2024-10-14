@@ -89,6 +89,9 @@ public class SecurityConfig {
 
                     auth.requestMatchers("/api/v1/inventory/**").hasAuthority("SCOPE_ADMIN");
                     auth.requestMatchers("/api/v1/promotions/**").hasAuthority("SCOPE_ADMIN");
+                    auth.requestMatchers("/api/v1/users").hasAuthority("SCOPE_ADMIN");
+                    auth.requestMatchers("/api/v1/admins/**").hasAuthority("SCOPE_ADMIN");
+                    auth.requestMatchers("/api/v1/stores/**").hasAuthority("SCOPE_ADMIN");
 
                     auth.anyRequest().authenticated();
                 })
