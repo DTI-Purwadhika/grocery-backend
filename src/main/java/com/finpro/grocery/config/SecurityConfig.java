@@ -10,6 +10,7 @@ import jakarta.servlet.http.Cookie;
 import lombok.extern.java.Log;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -77,6 +78,7 @@ public class SecurityConfig {
 
                     auth.requestMatchers("/api/addresses/**").hasAuthority("SCOPE_CUSTOMER");
                     auth.requestMatchers("/api/v1/cart/**").hasAuthority("SCOPE_CUSTOMER");
+                    auth.requestMatchers(HttpMethod.DELETE ,"/api/v1/users").hasAuthority("SCOPE_CUSTOMER");
 
                     auth.requestMatchers("/api/v1/users").hasAuthority("SCOPE_SUPER");
                     auth.requestMatchers("/api/v1/admins/**").hasAuthority("SCOPE_SUPER");
@@ -89,6 +91,7 @@ public class SecurityConfig {
 
                     auth.requestMatchers("/api/v1/inventory/**").hasAuthority("SCOPE_ADMIN");
                     auth.requestMatchers("/api/v1/promotions/**").hasAuthority("SCOPE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE ,"/api/v1/users").hasAuthority("SCOPE_ADMIN");
 
                     auth.anyRequest().authenticated();
                 })

@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
 
         ProfileDataDTO profileDataDTO = new ProfileDataDTO();
+        profileDataDTO.setId(user.getId());
         profileDataDTO.setName(user.getName());
         profileDataDTO.setEmail(user.getEmail());
         profileDataDTO.setRole(user.getRole());
