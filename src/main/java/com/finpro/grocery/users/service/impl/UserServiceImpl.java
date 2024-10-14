@@ -180,7 +180,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User setPassword(SetPasswordDTO setPasswordDTO) {
-        User user = userRepository.findByEmail(setPasswordDTO.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+        User user = userRepository.findById(Long.parseLong(setPasswordDTO.getId())).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
 
         if (!user.getIsVerified()) {
             user.setIsVerified(true);
@@ -226,10 +226,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String checkVerificationLink(CheckVerificationLinkDTO checkVerificationLinkDTO) {
-        User user = userRepository.findByEmail(checkVerificationLinkDTO.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
-        String token = authRedisService.getVerificationLink(checkVerificationLinkDTO.getEmail());
+        User user = userRepository.findById(Long.parseLong(checkVerificationLinkDTO.getId())).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+        String token = authRedisService.getVerificationLink(user.getEmail());
 
-        if ( !user.getIsVerified() && authRedisService.isVerificationLinkValid(checkVerificationLinkDTO.getEmail()) && token.equals(checkVerificationLinkDTO.getToken()) ) {
+        if ( !user.getIsVerified() && authRedisService.isVerificationLinkValid(user.getEmail()) && token.equals(checkVerificationLinkDTO.getToken()) ) {
             return "User not verified";
         } else if ( user.getIsVerified() ) {
             return "User verified";
@@ -240,10 +240,11 @@ public class UserServiceImpl implements UserService {
 }
 
     @Override
-    public void newVerificationLink(String email) {
-        Optional<User> user = userRepository.findByEmail((email));
+    public void newVerificationLink(String id) {
+        User user = userRepository.findById(Long.parseLong(id)).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+        String email = user.getEmail();
 
-        if(user.isPresent() && !user.get().getIsVerified()){
+        if(!user.getIsVerified()){
             if(authRedisService.isVerificationLinkValid(email)){
                 authRedisService.deleteVerificationLink(email);
             }
@@ -279,14 +280,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean checkResetPasswordLink(CheckResetPasswordLinkDTO checkResetPasswordLinkDTO) {
-        User user = userRepository.findByEmail(checkResetPasswordLinkDTO.getEmail()).orElseThrow(()-> new ResourceNotFoundException("Email not found"));
-        String token = authRedisService.getResetPasswordLink(checkResetPasswordLinkDTO.getEmail());
+        User user = userRepository.findById(Long.parseLong(checkResetPasswordLinkDTO.getId())).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        String email = user.getEmail();
+        String token = authRedisService.getResetPasswordLink(email);
 
-        return user.getIsVerified() && authRedisService.isResetPasswordLinkValid(checkResetPasswordLinkDTO.getEmail()) && token.equals(checkResetPasswordLinkDTO.getToken());
+        return user.getIsVerified() && authRedisService.isResetPasswordLinkValid(email) && token.equals(checkResetPasswordLinkDTO.getToken());
     }
 
     @Override
-    public void newResetPasswordLink(String email) {
+    public void newResetPasswordLink(String id) {
+        User user = userRepository.findById(Long.parseLong(id)).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        String email = user.getEmail();
         if(authRedisService.isResetPasswordLinkValid(email)){
             authRedisService.deleteResetPasswordLink(email);
         }
@@ -298,6 +302,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendVerificationEmail(String email, String token){
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("Email not found"));
+        String userId = user.getId().toString();
         String subject = "Verify Your Account";
         String htmlMessage = "<!DOCTYPE html><html lang='en'> <head>\n" +
                 "    <meta charset=\"UTF-8\">\n" +
@@ -357,9 +363,9 @@ public class UserServiceImpl implements UserService {
                 "        <div class=\"content\">\n" +
                 "            <p>Hi,</p>\n" +
                 "            <p>Thank you for registering! Please click the button below to verify your email address and complete your registration.</p>\n" +
-                "            <a href=\"{{baseUrl}}/set-password?token={{token}}&email={{email}}\" class=\"button\">Verify Email</a>\n" +
+                "            <a href=\"{{baseUrl}}/set-password?token={{token}}&userid={{userId}}\" class=\"button\">Verify Email</a>\n" +
                 "            <p>If the button doesn't work, please copy and paste the following link into your browser:</p>\n" +
-                "            <p><a href=\"{{baseUrl}}/set-password?token={{token}}&email={{email}}\">{{baseUrl}}/set-password?token={{token}}&email={{email}}</a></p>\n" +
+                "            <p><a href=\"{{baseUrl}}/set-password?token={{token}}&userid={{userId}}\">{{baseUrl}}/set-password?token={{token}}&userid={{userId}}</a></p>\n" +
                 "        </div>\n" +
                 "        <div class=\"footer\">\n" +
                 "            <p>If you did not request this email, you can safely ignore it.</p>\n" +
@@ -369,7 +375,7 @@ public class UserServiceImpl implements UserService {
                 "</body> </html>";
 
         htmlMessage = htmlMessage.replace("{{token}}", token);
-        htmlMessage = htmlMessage.replace("{{email}}", email);
+        htmlMessage = htmlMessage.replace("{{userId}}", userId);
         htmlMessage = htmlMessage.replace("{{baseUrl}}", baseUrl);
 
         try{
@@ -381,6 +387,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendResetPasswordEmail(String email, String token){
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("Email not found"));
+        String userId = user.getId().toString();
         String subject = "Reset Account Password";
         String htmlMessage = "<!DOCTYPE html><html lang='en'> <head>\n" +
                 "    <meta charset=\"UTF-8\">\n" +
@@ -440,9 +448,9 @@ public class UserServiceImpl implements UserService {
                 "        <div class=\"content\">\n" +
                 "            <p>Hi,</p>\n" +
                 "            <p>Please click the button below to reset your password.</p>\n" +
-                "            <a href=\"{{baseUrl}}/reset-password?token={{token}}&email={{email}}\" class=\"button\">Reset Password</a>\n" +
+                "            <a href=\"{{baseUrl}}/reset-password?token={{token}}&userid={{userId}}\" class=\"button\">Reset Password</a>\n" +
                 "            <p>If the button doesn't work, please copy and paste the following link into your browser:</p>\n" +
-                "            <p><a href=\"{{baseUrl}}/reset-password?token={{token}}&email={{email}}\">{{baseUrl}}/reset-password?token={{token}}&email={{email}}</a></p>\n" +
+                "            <p><a href=\"{{baseUrl}}/reset-password?token={{token}}&userid={{userId}}\">{{baseUrl}}/reset-password?token={{token}}&userid={{userId}}</a></p>\n" +
                 "        </div>\n" +
                 "        <div class=\"footer\">\n" +
                 "            <p>If you did not request this email, you can safely ignore it.</p>\n" +
@@ -452,7 +460,7 @@ public class UserServiceImpl implements UserService {
                 "</body> </html>";
 
         htmlMessage = htmlMessage.replace("{{token}}", token);
-        htmlMessage = htmlMessage.replace("{{email}}", email);
+        htmlMessage = htmlMessage.replace("{{userId}}", userId);
         htmlMessage = htmlMessage.replace("{{baseUrl}}", baseUrl);
 
         try{

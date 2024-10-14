@@ -87,8 +87,8 @@ public class UserController {
     }
 
     @PostMapping("/new-verification-link")
-    public ApiResponse<?> newVerificationLink(@RequestParam String email){
-        userService.newVerificationLink(email);
+    public ApiResponse<?> newVerificationLink(@RequestParam String id){
+        userService.newVerificationLink(id);
         return new ApiResponse<>("OK", "200", "Verification link sent successfully");
     }
 
@@ -103,8 +103,8 @@ public class UserController {
     }
 
     @PostMapping("/new-reset-password-link")
-    public ApiResponse<?> newResetPasswordLink(@RequestParam String email){
-        userService.newResetPasswordLink(email);
+    public ApiResponse<?> newResetPasswordLink(@RequestParam String id){
+        userService.newResetPasswordLink(id);
         return new ApiResponse<>("OK", "200", "Reset password link sent successfully");
     }
 }
