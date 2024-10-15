@@ -10,7 +10,6 @@ import jakarta.servlet.http.Cookie;
 import lombok.extern.java.Log;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -73,6 +72,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/v1/users/reset-password").permitAll();
                     auth.requestMatchers("/api/v1/users/check-reset-password-link").permitAll();
                     auth.requestMatchers("/api/v1/users/new-reset-password-link").permitAll();
+                    auth.requestMatchers("/api/v1/checkouts/payment-webhook").permitAll();
                     auth.requestMatchers("/api/v1/products/**").permitAll();
                     auth.requestMatchers("/api/v1/categories/**").permitAll();
 
