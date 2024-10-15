@@ -1,6 +1,7 @@
 package com.finpro.grocery.inventory.service;
 
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,8 @@ public class CreateStock {
 
   @Transactional
   public void generateStock() {
+    Random rand = new Random();
+
     List<Product> products = productRepository.findAll();
     List<Store> stores = storeRepository.findAll();
     for (Product product : products) {
@@ -69,7 +72,8 @@ public class CreateStock {
           inventory.setCode(sequenceService.generateUniqueCode("inventory_code_sequence", "IVT%05d"));
           inventory.setProduct(product);
           inventory.setStore(store);
-          Long stock = 0L;
+          long stock = rand.nextLong(101); 
+          if (stock < 0) stock = -stock;
           inventory.setStock(stock); 
 
           inventoryRepository.save(inventory);
