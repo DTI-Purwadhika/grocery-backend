@@ -1,13 +1,10 @@
 package com.finpro.grocery.users.controller;
 
-import com.cloudinary.Api;
 import com.finpro.grocery.auth.helper.Claims;
-import com.finpro.grocery.email.service.EmailService;
 import com.finpro.grocery.share.pagination.Pagination;
 import com.finpro.grocery.share.response.ApiResponse;
 import com.finpro.grocery.users.dto.*;
 import com.finpro.grocery.users.service.UserService;
-import jakarta.mail.MessagingException;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +52,7 @@ public class UserController {
         return new ApiResponse<>("OK", "200", userService.updateUser(currentUserEmail, updateProfileDTO));
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("/delete")
     public ApiResponse<?> deleteProfile(@RequestParam String email){
         userService.deleteUser(email);
         return new ApiResponse<>("OK", "200", "User profile deleted successfully");
