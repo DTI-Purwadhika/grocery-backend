@@ -20,10 +20,10 @@ public interface UserService {
     public User setPassword(SetPasswordDTO setPasswordDTO);
     public String register(RegisterUserDTO registerUserDTO);
     public String checkVerificationLink(CheckVerificationLinkDTO checkVerificationLinkDTO);
-    public void newVerificationLink(String email);
+    public void newVerificationLink(String id);
     public String resetPassword(String email);
     public Boolean checkResetPasswordLink(CheckResetPasswordLinkDTO checkResetPasswordLinkDTO);
-    public void newResetPasswordLink(String email);
+    public void newResetPasswordLink(String id);
     public void sendVerificationEmail(String email, String token);
     public void sendResetPasswordEmail(String email, String token);
 }

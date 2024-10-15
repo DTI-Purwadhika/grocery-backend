@@ -84,6 +84,11 @@ public class AuthServiceImpl implements AuthService {
         SocialLoginResponseDTO socialLoginResponseDTO = new SocialLoginResponseDTO();
 
         if(user.isPresent()){
+            if(!user.get().getRole().toString().equals("CUSTOMER")){
+                socialLoginResponseDTO.setError("Social login error");
+                return socialLoginResponseDTO;
+            }
+
             user.get().setName(socialLoginRequestDTO.getName());
             userService.saveUser(user.get());
 

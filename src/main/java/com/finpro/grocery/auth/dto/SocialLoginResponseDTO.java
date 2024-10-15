@@ -9,4 +9,5 @@ public class SocialLoginResponseDTO {
     private String role;
     private String referralCode;
     private Boolean isVerified;
+    private String error;
 }
