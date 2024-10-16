@@ -24,6 +24,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/userid")
+    public ApiResponse<String> getUserId(@RequestParam String email){
+        Long  userId = userService.getUserByEmail(email).get().getId();
+        return new ApiResponse<>("OK", "200", String.valueOf(userId));
+    }
+
     @GetMapping("")
     public ApiResponse<Pagination<CustomerResponseDTO>> getAllUsers(@RequestParam(defaultValue = "") String keyword,
                                                @RequestParam(defaultValue = "CUSTOMER") String roleKeyword,

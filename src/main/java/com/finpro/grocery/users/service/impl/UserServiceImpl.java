@@ -227,17 +227,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String checkVerificationLink(CheckVerificationLinkDTO checkVerificationLinkDTO) {
-        User user = userRepository.findById(Long.parseLong(checkVerificationLinkDTO.getId())).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
-        String token = authRedisService.getVerificationLink(user.getEmail());
+        try{
+            User user = userRepository.findById(Long.parseLong(checkVerificationLinkDTO.getId())).orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+            String token = authRedisService.getVerificationLink(user.getEmail());
 
-        if ( !user.getIsVerified() && authRedisService.isVerificationLinkValid(user.getEmail()) && token.equals(checkVerificationLinkDTO.getToken()) ) {
-            return "User not verified";
-        } else if ( user.getIsVerified() ) {
-            return "User verified";
-        }
-        else {
+            if ( !user.getIsVerified() && authRedisService.isVerificationLinkValid(user.getEmail()) && token.equals(checkVerificationLinkDTO.getToken()) ) {
+                return "User not verified";
+            } else if ( user.getIsVerified() ) {
+                return "User verified";
+            }
+            else {
+                return "Expired";
+            }
+        } catch (Exception e){
             return "Expired";
         }
+
 }
 
     @Override
@@ -281,11 +286,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean checkResetPasswordLink(CheckResetPasswordLinkDTO checkResetPasswordLinkDTO) {
-        User user = userRepository.findById(Long.parseLong(checkResetPasswordLinkDTO.getId())).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        String email = user.getEmail();
-        String token = authRedisService.getResetPasswordLink(email);
+        try{
+            User user = userRepository.findById(Long.parseLong(checkResetPasswordLinkDTO.getId())).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            String email = user.getEmail();
+            String token = authRedisService.getResetPasswordLink(email);
 
-        return user.getIsVerified() && authRedisService.isResetPasswordLinkValid(email) && token.equals(checkResetPasswordLinkDTO.getToken());
+            return user.getIsVerified() && authRedisService.isResetPasswordLinkValid(email) && token.equals(checkResetPasswordLinkDTO.getToken());
+        }catch(Exception e){
+            return false;
+        }
     }
 
     @Override
@@ -394,7 +403,7 @@ public class UserServiceImpl implements UserService {
         String htmlMessage = "<!DOCTYPE html><html lang='en'> <head>\n" +
                 "    <meta charset=\"UTF-8\">\n" +
                 "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <title>Verify Your Email</title>\n" +
+                "    <title>Reset Your Password</title>\n" +
                 "    <style>\n" +
                 "        body {\n" +
                 "            font-family: Arial, sans-serif;\n" +
@@ -444,7 +453,7 @@ public class UserServiceImpl implements UserService {
                 "<body>\n" +
                 "    <div class=\"container\">\n" +
                 "        <div class=\"header\">\n" +
-                "            <h1>Verify Your Email</h1>\n" +
+                "            <h1>Reset Your Password</h1>\n" +
                 "        </div>\n" +
                 "        <div class=\"content\">\n" +
                 "            <p>Hi,</p>\n" +
