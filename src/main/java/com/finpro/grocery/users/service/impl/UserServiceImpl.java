@@ -124,12 +124,13 @@ public class UserServiceImpl implements UserService {
         if(updateProfileDTO.getEmail() != null){
             if(!updateProfileDTO.getEmail().equals(user.getEmail()) && userRepository.findByEmail(updateProfileDTO.getEmail()).isEmpty()){
                 user.setIsVerified(false);
+                user.setEmail(updateProfileDTO.getEmail());
 
                 String token = authRedisService.saveVerificationLink(updateProfileDTO.getEmail());
 
-                sendVerificationEmail(updateProfileDTO.getEmail(), token);
+                userRepository.save(user);
 
-                user.setEmail(updateProfileDTO.getEmail());
+                sendVerificationEmail(updateProfileDTO.getEmail(), token);
             }
             else if(!updateProfileDTO.getEmail().equals(user.getEmail()) && userRepository.findByEmail(updateProfileDTO.getEmail()).isPresent()) {
                 profileDataDTO.setError("This email has been registered. Please update to a different email");
@@ -142,6 +143,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
+        profileDataDTO.setId(user.getId());
         profileDataDTO.setName(user.getName());
         profileDataDTO.setEmail(user.getEmail());
         profileDataDTO.setRole(user.getRole());
