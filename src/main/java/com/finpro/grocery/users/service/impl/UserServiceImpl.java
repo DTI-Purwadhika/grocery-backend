@@ -211,6 +211,10 @@ public class UserServiceImpl implements UserService {
             return "An account with this email has already been registered";
         }
 
+        if(userRepository.findByRole(User.UserRole.valueOf("SUPER")).isPresent() && registerUserDTO.getRole() == User.UserRole.valueOf("SUPER")){
+            return "A super admin account has been registered";
+        }
+
         User registeredUser = registerUserDTO.toEntity();
 
         if (registeredUser.getRole() == User.UserRole.CUSTOMER) {
