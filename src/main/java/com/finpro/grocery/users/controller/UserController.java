@@ -59,8 +59,10 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ApiResponse<?> deleteProfile(@RequestParam String email){
-        userService.deleteUser(email);
+    public ApiResponse<?> deleteProfile(){
+        var claims = Claims.getClaimsFromJwt();
+        String currentUserEmail = (String) claims.get("sub");
+        userService.deleteUser(currentUserEmail);
         return new ApiResponse<>("OK", "200", "User profile deleted successfully");
     }
 
@@ -73,15 +75,15 @@ public class UserController {
     public ResponseEntity<?> register(@RequestBody RegisterUserDTO registerUserDTO){
         String result = userService.register(registerUserDTO);
 
-        if(result.equals("Email is already registered with social account")){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email already registered with social account"));
-        }
-        else if(result.equals("An account with this email has already been registered")){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Account with this email already registered"));
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of("success", "Account registered successfully"));
-        }
+        return switch (result) {
+            case "Email is already registered with social account" ->
+                    ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email already registered with social account"));
+            case "An account with this email has already been registered" ->
+                    ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Account with this email already registered"));
+            case "A super admin account has been registered" ->
+                    ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "A super admin account has been registered"));
+            default -> ResponseEntity.status(HttpStatus.OK).body(Map.of("success", "Account registered successfully"));
+        };
     }
 
     @PostMapping("/check-verification-link")
