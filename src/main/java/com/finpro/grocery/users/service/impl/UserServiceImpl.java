@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if(updateProfileDTO.getPassword() != null){
-            user.setPassword(updateProfileDTO.getPassword());
+            user.setPassword(passwordEncoder.encode(updateProfileDTO.getPassword()));
         }
 
         userRepository.save(user);

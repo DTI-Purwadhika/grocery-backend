@@ -59,8 +59,10 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ApiResponse<?> deleteProfile(@RequestParam String email){
-        userService.deleteUser(email);
+    public ApiResponse<?> deleteProfile(){
+        var claims = Claims.getClaimsFromJwt();
+        String currentUserEmail = (String) claims.get("sub");
+        userService.deleteUser(currentUserEmail);
         return new ApiResponse<>("OK", "200", "User profile deleted successfully");
     }
 
