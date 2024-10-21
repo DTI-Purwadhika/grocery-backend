@@ -76,6 +76,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/v1/checkouts/payment-webhook").permitAll();
                     auth.requestMatchers("/api/v1/products/**").permitAll();
                     auth.requestMatchers("/api/v1/categories/**").permitAll();
+                    auth.requestMatchers("/api/v1/inventory/generate-stock").permitAll();
 
                     auth.requestMatchers("/api/addresses/**").hasAuthority("SCOPE_CUSTOMER");
                     auth.requestMatchers("/api/v1/cart/**").hasAuthority("SCOPE_CUSTOMER");
